@@ -1,9 +1,14 @@
-// Call the dataTables jQuery plugin
 $(document).ready(function() {
   $('#dataTable').DataTable(
 	{
-		"pageLength": 9,
-		"lengthMenu": [10, 25, 50, 75, 100]
+		"order": [],
+//		"order": [[ 3, "desc" ]],
+		"columnDefs": [
+			{ "width": "5%", "targets": 1 },
+			{ "width": "60%", "targets": 0 }
+		],
+		"pageLength": 25,
+		"lengthMenu": [25, 50, 100]
 	}	  
   );
 });

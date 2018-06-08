@@ -29,38 +29,82 @@
 	<th:block th:include="includes/navbar :: navbar"></th:block>
 
 	<div class="content-wrapper">
-		<h1 class="my-4">My Files</h1>
-
-		<!-- <div class="row mt-4">
-			<div class="col-lg-3 col-md-4 col-sm-6 col-6 portfolio-item grow"
-				th:each="movie:${movies}">
-				<div class="border border-0">
-					<a th:href="'movie?id=' + ${movie.id}"><img
-						class="card-img-top round sombra"
-						th:src="@{https://image.tmdb.org/t/p/w342} + ${movie.poster_path}"
-						alt=""></a>
-					<p class="text-white score shadow" th:text="${movie.vote_average}"></p>
+		<div class="container-fluid">
+			<!-- Breadcrumbs-->
+			<!-- <ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+				<li class="breadcrumb-item active">Tables</li>
+			</ol> -->
+			<!-- Example DataTables Card-->
+			<div class="card mb-3">
+				<div class="card-header">
+					<i class="fa fa-table"></i> My Files
 				</div>
-				<p class="mt-2">
-					<a class="text-white" th:href="'movie?id=' + ${movie.id}"
-						th:text="${movie.title}"></a>
-				</p>
-			</div>
-		</div> -->
-
-		<div class="row mt-4">
-			<div class="col-lg-2 col-md-2 col-sm-2 col-6 portfolio-item grow"
-				th:each="file:${files}">
-				<div class="border border-0">
-					<a href=""><img
-						class="card-img-top round sombra"
-						th:src="@{/img/pdf-icon.png}"
-						alt=""></a>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table row-border" id="dataTable" width="100%"
+							cellspacing="0">
+							<thead>
+								<tr>
+									<th>File Name</th>
+									<th>Owner</th>
+									<th>Creation Date</th>
+									<th>Last Update</th>
+									<th>Options</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="folder:${folders}">
+									<td><i class="fa fa-folder"
+										style="font-size: 24px; color: #7E8C95;"></i> <a class="ml-2"
+										th:text="${folder.name}"></a></td>
+									<td th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
+									<td th:text="${#dates.format(folder.creation, 'dd-MM-yyyy')}">Creation
+										Date</td>
+									<td th:text="${#dates.format(folder.lastUpdate, 'dd-MM-yyyy')}">Update
+										Date</td>
+									<td>
+										<div class="row">
+											<div class="col-4">
+												<a href="" th:value="${folder}"> <i class="fa fa-download"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+											<div class="col-4">
+												<a href="" th:value="${folder}"> <i class="fa fa-info"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr th:each="file:${files}">
+									<td><i class="fa fa-file-text"
+										style="font-size: 24px; color: #0079CA;"></i> <a class="ml-2"
+										th:text="${file.name}"></a></td>
+									<td th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
+									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation
+										Date</td>
+									<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update
+										Date</td>
+									<td>
+										<div class="row">
+											<div class="col-4">
+												<a class="" href="" th:value="${user}"> <i class="fa fa-download"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+											<div class="col-4">
+												<a class="" href="" th:value="${user}"> <i class="fa fa-info"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
-				<p class="mt-2">
-					<a class="" href=""
-						th:text="${file.name}"></a>
-				</p>
+				<div class="card-footer small text-muted"
+					th:text="'Updated ' + ${#dates.format(lastDate, 'dd-MM-yyyy')}">Last
+					Update</div>
 			</div>
 		</div>
 	</div>
@@ -82,14 +126,15 @@
 
 	<!-- Custom scripts for all pages-->
 	<script th:src="@{/js/sb-admin.min.js}"></script>
-	
+	<script th:src="@{/js/sb-admin-datatables.js}"></script>
+
 	<!-- Toggle between dark and light navbar-->
 	<script>
-	$('#toggleNavColor').click(function() {
-		$('nav').toggleClass('navbar-dark navbar-light');
-	    $('nav').toggleClass('bg-dark bg-light');
-	    $('body').toggleClass('bg-dark bg-light');
-	});
+		$('#toggleNavColor').click(function() {
+			$('nav').toggleClass('navbar-dark navbar-light');
+			$('nav').toggleClass('bg-dark bg-light');
+			$('body').toggleClass('bg-dark bg-light');
+		});
 	</script>
 </body>
 

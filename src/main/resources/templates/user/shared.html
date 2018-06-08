@@ -29,7 +29,84 @@
 	<th:block th:include="includes/navbar :: navbar"></th:block>
 
 	<div class="content-wrapper">
-		
+		<div class="container-fluid">
+			<!-- Breadcrumbs-->
+			<!-- <ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+				<li class="breadcrumb-item active">Tables</li>
+			</ol> -->
+			<!-- Example DataTables Card-->
+			<div class="card mb-3">
+				<div class="card-header">
+					<i class="fa fa-table"></i> My Files
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table row-border" id="dataTable" width="100%"
+							cellspacing="0">
+							<thead>
+								<tr>
+									<th>File Name</th>
+									<th>Owner</th>
+									<th>Creation Date</th>
+									<th>Last Update</th>
+									<th>Options</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="folder:${folders}">
+									<td><i class="fa fa-folder"
+										style="font-size: 24px; color: #7E8C95;"></i> <a class="ml-2"
+										th:text="${folder.name}"></a></td>
+									<td th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
+									<td th:text="${#dates.format(folder.creation, 'dd-MM-yyyy')}">Creation
+										Date</td>
+									<td th:text="${#dates.format(folder.lastUpdate, 'dd-MM-yyyy')}">Update
+										Date</td>
+									<td>
+										<div class="row">
+											<div class="col-4">
+												<a class="" href=""> <i class="fa fa-download"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+											<div class="col-4">
+												<a class="" href=""> <i class="fa fa-info"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr th:each="file:${files}">
+									<td><i class="fa fa-file-text"
+										style="font-size: 24px; color: #0079CA;"></i> <a class="ml-2"
+										th:text="${file.name}"></a></td>
+									<td th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
+									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation
+										Date</td>
+									<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update
+										Date</td>
+									<td>
+										<div class="row">
+											<div class="col-4">
+												<a class="" href=""> <i class="fa fa-download"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+											<div class="col-4">
+												<a class="" href=""> <i class="fa fa-info"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="card-footer small text-muted"
+					th:text="'Updated ' + ${#dates.format(lastDate, 'dd-MM-yyyy')}">Last
+					Update</div>
+			</div>
+		</div>
 	</div>
 
 	<!-- Footer -->
@@ -49,6 +126,7 @@
 
 	<!-- Custom scripts for all pages-->
 	<script th:src="@{/js/sb-admin.min.js}"></script>
+	<script th:src="@{/js/sb-admin-datatables.js}"></script>
 	
 	<!-- Toggle between dark and light navbar-->
 	<script>

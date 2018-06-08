@@ -4,9 +4,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -28,9 +31,6 @@ public class File {
 	@Column(name = "path")
 	private String path;
 
-	@Column(name = "img")
-	private String img;
-
 	@Column(name = "creation", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creation;
@@ -38,6 +38,10 @@ public class File {
 	@Column(name = "lastUpdate", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdate;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User owner;
 
 	@PrePersist
 	protected void onCreate() {
@@ -81,12 +85,11 @@ public class File {
 		return creation;
 	}
 
-	public String getImg() {
-		return img;
+	public User getOwner() {
+		return owner;
 	}
 
-	public void setImg(String img) {
-		this.img = img;
+	public void setOwner(User owner) {
+		this.owner = owner;
 	}
-
 }

@@ -12,12 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Transient;
 
 @Entity
@@ -30,38 +27,41 @@ public class User {
 	private int id;
 	
 	@Column(name = "email")
-	@Email
-	@NotEmpty
 	private String email;
 	
 	@Column(name = "password")
 	@Length(min = 5)
-	@NotEmpty
 	@Transient
 	private String password;
 	
 	@Column(name = "name")
-	@NotEmpty
 	private String name;
 	
 	@Column(name = "last_name")
-	@NotEmpty
 	private String lastName;
 	
 	@Column(name = "active")
 	private int active;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(name = "user_file", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "file_id"))
 	private Set<File> files;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(name = "user_folder", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "folder_id"))
-	private Set<File> folder;
+	private Set<Folder> folders;
+	
+	@ManyToMany(cascade = CascadeType.REMOVE)
+	@JoinTable(name = "sharedFiles", joinColumns = @JoinColumn(name = "file_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	private Set<File> sharedFiles;
+	
+	@ManyToMany(cascade = CascadeType.REMOVE)
+	@JoinTable(name = "sharedFolders", joinColumns = @JoinColumn(name = "folder_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	private Set<Folder> sharedFolders;
 
 	public int getId() {
 		return id;
@@ -127,14 +127,32 @@ public class User {
 		this.files = files;
 	}
 
-	public Set<File> getFolder() {
-		return folder;
+	public Set<Folder> getFolders() {
+		return folders;
 	}
 
-	public void setFolder(Set<File> folder) {
-		this.folder = folder;
+	public void setFolder(Set<Folder> folders) {
+		this.folders = folders;
 	}
 
-	
+	public Set<File> getSharedFiles() {
+		return sharedFiles;
+	}
+
+	public void setSharedFiles(Set<File> sharedFiles) {
+		this.sharedFiles = sharedFiles;
+	}
+
+	public Set<Folder> getSharedFolders() {
+		return sharedFolders;
+	}
+
+	public void setSharedFolders(Set<Folder> sharedFolders) {
+		this.sharedFolders = sharedFolders;
+	}
+
+	public void setFolders(Set<Folder> folders) {
+		this.folders = folders;
+	}
 
 }
