@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+</head>
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+	<div th:fragment="footer">
+		<footer class="sticky-footer">
+			<div class="container">
+				<div class="text-center">
+					<small>© 2018 DROTIUM - Todos los derechos reservados</small>
+					<small><a title="Privacidad y Legal" href="https://drotium.com/aviso-legal/">Privacidad y Legal</a></small>
+				</div>
+			</div>
+		</footer>
+		<!-- Scroll to Top Button-->
+		<a class="scroll-to-top rounded" href="#page-top"> <i
+			class="fa fa-angle-up"></i>
+		</a>
+		
+		<!-- Logout Modal-->
+		<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Ready to
+							Leave?</h5>
+						<button class="close" type="button" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" type="button"
+							data-dismiss="modal">Cancel</button>
+						<a class="btn btn-primary" th:href="@{/logout}">Logout</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Upload Modal -->
+		<!-- <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Upload Files</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <div class="file-loading">
+		          <input id="input-b7" name="input-b7[]" multiple type="file" class="file" data-allowed-file-extensions='["docx", "doc", "pdf"]'>
+		        </div>
+		        <div id="file-errors"></div>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <a class="btn btn-primary" th:href="@{/upload}">Upload</a>
+		      </div>
+		    </div>
+		  </div>
+		</div> -->
+		
+	</div>
+	
+	<!-- <script>
+	$("#input-b7").fileinput({
+	    showPreview: false,
+	    showUpload: false,
+	    elErrorContainer: '#file-errors'
+		//uploadUrl: '/site/file-upload-single'
+	});
+	</script> -->
+</body>
+
+</html>

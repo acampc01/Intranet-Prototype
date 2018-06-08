@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>Drotium Intranet</title>
+
+<!-- Bootstrap core CSS-->
+<link th:href="@{/libs/bootstrap/css/bootstrap.min.css}"
+	rel="stylesheet">
+<!-- Custom fonts for this template-->
+<link th:href="@{/libs/font-awesome/css/font-awesome.min.css}"
+	rel="stylesheet" type="text/css">
+<!-- Custom styles for this template-->
+<link th:href="@{/css/sb-admin.css}" rel="stylesheet">
+
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+
+	<!-- Navigation-->
+	<th:block th:include="includes/navbar :: navbar"></th:block>
+
+	<div class="content-wrapper">
+		<div class="m-3">
+			<form th:action="@{/user/upload}" method="POST" enctype="multipart/form-data" id="fileUploadForm" >
+			    <input type="file" name="file"/><br/><br/>
+			    <input type="submit" value="Submit" id="btnSubmit"/>
+			</form>
+			
+			<span th:utext="${successMessage}"></span>	
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<th:block th:include="includes/footer :: footer"></th:block>
+
+	<!-- Bootstrap core JavaScript-->
+	<script th:src="@{/libs/jquery/jquery.min.js}"></script>
+	<script th:src="@{/libs/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+	<!-- Core plugin JavaScript-->
+	<script th:src="@{/libs/jquery-easing/jquery.easing.min.js}"></script>
+
+	<!-- Custom scripts for all pages-->
+	<script th:src="@{/js/sb-admin.min.js}"></script>
+
+	<!-- Toggle between dark and light navbar-->
+	<script>
+		$('#toggleNavColor').click(function() {
+			$('nav').toggleClass('navbar-dark navbar-light');
+			$('nav').toggleClass('bg-dark bg-light');
+			$('body').toggleClass('bg-dark bg-light');
+		});
+	</script>
+	
+	<!--  <script th:src="@{/js/upload.js}"></script>  -->
+</body>
+
+</html>

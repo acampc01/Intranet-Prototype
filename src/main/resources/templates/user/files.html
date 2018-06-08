@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>Drotium Intranet</title>
+
+<!-- Bootstrap core CSS-->
+<link th:href="@{/libs/bootstrap/css/bootstrap.min.css}"
+	rel="stylesheet">
+<!-- Custom fonts for this template-->
+<link th:href="@{/libs/font-awesome/css/font-awesome.min.css}"
+	rel="stylesheet" type="text/css">
+<!-- Page level plugin CSS-->
+<link th:href="@{/libs/datatables/dataTables.bootstrap4.css}"
+	rel="stylesheet">
+<!-- Custom styles for this template-->
+<link th:href="@{/css/sb-admin.css}" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+
+	<!-- Navigation-->
+	<th:block th:include="includes/navbar :: navbar"></th:block>
+
+	<div class="content-wrapper">
+		<h1 class="my-4">My Files</h1>
+
+		<!-- <div class="row mt-4">
+			<div class="col-lg-3 col-md-4 col-sm-6 col-6 portfolio-item grow"
+				th:each="movie:${movies}">
+				<div class="border border-0">
+					<a th:href="'movie?id=' + ${movie.id}"><img
+						class="card-img-top round sombra"
+						th:src="@{https://image.tmdb.org/t/p/w342} + ${movie.poster_path}"
+						alt=""></a>
+					<p class="text-white score shadow" th:text="${movie.vote_average}"></p>
+				</div>
+				<p class="mt-2">
+					<a class="text-white" th:href="'movie?id=' + ${movie.id}"
+						th:text="${movie.title}"></a>
+				</p>
+			</div>
+		</div> -->
+
+		<div class="row mt-4">
+			<div class="col-lg-2 col-md-2 col-sm-2 col-6 portfolio-item grow"
+				th:each="file:${files}">
+				<div class="border border-0">
+					<a href=""><img
+						class="card-img-top round sombra"
+						th:src="@{/img/pdf-icon.png}"
+						alt=""></a>
+				</div>
+				<p class="mt-2">
+					<a class="" href=""
+						th:text="${file.name}"></a>
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<th:block th:include="includes/footer :: footer"></th:block>
+
+	<!-- Bootstrap core JavaScript-->
+	<script th:src="@{/libs/jquery/jquery.min.js}"></script>
+	<script th:src="@{/libs/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+	<!-- Core plugin JavaScript-->
+	<script th:src="@{/libs/jquery-easing/jquery.easing.min.js}"></script>
+
+	<!-- Page level plugin JavaScript-->
+	<script th:src="@{/libs/chart.js/Chart.min.js}"></script>
+	<script th:src="@{/libs/datatables/jquery.dataTables.js}"></script>
+	<script th:src="@{/libs/datatables/dataTables.bootstrap4.js}"></script>
+
+	<!-- Custom scripts for all pages-->
+	<script th:src="@{/js/sb-admin.min.js}"></script>
+	
+	<!-- Toggle between dark and light navbar-->
+	<script>
+	$('#toggleNavColor').click(function() {
+		$('nav').toggleClass('navbar-dark navbar-light');
+	    $('nav').toggleClass('bg-dark bg-light');
+	    $('body').toggleClass('bg-dark bg-light');
+	});
+	</script>
+</body>
+
+</html>
