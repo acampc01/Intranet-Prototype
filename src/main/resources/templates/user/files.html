@@ -6,6 +6,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 <meta name="description" content="">
 <meta name="author" content="">
 <title>Drotium Intranet</title>
@@ -30,12 +33,6 @@
 
 	<div class="content-wrapper">
 		<div class="container-fluid">
-			<!-- Breadcrumbs-->
-			<!-- <ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-				<li class="breadcrumb-item active">Tables</li>
-			</ol> -->
-			<!-- Example DataTables Card-->
 			<div class="card mb-3">
 				<div class="card-header">
 					<i class="fa fa-table"></i> My Files
@@ -58,7 +55,8 @@
 									<td><i class="fa fa-folder"
 										style="font-size: 24px; color: #7E8C95;"></i> <a class="ml-2"
 										th:text="${folder.name}"></a></td>
-									<td th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
+									<td
+										th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
 									<td th:text="${#dates.format(folder.creation, 'dd-MM-yyyy')}">Creation
 										Date</td>
 									<td th:text="${#dates.format(folder.lastUpdate, 'dd-MM-yyyy')}">Update
@@ -66,7 +64,8 @@
 									<td>
 										<div class="row">
 											<div class="col-4">
-												<a href="" th:value="${folder}"> <i class="fa fa-download"
+												<a href="" th:value="${folder}"> <i
+													class="fa fa-download"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
@@ -80,7 +79,8 @@
 									<td><i class="fa fa-file-text"
 										style="font-size: 24px; color: #0079CA;"></i> <a class="ml-2"
 										th:text="${file.name}"></a></td>
-									<td th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
+									<td
+										th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
 									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation
 										Date</td>
 									<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update
@@ -88,12 +88,13 @@
 									<td>
 										<div class="row">
 											<div class="col-4">
-												<a class="" href="" th:value="${user}"> <i class="fa fa-download"
+												<a class="" href="" th:value="${user}"> <i
+													class="fa fa-download"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a class="" href="" th:value="${user}"> <i class="fa fa-info"
-													style="font-size: 24px; color: black"></i></a>
+												<a class="" href="" th:value="${user}"> <i
+													class="fa fa-info" style="font-size: 24px; color: black"></i></a>
 											</div>
 										</div>
 									</td>
@@ -127,6 +128,7 @@
 	<!-- Custom scripts for all pages-->
 	<script th:src="@{/js/sb-admin.min.js}"></script>
 	<script th:src="@{/js/sb-admin-datatables.js}"></script>
+	<script th:src="@{/js/upload.js}"></script>
 
 	<!-- Toggle between dark and light navbar-->
 	<script>

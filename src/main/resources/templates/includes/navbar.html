@@ -1,87 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Navigation-->
+<div th:fragment="navbar">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
+		id="mainNav">
+		<a class="navbar-brand" th:href="@{/user/files}">Intranet</a>
+		<button class="navbar-toggler navbar-toggler-right" type="button"
+			data-toggle="collapse" data-target="#navbarResponsive"
+			aria-controls="navbarResponsive" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+				<li class="nav-item" data-toggle="tooltip" data-placement="right"
+					title="Files"><a class="nav-link text-white"
+					th:href="@{/user/files}"> <i class="fa fa-fw fa-folder"></i> <span
+						class="nav-link-text">My Files</span>
+				</a></li>
+				<!-- <li class="nav-item" data-toggle="tooltip" data-placement="right"
+					title="Menu Levels"><a
+					class="nav-link nav-link-collapse collapsed" data-toggle="collapse"
+					href="#collapseMulti" data-parent="#exampleAccordion"> <i
+						class="fa fa-fw fa-sitemap"></i> <span class="nav-link-text">Options</span></a>
+					<ul class="sidenav-second-level collapse" id="collapseMulti">
+						<li class="nav-item"><a class="nav-link" data-toggle="modal"
+							data-target="#folderModal"><i class="fa fa-fw fa-sign-out"></i>
+								New Folder </a></li>
+						<li class="nav-item"><a class="nav-link" data-toggle="modal"
+							data-target="#uploadFile"> <i class="fa fa-fw fa-sign-out"></i>Upload
+								Files
+						</a></li>
+						<li class="nav-item"><a class="nav-link" data-toggle="modal"
+							data-target="#uploadFolder"> <i class="fa fa-fw fa-sign-out"></i>Upload
+								Folder
+						</a></li>
+					</ul></li> -->
+				<li class="nav-item" data-toggle="tooltip" data-placement="right"
+					title="Tables"><a class="nav-link text-white"
+					th:href="@{/user/shared}"> <i class="fa fa-fw fa-share-alt"></i>
+						<span class="nav-link-text">Shared With Me</span>
+				</a></li>
+			</ul>
+			<ul class="navbar-nav sidenav-toggler">
+				<li class="nav-item"><a class="nav-link text-center"
+					id="sidenavToggler"> <i class="fa fa-fw fa-angle-left"></i>
+				</a></li>
+			</ul>
+			<!-- TOP NAVBAR -->
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<div class="dropdown">
+						<button type="button"
+							class="btn btn-outline-light dropdown-toggle"
+							data-toggle="dropdown">Options</button>
+						<div class="dropdown-menu">
+							<h5 class="dropdown-header">Create</h5>
+							<a class="dropdown-item" href="#" data-toggle="modal"
+								data-target="#folderModal">New Folder</a>
+							<div class="dropdown-divider"></div>
+							<h5 class="dropdown-header">Upload</h5>
+							
+							<!-- For Files -->
+							<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
+								<input id="uploadFiles" style="display:none;" type="file" name="files" multiple/>
+								<a class="dropdown-item" href="" id="upload_files">Files</a>
+							</form>
+							
+							<!-- For Folder -->
+							<a class="dropdown-item" href="">Folder</a>
+						</div>
+					</div>
+				</li>
+				<!-- <li class="nav-item"><a class="nav-link" id="toggleNavColor">
+						<i class="fa fa-fw fa fa-adjust"></i>Toggle
+				</a></li> -->
+				<li class="nav-item"><a class="nav-link text-white"
+					data-toggle="modal" data-target="#logoutModal"> <i
+						class="fa fa-fw fa-sign-out"></i>Logout
+				</a></li>
+			</ul>
+		</div>
+	</nav>
 
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="">
-<meta name="author" content="">
-<!-- Bootstrap core CSS-->
-<link th:href="@{/libs/bootstrap/css/bootstrap.min.css}"
-	rel="stylesheet">
-<!-- Custom fonts for this template-->
-<link th:href="@{/libs/font-awesome/css/font-awesome.min.css}"
-	rel="stylesheet" type="text/css">
-<!-- Custom styles for this template-->
-<link th:href="@{/css/sb-admin.css}" rel="stylesheet">
-</head>
-<body class="fixed-nav sticky-footer bg-dark" id="page-top">
-
-	<!-- Navigation-->
-	<div th:fragment="navbar">
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
-			id="mainNav">
-			<a class="navbar-brand" th:href="@{/user/files}">Intranet</a>
-			<button class="navbar-toggler navbar-toggler-right" type="button"
-				data-toggle="collapse" data-target="#navbarResponsive"
-				aria-controls="navbarResponsive" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarResponsive">
-				<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
-					<li class="nav-item" data-toggle="tooltip" data-placement="right"
-						title="Files"><a class="nav-link" th:href="@{/user/files}">
-							<i class="fa fa-fw fa-folder"></i> <span class="nav-link-text">My
-								Files</span>
-					</a></li>
-					<li class="nav-item" data-toggle="tooltip" data-placement="right"
-						title="Menu Levels"><a
-						class="nav-link nav-link-collapse collapsed"
-						data-toggle="collapse" href="#collapseMulti"
-						data-parent="#exampleAccordion"> <i
-							class="fa fa-fw fa-sitemap"></i> <span class="nav-link-text">My
-								Folders</span>
-					</a>
-						<ul class="sidenav-second-level collapse" id="collapseMulti">
-							<li th:each="folder:${folders}"><a href="" th:text="${folder.name}"></a></li>
-						</ul></li>
-					<li class="nav-item" data-toggle="tooltip" data-placement="right"
-						title="Tables"><a class="nav-link" th:href="@{/user/shared}">
-							<i class="fa fa-fw fa-share-alt"></i> <span class="nav-link-text">Shared
-								With Me</span>
-					</a></li>
-				</ul>
-				<ul class="navbar-nav sidenav-toggler">
-					<li class="nav-item"><a class="nav-link text-center"
-						id="sidenavToggler"> <i class="fa fa-fw fa-angle-left"></i>
-					</a></li>
-				</ul>
-				<!-- TOP NAVBAR -->
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item"><a class="nav-link" id="toggleNavColor">
-							<i class="fa fa-fw fa fa-adjust"></i>Toggle
-					</a></li>
-					<li class="nav-item"><a class="nav-link"
-						th:href="@{/user/upload}"> <i
-							class="fa fa-fw fa fa-cloud-upload"></i>Upload
-					</a></li>
-					<li class="nav-item"><a class="nav-link" data-toggle="modal"
-						data-target="#logoutModal"> <i class="fa fa-fw fa-sign-out"></i>Logout
-					</a></li>
-				</ul>
+	<!-- Logout Modal-->
+	<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button"
+						data-dismiss="modal">Cancel</button>
+					<a class="btn btn-primary" th:href="@{/logout}">Logout</a>
+				</div>
 			</div>
-		</nav>
+		</div>
 	</div>
 
-	<!-- Bootstrap core JavaScript-->
-	<script th:src="@{/libs/jquery/jquery.min.js}"></script>
-	<script th:src="@{/libs/bootstrap/js/bootstrap.bundle.min.js}"></script>
-	<!-- Core plugin JavaScript-->
-	<script th:src="@{/libs/jquery-easing/jquery.easing.min.js}"></script>
-	<!-- Custom scripts for all pages-->
-	<script th:src="@{/js/sb-admin.min.js}"></script>
-</body>
-</html>
+	<!-- Create Folder -->
+	<div class="modal fade" id="folderModal" tabindex="-1" role="dialog"
+		aria-labelledby="folderModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<form id="createFolder" method="POST">
+					<div class="modal-header">
+						<input type="text" id="nameNewFolder" name="name" value=""
+							placeholder="Folder Name" class="form-control form-control-sm"
+							required>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" type="button"
+							data-dismiss="modal">Cancel</button>
+						<button class="btn btn-primary" id="newFolderBtn" type="Submit">Create</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
