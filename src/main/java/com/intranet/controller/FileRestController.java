@@ -24,7 +24,6 @@ public class FileRestController {
    @SuppressWarnings("rawtypes")
    @PostMapping("/user/upload/files")
    public ResponseEntity<?> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles) {
-
 	   String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
                .filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
 

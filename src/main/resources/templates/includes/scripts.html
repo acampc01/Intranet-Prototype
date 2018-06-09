@@ -1,0 +1,29 @@
+<div th:fragment="scripts">
+	<!-- Bootstrap core JavaScript-->
+	<script th:src="@{/libs/jquery/jquery.min.js}"></script>
+	<script th:src="@{/libs/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+	<!-- Core plugin JavaScript-->
+	<script th:src="@{/libs/jquery-easing/jquery.easing.min.js}"></script>
+
+	<!-- Page level plugin JavaScript-->
+	<script th:src="@{/libs/chart.js/Chart.min.js}"></script>
+	<script th:src="@{/libs/datatables/jquery.dataTables.js}"></script>
+	<script th:src="@{/libs/datatables/dataTables.bootstrap4.js}"></script>
+
+	<!-- Custom scripts for all pages-->
+	<script th:src="@{/js/sb-admin.min.js}"></script>
+	<script th:src="@{/js/sb-admin-datatables.js}"></script>
+	<script th:src="@{/js/alertify/alertify.min.js}"></script>
+	<script th:src="@{/js/upload.js}"></script>
+	
+
+	<!-- Toggle between dark and light navbar-->
+	<script>
+		$('#toggleNavColor').click(function() {
+			$('nav').toggleClass('navbar-dark navbar-light');
+			$('nav').toggleClass('bg-dark bg-light');
+			$('body').toggleClass('bg-dark bg-light');
+		});
+	</script>
+</div>
