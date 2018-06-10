@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Register Drotium Intranet">
+<meta name="author" content="Drotium">
+
+<title>Intranet Log In</title>
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+	crossorigin="anonymous">
+
+<!-- Custom styles for this template -->
+<link type="text/css" th:href="@{/css/login.css}" rel="stylesheet">
+</head>
+
+<body>
+
+	<div class="container">
+		<form th:action="@{/register}" th:object="${user}" method="post" class="form-signin">
+			<div class="text-center mb-4">
+				<h2 class="h3 mb-3 font-weight-normal">Intranet Register</h2>
+			</div>
+
+			<div class="form-label-group">
+				<input type="text" id="name" name="name" th:field="*{name}" th:placeholder="Name" class="form-control" autocomplete="off" required autofocus/>
+				<label for="name">Name</label>
+				<label th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="validation-message"></label> 
+			</div>
+
+			<div class="form-label-group">
+				<input type="text" th:field="*{lastName}" placeholder="Last Name" id="lastName" name="lastName" class="form-control" required/>
+				<label for="lastName">Last Name</label>
+				<label th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="validation-message"></label>
+			</div>
+
+			<div class="form-label-group">
+				<input type="text" th:field="*{email}" placeholder="Email" id="email" name="email" class="form-control" required/>
+				<label for="email">Email</label>
+				<label th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="validation-message"></label>
+			</div>
+
+			<div class="form-label-group">
+				<input type="password" th:field="*{password}" th:placeholder="Password" id="password" name="password" class="form-control" /> 
+				<label for="password">Password</label>
+				<label for="password" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="validation-message"></label>
+			</div>
+			
+			<div class="form-label-group">
+				<input type="password" placeholder="Confirm Password" id="confirmPassword" name="confirmPassword" class="form-control" /> 
+				<label for="confirmPassword">Confirm Password</label>
+				<label for="confirmPassword" class="validation-message"></label>
+			</div>
+
+			<div class="form-label-group">
+				<button type="submit" class="btn btn-primary btn-block">Register
+					User</button>
+			</div>
+
+			<div class="text-center mb-4">
+				<span class="text-center" th:utext="${successMessage}"></span>
+			</div>
+
+			<p class="mt-5 mb-3 text-muted text-center">&copy; Drotium
+				2018-2019</p>
+		</form>
+	</div>
+	</div>
+
+	<!-- Bootstrap core JavaScript -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+		integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+		integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+		crossorigin="anonymous"></script>
+</body>
+</html>
+
+<!-- <body>
+	<form th:action="@{/}" method="get">
+		<button class="btn btn-md btn-warning btn-block" type="Submit">Login</button>
+	</form>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<form autocomplete="off" th:action="@{/registration}"
+					th:object="${user}" method="post" class="form-horizontal"
+					role="form">
+					<h2>Registration Form</h2>
+					<div class="form-group">
+						<div class="col-sm-9">
+							<label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+								class="validation-message"></label> <input type="text"
+								th:field="*{name}" placeholder="Name" class="form-control" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-9">
+							<label th:if="${#fields.hasErrors('lastName')}"
+								th:errors="*{lastName}" class="validation-message"></label> <input
+								type="text" th:field="*{lastName}" placeholder="Last Name"
+								class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-9">
+							<input type="text" th:field="*{email}" placeholder="Email"
+								class="form-control" /> <label
+								th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+								class="validation-message"></label>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-9">
+							<input type="password" th:field="*{password}"
+								placeholder="Password" class="form-control" /> <label
+								th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+								class="validation-message"></label>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-9">
+							<button type="submit" class="btn btn-primary btn-block">Register
+								User</button>
+						</div>
+					</div>
+
+					<span th:utext="${successMessage}"></span>
+				</form>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html> -->
