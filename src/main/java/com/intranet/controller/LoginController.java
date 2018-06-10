@@ -46,15 +46,12 @@ public class LoginController {
 		ModelAndView modelAndView = new ModelAndView();
 		User userExists = userService.findUserByEmail(user.getEmail());
 		if (userExists != null) {
-			bindingResult
-			.rejectValue("email", "error.user",
-					"There is already a user registered with the email provided");
-		}
-		if (bindingResult.hasErrors()) {
+			modelAndView.addObject("successMessage", "There is a user with the same email.");
 			modelAndView.setViewName("register");
-		} else {
+			return modelAndView;
+		}else {
 			userService.save(user);
-			modelAndView.addObject("successMessage", "User has been registered successfully");
+			modelAndView.addObject("successMessage", "User has been registered successfully.");
 			modelAndView.addObject("user", new User());
 			modelAndView.setViewName("register");
 		}

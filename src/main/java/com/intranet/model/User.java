@@ -6,15 +6,16 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Transient;
 
 @Entity
@@ -30,7 +31,6 @@ public class User {
 	private String email;
 	
 	@Column(name = "password")
-	@Length(min = 5)
 	@Transient
 	private String password;
 	
@@ -43,23 +43,27 @@ public class User {
 	@Column(name = "active")
 	private int active;
 	
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "folder_id")
+	private Folder root;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
 	
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_file", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "file_id"))
 	private Set<File> files;
 	
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_folder", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "folder_id"))
 	private Set<Folder> folders;
 	
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "sharedFiles", joinColumns = @JoinColumn(name = "file_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<File> sharedFiles;
 	
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "sharedFolders", joinColumns = @JoinColumn(name = "folder_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<Folder> sharedFolders;
 
@@ -153,6 +157,14 @@ public class User {
 
 	public void setFolders(Set<Folder> folders) {
 		this.folders = folders;
+	}
+
+	public Folder getRoot() {
+		return root;
+	}
+
+	public void setRoot(Folder root) {
+		this.root = root;
 	}
 
 }

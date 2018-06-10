@@ -49,6 +49,13 @@ $(document).ready(function () {
 					$("#nameNewFolder").val('');
 					$('#folderModal').modal('toggle');
 					alertify.success('Folder Created!');
+					$.ajax({
+						type: "GET",
+						url: "/refreshFolders",
+						success: function (data){
+							$("#tablaFolders").load("refreshFolders");
+						}
+					});
 				},
 				error: function (e) {}
 			});

@@ -1,7 +1,6 @@
 package com.intranet.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.intranet.model.Folder;
@@ -13,12 +12,12 @@ public class FolderServiceImpl implements FolderService{
 	@Autowired
 	private FolderRepository folderRepository;
 	
-	@Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+//	@Autowired
+//    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	public void save(Folder folder) {
-		folder.setPath(bCryptPasswordEncoder.encode(folder.getPath()));
+		//folder.setPath(bCryptPasswordEncoder.encode(folder.getPath()));
 		folderRepository.save(folder);
 	}
 

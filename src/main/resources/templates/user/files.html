@@ -40,7 +40,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="folder:${folders}">
+								<tr id="tablaFolders" th:each="folder:${folders}">
 									<td><i class="fa fa-folder"
 										style="font-size: 24px; color: #7E8C95;"></i> <a class="ml-2"
 										th:text="${folder.name}"></a></td>

@@ -6,8 +6,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class DemoApplication {
 
+	private final static String UPLOADED_FOLDER = "E://temp//";
+	
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
+	}
+	
+	public static String getFolderPath() {
+		return UPLOADED_FOLDER;
 	}
 	
 }

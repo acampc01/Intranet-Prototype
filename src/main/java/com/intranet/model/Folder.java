@@ -47,9 +47,13 @@ public class Folder {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User owner;
 
-	@OneToMany(cascade = CascadeType.REMOVE)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "folder_file", joinColumns = @JoinColumn(name = "folder_id"), inverseJoinColumns = @JoinColumn(name = "file_id"))
 	private Set<File> files;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "folder_folder", joinColumns = @JoinColumn(name = "folder_id"), inverseJoinColumns = @JoinColumn(name = "id_folder"))
+	private Set<Folder> folders;
 	
 	@PrePersist
 	protected void onCreate() {
@@ -111,6 +115,14 @@ public class Folder {
 
 	public void setOwner(User owner) {
 		this.owner = owner;
+	}
+
+	public Set<Folder> getFolders() {
+		return folders;
+	}
+
+	public void setFolders(Set<Folder> folders) {
+		this.folders = folders;
 	}
 	
 }

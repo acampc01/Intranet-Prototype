@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.intranet.DemoApplication;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,39 +21,39 @@ import java.util.stream.Collectors;
 @RestController
 public class FileRestController {
 
-   private static String UPLOADED_FOLDER = "E://temp//";
+	private final static String UPLOADED_FOLDER = DemoApplication.getFolderPath();
 
-   @SuppressWarnings("rawtypes")
-   @PostMapping("/user/upload/files")
-   public ResponseEntity<?> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles) {
-	   String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
-               .filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
+	@SuppressWarnings("rawtypes")
+	@PostMapping("/user/upload/files")
+	public ResponseEntity<?> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles) {
+		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
+				.filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
 
-       if (StringUtils.isEmpty(uploadedFileName)) {
-           return new ResponseEntity(HttpStatus.OK);
-       }
+		if (StringUtils.isEmpty(uploadedFileName)) {
+			return new ResponseEntity(HttpStatus.OK);
+		}
 
-       try {
+		try {
 
-           saveUploadedFiles(Arrays.asList(uploadfiles));
+			saveUploadedFiles(Arrays.asList(uploadfiles));
 
-       } catch (IOException e) {
-           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-       }
+		} catch (IOException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 
-       return new ResponseEntity(HttpStatus.OK);
-   }
+		return new ResponseEntity(HttpStatus.OK);
+	}
 
 
-    private void saveUploadedFiles(List<MultipartFile> files) throws IOException {
-        for (MultipartFile file : files) {
-            if (file.isEmpty()) {
-                continue;
-            }
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
-            Files.write(path, bytes);
-        }
-    }
-	
+	private void saveUploadedFiles(List<MultipartFile> files) throws IOException {
+		for (MultipartFile file : files) {
+			if (file.isEmpty()) {
+				continue;
+			}
+			byte[] bytes = file.getBytes();
+			Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
+			Files.write(path, bytes);
+		}
+	}
+
 }
