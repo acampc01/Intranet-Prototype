@@ -52,14 +52,6 @@ public class User {
 	private Set<Role> roles;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "user_file", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "file_id"))
-	private Set<File> files;
-	
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "user_folder", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "folder_id"))
-	private Set<Folder> folders;
-	
-	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "sharedFiles", joinColumns = @JoinColumn(name = "file_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<File> sharedFiles;
 	
@@ -123,22 +115,6 @@ public class User {
 		this.roles = roles;
 	}
 
-	public Set<File> getFiles() {
-		return files;
-	}
-
-	public void setFiles(Set<File> files) {
-		this.files = files;
-	}
-
-	public Set<Folder> getFolders() {
-		return folders;
-	}
-
-	public void setFolder(Set<Folder> folders) {
-		this.folders = folders;
-	}
-
 	public Set<File> getSharedFiles() {
 		return sharedFiles;
 	}
@@ -153,10 +129,6 @@ public class User {
 
 	public void setSharedFolders(Set<Folder> sharedFolders) {
 		this.sharedFolders = sharedFolders;
-	}
-
-	public void setFolders(Set<Folder> folders) {
-		this.folders = folders;
 	}
 
 	public Folder getRoot() {

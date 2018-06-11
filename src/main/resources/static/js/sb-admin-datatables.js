@@ -1,6 +1,9 @@
 $(document).ready(function() {
   $('#dataTable').DataTable(
 	{
+		"language": {
+		      "emptyTable": "Oops, there are no files to show you."
+		},
 		"order": [],
 //		"order": [[ 3, "desc" ]],
 		"columnDefs": [

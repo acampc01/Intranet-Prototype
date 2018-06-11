@@ -25,4 +25,9 @@ public class FolderServiceImpl implements FolderService{
 	public void update(Folder folder) {
 		folderRepository.save(folder);
 	}
+
+	@Override
+	public Folder findById(Integer id) {
+		return folderRepository.getOne(id);
+	}
 }

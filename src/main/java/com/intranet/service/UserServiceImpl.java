@@ -49,21 +49,22 @@ public class UserServiceImpl implements UserService{
 			roleRepository.save(role);
 		}
 		user.setRoles(new HashSet<Role>(Arrays.asList(role)));	
-		userRepository.save(user);
-		
+
 		String path = UPLOADED_FOLDER + user.getEmail().split("@")[0];
 		java.io.File f = new java.io.File(path);
-		if(!f.exists())
+		if(!f.exists()) {
+			userRepository.save(user);
 			f.mkdirs();
-		
-		Folder folder = new Folder();
-		folder.setName(user.getEmail().split("@")[0]);
-		folder.setOwner(user);
-		folder.setPath(path);
-		folderRepository.save(folder);
 
-		user.setRoot(folder);
-		userRepository.save(user);
+			Folder folder = new Folder();
+			folder.setName(user.getEmail().split("@")[0]);
+			folder.setOwner(user);
+			folder.setPath(path);
+			folderRepository.save(folder);
+
+			user.setRoot(folder);
+			userRepository.save(user);
+		}
 	}
 
 	@Override

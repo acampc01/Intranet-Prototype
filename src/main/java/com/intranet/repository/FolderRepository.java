@@ -7,5 +7,5 @@ import com.intranet.model.Folder;
 
 @Repository("folderRepository")
 public interface FolderRepository extends JpaRepository<Folder, Integer>{
-	
+	Folder getOne(Integer id);
 }

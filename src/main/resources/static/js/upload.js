@@ -8,11 +8,12 @@ $(document).ready(function () {
 	$("#uploadFiles").on('change', function(){
 		var token = $("meta[name='_csrf']").attr("content");
 		var header = $("meta[name='_csrf_header']").attr("content");
-
+		var root = $("#folder").val();
+		
 		$.ajax({
 			type: "POST",
 			enctype: 'multipart/form-data',
-			url: "/user/upload/files",
+			url: "/user/upload/files/".concat(root),
 			data: new FormData($('#fileUploadForm')[0]),
 			cache: false,
 			contentType: false,
@@ -24,6 +25,9 @@ $(document).ready(function () {
 			timeout: 600000,
 			success: function (data) {
 				alertify.success('Files Uploaded!');
+				setTimeout(function(){
+					location.reload();
+			    }, 1000);
 			},
 			error: function (e) {}
 		});
@@ -35,10 +39,11 @@ $(document).ready(function () {
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-
+			var root = $("#folder").val();
+			
 			$.ajax({
 				type: "POST",
-				url: "/user/create/folder",
+				url: "/user/create/folder/".concat(root),
 				data: $("#nameNewFolder").val(),
 				contentType: "text/plain",
 				beforeSend: function(xhr) {
@@ -49,13 +54,10 @@ $(document).ready(function () {
 					$("#nameNewFolder").val('');
 					$('#folderModal').modal('toggle');
 					alertify.success('Folder Created!');
-					$.ajax({
-						type: "GET",
-						url: "/refreshFolders",
-						success: function (data){
-							$("#tablaFolders").load("refreshFolders");
-						}
-					});
+					setTimeout(function(){
+						location.reload();
+				    }, 1000);
+					
 				},
 				error: function (e) {}
 			});
