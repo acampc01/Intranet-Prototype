@@ -3,6 +3,8 @@ package com.intranet.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,11 +12,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.intranet.model.File;
 import com.intranet.model.Folder;
+import com.intranet.model.User;
+import com.intranet.service.FileService;
 import com.intranet.service.FolderService;
+import com.intranet.service.UserService;
+
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +28,12 @@ import java.util.stream.Collectors;
 
 @RestController
 public class FileRestController {
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private FileService fileService;
 	
 	@Autowired
 	private FolderService folderService;
@@ -48,17 +60,26 @@ public class FileRestController {
 
 	private void saveUploadedFiles(List<MultipartFile> files, int id) throws IOException {
 		Folder folder = folderService.findById(id);
-		
-		System.out.println(folder.getName());
-		System.out.println(folder.getPath());
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
 		
 		for (MultipartFile file : files) {
 			if (file.isEmpty()) {
 				continue;
 			}
-			byte[] bytes = file.getBytes();
-			Path path = Paths.get(folder.getPath() + "//" + file.getOriginalFilename());
-			Files.write(path, bytes);
+			
+			File f = new File();
+			f.setName(file.getOriginalFilename());
+			f.setPath(folder.getPath() + "//" + file.getOriginalFilename());
+			f.setOwner(user);
+			fileService.save(f);
+			
+			if(fileService.findByPath(f.getPath()) != null) {
+				folder.getFiles().add(f);
+				folderService.update(folder);
+			}
+			
+			Files.write(Paths.get(f.getPath()), file.getBytes());
 		}
 	}
 

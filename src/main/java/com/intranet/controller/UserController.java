@@ -32,36 +32,9 @@ public class UserController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 		ModelAndView modelAndView = new ModelAndView(new RedirectView("/user/files/" + user.getRoot().getId() , true));
-		
-		/*
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		User user = userService.findUserByEmail(auth.getName());
-		modelAndView.addObject("user", user);
-		modelAndView.addObject("root", user.getRoot());
-		modelAndView.addObject("files", user.getRoot().getFiles());
-		modelAndView.addObject("folders", user.getRoot().getFolders());
-
-		Date last = new Date(0);
-		for (File file : user.getRoot().getFiles()) {
-			if(file.getLastUpdate().after(last))
-				last = file.getLastUpdate();
-		}
-		for (Folder folder : user.getRoot().getFolders()) {
-			if(folder.getLastUpdate().after(last))
-				last = folder.getLastUpdate();
-		}
-
-		if( !last.equals(new Date(0)) )
-			modelAndView.addObject("lastDate", last);
-		else
-			modelAndView.addObject("lastDate", new Date());
-
-		modelAndView.setViewName("user/files");
-		*/
-		
 		return modelAndView;
 	}
-	
+
 	@RequestMapping(value = "/user/files/{id_folder}", method = RequestMethod.GET)
 	public ModelAndView getFolderFiles(@PathVariable("id_folder") Integer id) {
 		Folder folder = folderService.findById(id);
@@ -119,5 +92,31 @@ public class UserController {
 		modelAndView.setViewName("user/shared");
 		return modelAndView;
 	}
-
 }
+
+
+/*
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		modelAndView.addObject("user", user);
+		modelAndView.addObject("root", user.getRoot());
+		modelAndView.addObject("files", user.getRoot().getFiles());
+		modelAndView.addObject("folders", user.getRoot().getFolders());
+
+		Date last = new Date(0);
+		for (File file : user.getRoot().getFiles()) {
+			if(file.getLastUpdate().after(last))
+				last = file.getLastUpdate();
+		}
+		for (Folder folder : user.getRoot().getFolders()) {
+			if(folder.getLastUpdate().after(last))
+				last = folder.getLastUpdate();
+		}
+
+		if( !last.equals(new Date(0)) )
+			modelAndView.addObject("lastDate", last);
+		else
+			modelAndView.addObject("lastDate", new Date());
+
+		modelAndView.setViewName("user/files");
+ */

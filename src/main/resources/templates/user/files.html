@@ -25,10 +25,10 @@
 			<div class="card mb-3">
 				<div class="card-header">
 					<i class="fa fa-table"></i>
-					<div th:switch="${root.name}" th:remove="tag"> 
-  						<span th:case="${user.root.name}">My Files</span>
- 	 					<span th:case="*" th:text="${root.name}"></span>
- 	 				</div>
+					<div th:switch="${root.name}" th:remove="tag">
+						<span th:case="${user.root.name}">My Files</span> <span
+							th:case="*" th:text="${root.name}"></span>
+					</div>
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
@@ -46,12 +46,11 @@
 							<tbody>
 
 								<tr id="tablaFolders" th:each="folder:${folders}">
-									<td>
-										<a class="btn" th:href="@{/user/files/} + ${folder.id}">
-											<i class="fa fa-folder" style="font-size: 24px; color: #7E8C95;"></i>
-											<span class="ml-2" th:text="${folder.name}"></span>
-										</a>
-									</td>
+									<td><i class="fa fa-folder"
+										style="font-size: 24px; color: #7E8C95;"></i> <a class="ml-2"
+										th:text="${folder.name}"
+										th:href="@{/user/files/} + ${folder.id}"
+										style="text-decoration: none;"></a></td>
 									<td
 										th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
 									<td th:text="${#dates.format(folder.creation, 'dd-MM-yyyy')}">Creation

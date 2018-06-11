@@ -7,5 +7,5 @@ import com.intranet.model.File;
 
 @Repository("fileRepository")
 public interface FileRepository extends JpaRepository<File, Integer>{
-	
+	File findByPath(String path);
 }
