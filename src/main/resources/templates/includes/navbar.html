@@ -13,27 +13,10 @@
 			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
 				<li class="nav-item" data-toggle="tooltip" data-placement="right"
 					title="Files"><a class="nav-link text-white"
-					th:href="@{/user/files/} + ${user.root.id}"> <i class="fa fa-fw fa-folder"></i> <span
-						class="nav-link-text">My Files</span>
+					th:href="@{/user/files/} + ${user.root.id}"> <i
+						class="fa fa-fw fa-folder"></i> <span class="nav-link-text">My
+							Files</span>
 				</a></li>
-				<!-- <li class="nav-item" data-toggle="tooltip" data-placement="right"
-					title="Menu Levels"><a
-					class="nav-link nav-link-collapse collapsed" data-toggle="collapse"
-					href="#collapseMulti" data-parent="#exampleAccordion"> <i
-						class="fa fa-fw fa-sitemap"></i> <span class="nav-link-text">Options</span></a>
-					<ul class="sidenav-second-level collapse" id="collapseMulti">
-						<li class="nav-item"><a class="nav-link" data-toggle="modal"
-							data-target="#folderModal"><i class="fa fa-fw fa-sign-out"></i>
-								New Folder </a></li>
-						<li class="nav-item"><a class="nav-link" data-toggle="modal"
-							data-target="#uploadFile"> <i class="fa fa-fw fa-sign-out"></i>Upload
-								Files
-						</a></li>
-						<li class="nav-item"><a class="nav-link" data-toggle="modal"
-							data-target="#uploadFolder"> <i class="fa fa-fw fa-sign-out"></i>Upload
-								Folder
-						</a></li>
-					</ul></li> -->
 				<li class="nav-item" data-toggle="tooltip" data-placement="right"
 					title="Tables"><a class="nav-link text-white"
 					th:href="@{/user/shared}"> <i class="fa fa-fw fa-share-alt"></i>
@@ -47,14 +30,26 @@
 			</ul>
 			<!-- TOP NAVBAR -->
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link  text-white">
-						<i class="fa fa-fw fa fa-user"></i>
-						<span th:text="${user.name}" th:remove="tag">Usuario</span>
+				<li class="nav-item">
+					<form class="navbar-form mr-3" role="search">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Search">
+							<div class="input-group-btn">
+								<button class="btn btn-outline-light ml-1" type="submit">
+									<i class="fa fa-search" aria-hidden="true"></i>
+								</button>
+							</div>
+						</div>
+					</form>
+				</li>
+				<li class="nav-item"><a class="nav-link  text-white"> <i
+						class="fa fa-fw fa fa-user"></i> <span th:text="${user.name}"
+						th:remove="tag">Usuario</span>
 				</a></li>
 				<!-- <li class="nav-item"><a class="nav-link" id="toggleNavColor">
 						<i class="fa fa-fw fa fa-adjust"></i>Toggle
 				</a></li> -->
-				<li class="nav-item ml-1">
+				<li th:if="${root != null}" class="nav-item ml-1">
 					<div class="dropdown">
 						<button type="button"
 							class="btn btn-outline-light dropdown-toggle"
@@ -65,22 +60,25 @@
 								data-target="#folderModal">New Folder</a>
 							<div class="dropdown-divider"></div>
 							<h5 class="dropdown-header">Upload</h5>
-							
+
 							<!-- For Files -->
-							<form method="POST" enctype="multipart/form-data" id="fileUploadForm">
-								<input id="uploadFiles" style="display:none;" type="file" name="files" multiple/>
-								<a class="dropdown-item" href="" id="upload_files">Files</a>
+							<form method="POST" enctype="multipart/form-data"
+								id="fileUploadForm">
+								<input id="uploadFiles" style="display: none;" type="file"
+									name="files" multiple /> <a class="dropdown-item" href=""
+									id="upload_files">Files</a>
 							</form>
-							
+
 							<!-- For Folder -->
 							<a class="dropdown-item" href="">Folder</a>
 						</div>
 					</div>
 				</li>
-				<li class="nav-item ml-1"><button type="button" class="btn btn-outline-light"
-					data-toggle="modal" data-target="#logoutModal"> <i
-						class="fa fa-fw fa-sign-out"></i>
-				</button></li>
+				<li class="nav-item ml-1"><button type="button"
+						class="btn btn-outline-light" data-toggle="modal"
+						data-target="#logoutModal">
+						<i class="fa fa-fw fa-sign-out"></i>
+					</button></li>
 			</ul>
 		</div>
 	</nav>
@@ -103,9 +101,9 @@
 	</div>
 
 	<!-- Create Folder -->
-	<div class="modal fade" id="folderModal" tabindex="-1" role="dialog"
+	<div th:if="${root != null}" class="modal fade" id="folderModal" tabindex="-1" role="dialog"
 		aria-labelledby="folderModalLabel" aria-hidden="true">
-		<input style="display:none;" id="folder" th:value="${root.id}"></input>
+		<input id="folder" th:value="${root.id}">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<form id="createFolder" method="POST">

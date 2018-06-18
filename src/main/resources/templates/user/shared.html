@@ -30,7 +30,7 @@
 			<!-- Example DataTables Card-->
 			<div class="card mb-3">
 				<div class="card-header">
-					<i class="fa fa-table"></i> My Files
+					<i class="fa fa-table"></i> Shared With Me
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
@@ -46,11 +46,15 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="folder:${folders}">
+
+								<tr id="tablaFolders" th:each="folder:${folders}">
 									<td><i class="fa fa-folder"
 										style="font-size: 24px; color: #7E8C95;"></i> <a class="ml-2"
-										th:text="${folder.name}"></a></td>
-									<td th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
+										th:text="${folder.name}"
+										th:href="@{/user/files/} + ${folder.id}"
+										style="text-decoration: none;"></a></td>
+									<td
+										th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
 									<td th:text="${#dates.format(folder.creation, 'dd-MM-yyyy')}">Creation
 										Date</td>
 									<td th:text="${#dates.format(folder.lastUpdate, 'dd-MM-yyyy')}">Update
@@ -58,11 +62,12 @@
 									<td>
 										<div class="row">
 											<div class="col-4">
-												<a class="" href=""> <i class="fa fa-download"
+												<a href="" th:value="${folder}"> <i
+													class="fa fa-download"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a class="" href=""> <i class="fa fa-info"
+												<a href="" th:value="${folder}"> <i class="fa fa-share-alt"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 										</div>
@@ -72,7 +77,8 @@
 									<td><i class="fa fa-file-text"
 										style="font-size: 24px; color: #0079CA;"></i> <a class="ml-2"
 										th:text="${file.name}"></a></td>
-									<td th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
+									<td
+										th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
 									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation
 										Date</td>
 									<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update
@@ -80,12 +86,13 @@
 									<td>
 										<div class="row">
 											<div class="col-4">
-												<a class="" href=""> <i class="fa fa-download"
+												<a class="" href="" th:value="${user}"> <i
+													class="fa fa-download"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a class="" href=""> <i class="fa fa-info"
-													style="font-size: 24px; color: black"></i></a>
+												<a class="" href="" th:value="${user}"> <i
+													class="fa fa-share-alt" style="font-size: 24px; color: black"></i></a>
 											</div>
 										</div>
 									</td>

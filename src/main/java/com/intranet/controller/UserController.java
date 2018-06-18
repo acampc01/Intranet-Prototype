@@ -70,6 +70,7 @@ public class UserController {
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
+		
 		modelAndView.addObject("user", user);
 		modelAndView.addObject("files", user.getSharedFiles());
 		modelAndView.addObject("folders", user.getSharedFolders());
@@ -92,8 +93,39 @@ public class UserController {
 		modelAndView.setViewName("user/shared");
 		return modelAndView;
 	}
-}
+	
+	@RequestMapping(value="/user/shared/{id_folder}", method = RequestMethod.GET)
+	public ModelAndView shared(@PathVariable("id_folder") Integer id){
+		Folder rootFolder = folderService.findById(id);
 
+		ModelAndView modelAndView = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		modelAndView.addObject("user", user);
+		modelAndView.addObject("root", rootFolder);
+		modelAndView.addObject("files", user.getSharedFiles());
+		modelAndView.addObject("folders", user.getSharedFolders());
+
+		Date last = new Date(0);
+		for (File file : user.getSharedFiles()) {
+			if(file.getLastUpdate().after(last))
+				last = file.getLastUpdate();
+		}
+		for (Folder folder : user.getSharedFolders()) {
+			if(folder.getLastUpdate().after(last))
+				last = folder.getLastUpdate();
+		}
+
+		if( !last.equals(new Date(0)) )
+			modelAndView.addObject("lastDate", last);
+		else
+			modelAndView.addObject("lastDate", new Date());
+
+		modelAndView.setViewName("user/shared");
+		return modelAndView;
+	}
+	
+}
 
 /*
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

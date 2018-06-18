@@ -510,3 +510,7 @@ footer.sticky-footer {
 		width: calc(100% - 55px);
 	}
 }
+
+#folder {
+	display: none;
+}
