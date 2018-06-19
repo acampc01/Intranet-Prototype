@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.intranet.DemoApplication;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
 import com.intranet.model.User;
@@ -70,17 +71,34 @@ public class FileRestController {
 			
 			File f = new File();
 			f.setName(file.getOriginalFilename());
-			f.setPath(folder.getPath() + "//" + file.getOriginalFilename());
+			f.setParent(folder);
 			f.setOwner(user);
 			fileService.save(f);
 			
-			if(fileService.findByPath(f.getPath()) != null) {
+			String path = getPath(f);
+			
+			if(fileService.findByParentAndName(f.getParent(),f.getName()) != null) {
 				folder.getFiles().add(f);
 				folderService.update(folder);
 			}
 			
-			Files.write(Paths.get(f.getPath()), file.getBytes());
+			Files.write(Paths.get(path), file.getBytes());
 		}
 	}
 
+	public String getPath(File file) {
+		String path = "";
+		
+		Folder aux = new Folder();
+		aux.setParent(file.getParent());
+		while(aux.getParent() != null) {
+			path = aux.getParent().getName() + "//" + path;
+			aux = aux.getParent();
+		}
+		
+		path = DemoApplication.getFolderPath() + path;
+		path += file.getName();
+		return path;
+	}
+	
 }

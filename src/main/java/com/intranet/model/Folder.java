@@ -32,8 +32,9 @@ public class Folder {
 	@Column(name = "name")
 	private String name;
 	
-	@Column(name = "path")
-	private String path;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_id")
+	private Folder parent;
 
 	@Column(name = "creation", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -81,12 +82,12 @@ public class Folder {
 		this.name = name;
 	}
 
-	public String getPath() {
-		return path;
+	public Folder getParent() {
+		return parent;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setParent(Folder parent) {
+		this.parent = parent;
 	}
 
 	public Set<File> getFiles() {

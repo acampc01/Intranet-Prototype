@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.intranet.model.File;
+import com.intranet.model.Folder;
 import com.intranet.repository.FileRepository;
 
 @Service("fileService")
@@ -17,19 +18,6 @@ public class FileServiceImpl implements FileService{
 	
 	@Override
 	public void save(File file) {
-		//TODO fix while.
-		String name = file.getName();
-		String path = file.getPath();
-		
-		File aux = fileRepository.findByPath(file.getPath());
-		int i = 1;
-		while(aux != null) {
-			file.setName(name.split("\\.")[0] + "("+i+")." + name.split("\\.")[1]);
-			file.setPath(path.split("\\.")[0] + " ("+i+")." + path.split("\\.")[1]);
-			aux = fileRepository.findByPath(file.getPath());
-			i++;
-		}
-		
 		//file.setPath(bCryptPasswordEncoder.encode(file.getPath()));
 		fileRepository.save(file);
 	}
@@ -40,8 +28,9 @@ public class FileServiceImpl implements FileService{
 	}
 
 	@Override
-	public File findByPath(String path) {
-		return fileRepository.findByPath(path);
+	public File findByParentAndName(Folder parent, String name) {
+		// TODO Auto-generated method stub
+		return fileRepository.findByParentAndName(parent,name);
 	}
 	
 }

@@ -40,7 +40,6 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void save(User user) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		user.setActive(1);
 
 		Role role = roleRepository.findByRole("USER");
 		if(role == null) {
@@ -59,7 +58,7 @@ public class UserServiceImpl implements UserService{
 			Folder folder = new Folder();
 			folder.setName(user.getEmail().split("@")[0]);
 			folder.setOwner(user);
-			folder.setPath(path);
+			folder.setParent(null);
 			folderRepository.save(folder);
 
 			user.setRoot(folder);

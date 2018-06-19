@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.intranet.DemoApplication;
 import com.intranet.model.Folder;
 import com.intranet.model.User;
 import com.intranet.service.FolderService;
@@ -32,10 +34,10 @@ public class FolderRestController {
 		Folder root = folderService.findById(id);
 		Folder newFolder = new Folder();
 		newFolder.setName(name);
-		newFolder.setPath(root.getPath() + "//" + name);
+		newFolder.setParent(root);
 		newFolder.setOwner(user);
 		
-		java.io.File f = new java.io.File(newFolder.getPath());
+		java.io.File f = new java.io.File(getPath(newFolder));
 		if(!f.exists()) {
 			f.mkdirs();
 			
@@ -45,6 +47,21 @@ public class FolderRestController {
 			userService.update(user);
 		}
 		return new ResponseEntity(HttpStatus.OK);
+	}
+	
+	public String getPath(Folder folder) {
+		String path = "";
+		
+		Folder aux = new Folder();
+		aux.setParent(folder.getParent());
+		while(aux.getParent() != null) {
+			path = aux.getParent().getName() + "//" + path;
+			aux = aux.getParent();
+		}
+		
+		path = DemoApplication.getFolderPath() + path;
+		path += folder.getName();
+		return path;
 	}
 	
 }

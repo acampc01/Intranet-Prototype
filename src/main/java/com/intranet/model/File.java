@@ -27,9 +27,10 @@ public class File {
 
 	@Column(name = "name")
 	private String name;
-
-	@Column(name = "path")
-	private String path;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_id", nullable = false)
+	private Folder parent;
 
 	@Column(name = "creation", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -65,14 +66,6 @@ public class File {
 		this.name = name;
 	}
 
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
 	public Date getLastUpdate() {
 		return lastUpdate;
 	}
@@ -92,4 +85,13 @@ public class File {
 	public void setOwner(User owner) {
 		this.owner = owner;
 	}
+
+	public Folder getParent() {
+		return parent;
+	}
+
+	public void setParent(Folder parent) {
+		this.parent = parent;
+	}
+	
 }

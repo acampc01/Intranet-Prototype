@@ -41,7 +41,7 @@ public class User {
 	private String lastName;
 	
 	@Column(name = "active")
-	private int active;
+	private int active = 0;
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "folder_id")
