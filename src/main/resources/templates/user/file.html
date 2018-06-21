@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Intranet Drotium">
+<meta name="author" content="Alejandro Campos - Drotium">
+<meta name="_csrf" th:content="${_csrf.token}" />
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>Drotium Intranet</title>
+<link th:href="@{/libs/bootstrap/css/bootstrap.min.css}"
+	rel="stylesheet">
+</head>
+<body id="page-top">
+
+	<div class="embed-responsive embed-responsive-4by3">
+		<div style="width: 100%; height: 100%">
+			<iframe th:src="@{'/js/pdf/web/viewer.html?file=' + ${pdf}}" height="800px" width="800px"></iframe>
+			<!-- <a th:href="@{'/js/pdf/web/viewer.html?file=' + ${pdf}}">Open yourpdf.pdf with PDF.js</a> -->
+			<!-- <embed class="embed-responsive-item" th:src="@{${pdf}}" alt="pdf"
+				pluginspage="http://www.adobe.com/products/acrobat/readstep2.html"> -->
+		</div>
+	</div>
+
+	<!-- Bootstrap core JavaScript-->
+	<script th:src="@{/libs/jquery/jquery.min.js}"></script>
+	<script th:src="@{/libs/bootstrap/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

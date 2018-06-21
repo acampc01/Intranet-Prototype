@@ -28,6 +28,9 @@ public class File {
 	@Column(name = "name")
 	private String name;
 	
+	@Column(name = "format")
+	private String format;
+	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_id", nullable = false)
 	private Folder parent;
@@ -92,6 +95,14 @@ public class File {
 
 	public void setParent(Folder parent) {
 		this.parent = parent;
+	}
+
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
 	}
 	
 }

@@ -8,5 +8,6 @@ import com.intranet.model.Folder;
 
 @Repository("fileRepository")
 public interface FileRepository extends JpaRepository<File, Integer>{
+	File getOne(Integer id);
 	File findByParentAndName(Folder parent, String name);
 }

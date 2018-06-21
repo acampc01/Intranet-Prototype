@@ -29,8 +29,12 @@ public class FileServiceImpl implements FileService{
 
 	@Override
 	public File findByParentAndName(Folder parent, String name) {
-		// TODO Auto-generated method stub
 		return fileRepository.findByParentAndName(parent,name);
+	}
+
+	@Override
+	public File findById(Integer id) {
+		return fileRepository.getOne(id);
 	}
 	
 }
