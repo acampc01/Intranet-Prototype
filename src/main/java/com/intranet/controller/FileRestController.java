@@ -149,7 +149,7 @@ public class FileRestController {
 		}
 	}
 
-	public String getPath(File file) {
+	private String getPath(File file) {
 		String path = "";
 
 		Folder aux = new Folder();
