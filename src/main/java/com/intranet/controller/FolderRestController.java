@@ -72,9 +72,9 @@ public class FolderRestController {
 		Folder folder = folderService.findById(id);
 
 		try {
-			createZip(folder);
-			
 			if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {
+				createZip(folder);
+				
 				Path pathFile = Paths.get(getPath(folder) + ".zip");
 				Resource resource = null;
 				try {
@@ -90,15 +90,12 @@ public class FolderRestController {
 					contentType = "application/octet-stream";
 				}
 				
-//				java.io.File f = pathFile.toFile();
-//				f.delete();
-				
 				return ResponseEntity.ok()
 						.contentType(MediaType.parseMediaType(contentType))
 						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
 						.body(resource);
 			}
-		} catch (IOException e1) {}
+		} catch (Exception e) {}
 
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}

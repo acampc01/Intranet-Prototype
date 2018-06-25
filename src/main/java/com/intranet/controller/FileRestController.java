@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -70,7 +71,7 @@ public class FileRestController {
 		modelAndView.setViewName("user/file");
 		return modelAndView;
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@PostMapping("/user/upload/files/{id_folder}")
 	public ResponseEntity<?> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") Integer id) {
@@ -96,27 +97,30 @@ public class FileRestController {
 		User user = userService.findUserByEmail(auth.getName());
 		File file = fileService.findById(id);
 
-		if(user.getSharedFiles().contains(file) || file.getOwner().equals(user)) {
-			Path pathFile = Paths.get(getPath(file));
-			Resource resource = null;
-			try {
-				resource = new UrlResource(pathFile.toUri());
-			} catch (MalformedURLException e) {}
+		try {
+			if(user.getSharedFiles().contains(file) || file.getOwner().equals(user)) {
+				Path pathFile = Paths.get(getPath(file));
+				Resource resource = null;
+				try {
+					resource = new UrlResource(pathFile.toUri());
+				} catch (MalformedURLException e) {}
 
-			String contentType = null;
-			try {
-				contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-			} catch (IOException ex) {}
+				String contentType = null;
+				try {
+					contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+				} catch (IOException ex) {}
 
-			if(contentType == null) {
-				contentType = "application/octet-stream";
+				if(contentType == null) {
+					contentType = "application/octet-stream";
+				}
+
+				return ResponseEntity.ok()
+						.contentType(MediaType.parseMediaType(contentType))
+						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+						.body(resource);
 			}
+		}catch(EntityNotFoundException e) {}
 
-			return ResponseEntity.ok()
-					.contentType(MediaType.parseMediaType(contentType))
-					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-					.body(resource);
-		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 

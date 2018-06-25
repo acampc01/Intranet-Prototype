@@ -45,6 +45,11 @@ public class LoginController {
 	public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
 		ModelAndView modelAndView = new ModelAndView();
 		User userExists = userService.findUserByEmail(user.getEmail());
+		if(!user.getEmail().split("@")[1].equals("drotium.com")) {
+			modelAndView.addObject("successMessage", "Invalid email.");
+			modelAndView.setViewName("register");
+			return modelAndView;
+		}
 		if (userExists != null) {
 			modelAndView.addObject("successMessage", "There is a user with the same email.");
 			modelAndView.setViewName("register");
