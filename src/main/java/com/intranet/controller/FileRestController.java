@@ -3,6 +3,7 @@ package com.intranet.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -29,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,33 +55,38 @@ public class FileRestController {
 
 	@RequestMapping(value="/user/file/{id_file}", method = RequestMethod.GET)
 	public ModelAndView embed(@PathVariable("id_file") Integer id) {
-		File file = fileService.findById(id);
 		ModelAndView modelAndView = new ModelAndView();
-
-		java.io.File src = new java.io.File(getPath(file));
-		java.io.File temp = new java.io.File("src/main/resources/static/js/pdf/web/" + file.getName());
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		File file = fileService.findById(id);
 
 		try {
-			Files.copy(Paths.get(src.getPath()) , Paths.get(temp.getPath()), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			if(user.getSharedFiles().contains(file) || file.getOwner().equals(user)) {
+				java.io.File src = new java.io.File(getPath(file));
+				java.io.File temp = new java.io.File("src/main/resources/static/js/pdf/web/" + file.getName());
 
-		modelAndView.addObject("pdf", file.getName());
-		temp.delete();
+				try {
+					Files.copy(Paths.get(src.getPath()) , Paths.get(temp.getPath()), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				modelAndView.addObject("pdf", file.getName());
+				temp.delete();
+			}
+		}catch(EntityNotFoundException e) {}
 
 		modelAndView.setViewName("user/file");
 		return modelAndView;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@PostMapping("/user/upload/files/{id_folder}")
 	public ResponseEntity<?> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") Integer id) {
 		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
 				.filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
 
 		if (StringUtils.isEmpty(uploadedFileName)) {
-			return new ResponseEntity(HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		}
 
 		try {
@@ -88,7 +95,7 @@ public class FileRestController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@RequestMapping("/user/download/{id_file}")
@@ -96,7 +103,7 @@ public class FileRestController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 		File file = fileService.findById(id);
-
+		
 		try {
 			if(user.getSharedFiles().contains(file) || file.getOwner().equals(user)) {
 				Path pathFile = Paths.get(getPath(file));
@@ -113,7 +120,10 @@ public class FileRestController {
 				if(contentType == null) {
 					contentType = "application/octet-stream";
 				}
-
+				
+				file.setDownload(new Date());
+				fileService.update(file);
+				
 				return ResponseEntity.ok()
 						.contentType(MediaType.parseMediaType(contentType))
 						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
@@ -124,35 +134,38 @@ public class FileRestController {
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
-
+	@Async
 	private void saveUploadedFiles(List<MultipartFile> files, int id) throws IOException {
 		Folder folder = folderService.findById(id);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
-		for (MultipartFile file : files) {
-			if (file.isEmpty()) {
-				continue;
+		if(folder.getOwner().equals(user) || user.getSharedFolders().contains(folder)) {
+			for (MultipartFile file : files) {
+				if (file.isEmpty()) {
+					continue;
+				}
+
+				File f = new File();
+				f.setName(file.getOriginalFilename());
+				f.setFormat(file.getOriginalFilename().split("\\.")[ (file.getOriginalFilename().split("\\.").length-1) ]);
+				f.setParent(folder);
+				f.setOwner(user);
+				fileService.save(f);
+
+				String path = getPath(f);
+
+				if(fileService.findByParentAndName(f.getParent(),f.getName()) != null) {
+					folder.getFiles().add(f);
+					folderService.update(folder);
+				}
+
+				Files.write(Paths.get(path), file.getBytes());
 			}
-
-			File f = new File();
-			f.setName(file.getOriginalFilename());
-			f.setFormat(file.getOriginalFilename().split("\\.")[ (file.getOriginalFilename().split("\\.").length-1) ]);
-			f.setParent(folder);
-			f.setOwner(user);
-			fileService.save(f);
-
-			String path = getPath(f);
-
-			if(fileService.findByParentAndName(f.getParent(),f.getName()) != null) {
-				folder.getFiles().add(f);
-				folderService.update(folder);
-			}
-
-			Files.write(Paths.get(path), file.getBytes());
 		}
 	}
 
+	@Async
 	private String getPath(File file) {
 		String path = "";
 

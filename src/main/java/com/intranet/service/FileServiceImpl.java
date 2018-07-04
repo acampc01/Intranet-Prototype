@@ -1,10 +1,14 @@
 package com.intranet.service;
 
+import java.util.Date;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.intranet.model.File;
 import com.intranet.model.Folder;
+import com.intranet.model.User;
 import com.intranet.repository.FileRepository;
 
 @Service("fileService")
@@ -13,17 +17,14 @@ public class FileServiceImpl implements FileService{
 	@Autowired
 	private FileRepository fileRepository;
 	
-//	@Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
-	
 	@Override
 	public void save(File file) {
-		//file.setPath(bCryptPasswordEncoder.encode(file.getPath()));
 		fileRepository.save(file);
 	}
 	
 	@Override
 	public void update(File file) {
+		file.setLastUpdate(new Date());
 		fileRepository.save(file);
 	}
 
@@ -35,6 +36,11 @@ public class FileServiceImpl implements FileService{
 	@Override
 	public File findById(Integer id) {
 		return fileRepository.getOne(id);
+	}
+
+	@Override
+	public Set<File> findByOwner(User owner) {
+		return fileRepository.findByOwner(owner);
 	}
 	
 }

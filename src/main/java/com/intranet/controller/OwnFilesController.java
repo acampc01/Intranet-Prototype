@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.intranet.DemoApplication;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
 import com.intranet.model.User;
@@ -45,7 +44,6 @@ public class OwnFilesController {
 		User user = userService.findUserByEmail(auth.getName());
 
 		if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {
-
 			modelAndView.addObject("user", user);
 			modelAndView.addObject("root", folder);
 			modelAndView.addObject("files", folder.getFiles());
@@ -65,28 +63,12 @@ public class OwnFilesController {
 			else
 				modelAndView.addObject("lastDate", new Date());
 
-			modelAndView.setViewName("user/files");
+			modelAndView.setViewName("/user/files");
 			return modelAndView;
 		}
 
 		modelAndView.setView(new RedirectView("/user/files"));
 		return modelAndView;
 	}
-
-	private String getPath(File file) {
-		String path = "";
-
-		Folder aux = new Folder();
-		aux.setParent(file.getParent());
-		while(aux.getParent() != null) {
-			path = aux.getParent().getName() + "//" + path;
-			aux = aux.getParent();
-		}
-
-		path = DemoApplication.getFolderPath() + path;
-		path += file.getName();
-		return path;
-	}
-
 }
 

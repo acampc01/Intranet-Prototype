@@ -139,4 +139,12 @@ public class User {
 		this.root = root;
 	}
 
+	public boolean isAdmin() {
+		for (Role role : roles) {
+			if(role.isAdmin())
+				return true;
+		}
+		return false;
+	}
+
 }

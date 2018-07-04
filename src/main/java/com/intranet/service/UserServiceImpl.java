@@ -2,6 +2,8 @@ package com.intranet.service;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -69,6 +71,16 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void update(User user) {
 		userRepository.save(user);
+	}
+
+	@Override
+	public List<User> findAll(User user) {
+		Set<Role> roles = user.getRoles();
+		for (Role role : roles) {
+			if(role.isAdmin())
+				return userRepository.findAll();
+		}
+		return null;
 	}
 
 }

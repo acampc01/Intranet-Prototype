@@ -13,8 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
 import com.intranet.model.User;
-import com.intranet.service.FileService;
-import com.intranet.service.FolderService;
 import com.intranet.service.UserService;
 
 @Controller
@@ -22,12 +20,6 @@ public class SharedFilesController {
 
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private FolderService folderService;
-
-	@Autowired
-	private FileService fileService;
 	
 	@RequestMapping(value="/user/shared", method = RequestMethod.GET)
 	public ModelAndView shared(){

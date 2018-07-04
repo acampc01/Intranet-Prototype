@@ -44,6 +44,10 @@ public class Folder {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdate;
 	
+	@Column(name = "download")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date download;
+	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User owner;
@@ -126,4 +130,11 @@ public class Folder {
 		this.folders = folders;
 	}
 	
+	public Date getDownload() {
+		return download;
+	}
+
+	public void setDownload(Date download) {
+		this.download = download;
+	}
 }

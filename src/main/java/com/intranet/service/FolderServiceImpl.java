@@ -1,5 +1,7 @@
 package com.intranet.service;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,18 +13,15 @@ public class FolderServiceImpl implements FolderService{
 	
 	@Autowired
 	private FolderRepository folderRepository;
-	
-//	@Autowired
-//    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	public void save(Folder folder) {
-		//folder.setPath(bCryptPasswordEncoder.encode(folder.getPath()));
 		folderRepository.save(folder);
 	}
 
 	@Override
 	public void update(Folder folder) {
+		folder.setLastUpdate(new Date());
 		folderRepository.save(folder);
 	}
 

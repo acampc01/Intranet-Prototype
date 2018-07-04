@@ -12,15 +12,19 @@
 		<div class="collapse navbar-collapse" id="navbarResponsive">
 			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
 				<li class="nav-item" data-toggle="tooltip" data-placement="right"
-					title="Files"><a class="nav-link text-white"
+					><a class="nav-link text-white"
 					th:href="@{/user/files/} + ${user.root.id}"> <i
 						class="fa fa-fw fa-folder"></i> <span class="nav-link-text">My
 							Files</span>
 				</a></li>
 				<li class="nav-item" data-toggle="tooltip" data-placement="right"
-					title="Tables"><a class="nav-link text-white"
+					><a class="nav-link text-white"
 					th:href="@{/user/shared}"> <i class="fa fa-fw fa-share-alt"></i>
 						<span class="nav-link-text">Shared With Me</span>
+				</a></li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right"><a class="nav-link text-white"
+					th:href="@{/user/search}"><i class="fa fa-fw fa-search" aria-hidden="true"></i>
+						<span class="nav-link-text">Search</span>
 				</a></li>
 			</ul>
 			<ul class="navbar-nav sidenav-toggler">
@@ -30,18 +34,6 @@
 			</ul>
 			<!-- TOP NAVBAR -->
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item">
-					<form class="navbar-form mr-3" role="search">
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search">
-							<div class="input-group-btn">
-								<button class="btn btn-outline-light ml-1" type="submit">
-									<i class="fa fa-search" aria-hidden="true"></i>
-								</button>
-							</div>
-						</div>
-					</form>
-				</li>
 				<li class="nav-item"><a class="nav-link  text-white"> <i
 						class="fa fa-fw fa fa-user"></i> <span th:text="${user.name}"
 						th:remove="tag">Usuario</span>

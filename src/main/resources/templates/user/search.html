@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Intranet Drotium">
+<meta name="author" content="Alejandro Campos - Drotium">
+<meta name="_csrf" th:content="${_csrf.token}" />
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>Drotium Intranet</title>
+<th:block th:include="includes/links :: links"></th:block>
+<link th:href="@{/css/search.css}"
+		rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+
+	<!-- Navigation-->
+	<th:block th:include="includes/navbar :: navbar"></th:block>
+
+	<div class="content-wrapper">
+		
+		<form class="ml-3 mr-3" role="search">
+			<div class="input-group">
+				<input id="searchFiles" type="text" class="form-control" placeholder="Search">
+				<div class="input-group-btn">
+					<button id="clear" class="btn btn-dark ml-1" type="submit">
+						<i class="fa fa fa-times" aria-hidden="true" style="font-size: 24px;"></i>
+					</button>
+				</div>
+			</div>
+		</form>
+		<div class="list-group mt-3 mb-3 ml-3 mr-3" id="search-list" role="tablist">
+
+	    </div>
+	</div>
+
+	<!-- Footer -->
+	<th:block th:include="includes/footer :: footer"></th:block>
+	<th:block th:include="includes/scripts :: scripts"></th:block>
+	
+	<script th:src="@{/js/search.js}"></script>
+</body>
+
+</html>

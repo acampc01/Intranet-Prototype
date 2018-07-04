@@ -42,6 +42,10 @@ public class File {
 	@Column(name = "lastUpdate", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdate;
+	
+	@Column(name = "download")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date download;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
@@ -104,5 +108,12 @@ public class File {
 	public void setFormat(String format) {
 		this.format = format;
 	}
-	
+
+	public Date getDownload() {
+		return download;
+	}
+
+	public void setDownload(Date download) {
+		this.download = download;
+	}
 }

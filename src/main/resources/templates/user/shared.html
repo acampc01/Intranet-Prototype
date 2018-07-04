@@ -74,9 +74,11 @@
 									</td>
 								</tr>
 								<tr th:each="file:${files}">
-									<td><i class="fa fa-file-text"
-										style="font-size: 24px; color: #0079CA;"></i> <a class="ml-2"
-										th:text="${file.name}"></a></td>
+									<td><i th:if="${file.format == 'zip'}" class="fa fa-file-archive-o" style="font-size: 24px; color: #0079CA;"></i>
+										<i th:if="${file.format != 'zip'}" class="fa fa-file-text" style="font-size: 24px; color: #0079CA;"></i>
+										<a th:if="${file.format == 'pdf'}" class="ml-2" th:text="${file.name}" th:href="@{/user/file/} + ${file.id}"></a>
+										<a th:if="${file.format != 'pdf'}" class="ml-2" th:text="${file.name}" ></a>
+									</td>
 									<td
 										th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
 									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation

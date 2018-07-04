@@ -32,6 +32,10 @@ public class Role {
 		this.role = role;
 	}
 	
+	public boolean isAdmin() {
+		return role.equals("ADMIN");
+	}
+	
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("idRole: " + id);

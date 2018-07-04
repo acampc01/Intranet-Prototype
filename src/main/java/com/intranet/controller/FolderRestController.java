@@ -3,21 +3,21 @@ package com.intranet.controller;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,7 +66,7 @@ public class FolderRestController {
 	}
 
 	@RequestMapping("/user/download/folder/{id_folder}")
-	public ResponseEntity<Resource> downloadFile(@PathVariable("id_folder") Integer id, HttpServletRequest request) {
+	public ResponseEntity<Resource> downloadFile(@PathVariable("id_folder") Integer id, HttpServletResponse response) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 		Folder folder = folderService.findById(id);
@@ -74,32 +74,69 @@ public class FolderRestController {
 		try {
 			if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {
 				createZip(folder);
-				
-				Path pathFile = Paths.get(getPath(folder) + ".zip");
-				Resource resource = null;
-				try {
-					resource = new UrlResource(pathFile.toUri());
-				} catch (MalformedURLException e) {}
 
-				String contentType = null;
-				try {
-					contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-				} catch (IOException ex) {}
-
-				if(contentType == null) {
-					contentType = "application/octet-stream";
-				}
+				Path pathZip = Paths.get(getPath(folder) + ".zip");
+				java.io.File file = pathZip.toFile();
 				
-				return ResponseEntity.ok()
-						.contentType(MediaType.parseMediaType(contentType))
-						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-						.body(resource);
+				
+				response.setContentType("application/octet-stream");
+				response.setHeader("Content-disposition", "attachment; filename=" + file.getName());
+
+				OutputStream out = response.getOutputStream();
+				FileInputStream in = new FileInputStream(file);
+
+				// copy from in to out
+				IOUtils.copy(in,out);
+
+				out.close();
+				in.close();
+				file.delete();
+				
+				folder.setDownload(new Date());
+				folderService.update(folder);
 			}
 		} catch (Exception e) {}
 
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
+	//	@RequestMapping("/user/download/folder/{id_folder}")
+	//	public ResponseEntity<Resource> downloadFile(@PathVariable("id_folder") Integer id, HttpServletRequest request) {
+	//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	//		User user = userService.findUserByEmail(auth.getName());
+	//		Folder folder = folderService.findById(id);
+	//
+	//		try {
+	//			if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {
+	//				createZip(folder);
+	//
+	//				Path pathFile = Paths.get(getPath(folder) + ".zip");
+	//				Resource resource = null;
+	//				try {
+	//					resource = new UrlResource(pathFile.toUri());
+	//				} catch (MalformedURLException e) {}
+	//
+	//				String contentType = null;
+	//				try {
+	//					contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+	//				} catch (IOException ex) {}
+	//
+	//				if(contentType == null) {
+	//					contentType = "application/octet-stream";
+	//				}
+	//
+	//				return ResponseEntity.ok()
+	//						.contentType(MediaType.parseMediaType(contentType))
+	//						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+	//						.body(resource);
+	//			}
+	//		} catch (Exception e) {}
+	//
+	//		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	//	}
+
+
+	@Async
 	private void createZip(Folder folder) throws IOException {
 		String sourceFile = getPath(folder);
 		FileOutputStream fos = new FileOutputStream(getPath(folder) + ".zip");
@@ -110,6 +147,7 @@ public class FolderRestController {
 		fos.close();
 	}
 
+	@Async
 	private void zipFile(java.io.File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
 		if (fileToZip.isHidden()) {
 			return;
@@ -132,6 +170,7 @@ public class FolderRestController {
 		fis.close();
 	}
 
+	@Async
 	private String getPath(Folder folder) {
 		String path = "";
 
