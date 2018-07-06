@@ -1,5 +1,6 @@
 package com.intranet.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -81,6 +82,16 @@ public class UserServiceImpl implements UserService{
 				return userRepository.findAll();
 		}
 		return null;
+	}
+
+	@Override
+	public List<User> findConfirms(User user) {
+		Set<Role> roles = user.getRoles();
+		for (Role role : roles) {
+			if(role.isAdmin())
+				return userRepository.findAllByActive(0);
+		}
+		return new ArrayList<User>();
 	}
 
 }

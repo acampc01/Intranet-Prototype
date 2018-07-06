@@ -45,7 +45,6 @@
 								</tr>
 							</thead>
 							<tbody>
-
 								<tr id="tablaFolders" th:each="folder:${folders}">
 									<td><i class="fa fa-folder"
 										style="font-size: 24px; color: #7E8C95;"></i><a class="ml-2"
@@ -120,14 +119,14 @@
 					<h5 class="modal-title" id="exampleModalLabel">Share With:</h5>
 				</div>
 				<div class="modal-body">
-					<div class="d-100 form-inline">
+					<div class="ml-3 mr-3 d-100 form-inline">
 						<input id="nameU" class="form-control mr-2 w-75" type="text">
-						<button id="addU" class="btn btn-dark">
+						<!-- <button id="addU" class="btn btn-dark">
 							<i class="fa fa-plus-circle" aria-hidden="true" style="font-size:20px;"></i>
-						</button>
+						</button> -->
 					</div>
-					<div class="list-group list-group-flush mt-3" id="listAdds">
-						<a href="#" class="list-group-item list-group-item-action">First item</a>
+					<div id="listAdds" class="list-group list-group-flush mt-3">
+	
 					</div>
 				</div>
 				<div class="modal-footer">

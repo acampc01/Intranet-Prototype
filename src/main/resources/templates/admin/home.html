@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Intranet Drotium">
+<meta name="author" content="Alejandro Campos - Drotium">
+<meta name="_csrf" th:content="${_csrf.token}" />
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>Drotium Intranet</title>
+<th:block th:include="includes/links :: links"></th:block>
+</head>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+
+	<!-- Navigation-->
+	<th:block th:include="includes/navbar :: navbar"></th:block>
+	
+	<div class="content-wrapper">
+		<div class="row m-3" th:if="${#lists.size(notifications) != 0}">	
+		  <div class="col-sm-5 ml-3 mr-3 mb-3" th:each="user:${notifications}">
+		    <div class="card">
+		      <div class="card-body">
+		        <div class="d-flex w-100 justify-content-between">
+			    	<h5 class="card-title" th:text="${user.name} + ' ' + ${user.lastName}"></h5>
+			       	<div th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:switch="${days.convert(#dates.createNow().getTime() - user.creation.getTime(), millis)}">
+			        	<small th:case="0">Today</small>
+			        	<small th:case="*" th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="${days.convert(#dates.createNow().getTime() - user.creation.getTime(), millis) + ' days ago'}"></small>
+		        	</div>
+		        </div>
+		        <p class="card-text" th:text="${user.email}"></p>
+				<a href="#" class="btn btn-danger btn-sm pull-right mr-2"><i class="fa fa-times" aria-hidden="true"></i>
+		        Refuse</a>
+		        <a href="#" class="btn btn-success btn-sm pull-right mr-2"><i class="fa fa-check" aria-hidden="true"></i>
+		        Accept</a>
+		      </div>
+		    </div>
+		  </div>	
+		</div>
+		<div th:if="${#lists.size(notifications) == 0}">
+			<h1>There is not new alerts!</h1>		
+		</div>
+	</div>
+	
+	<!-- Footer -->
+	<th:block th:include="includes/footer :: footer"></th:block>
+	<th:block th:include="includes/scripts :: scripts"></th:block>
+</body>
+
+</html>
+	

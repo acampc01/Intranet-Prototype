@@ -32,7 +32,7 @@ $(document).ready(function () {
        					}
 					},
 					error: function (e) {
-						alert();
+
 					}
 				});
 			},
@@ -50,20 +50,23 @@ $(document).ready(function () {
 				$.ajax({ 
 					type: "POST",
 					url: "/user/autocomplete/name",
-					data: $("#nameU").val(),
 					contentType: "text/plain",
+					data: request.term,
 					beforeSend: function(xhr) {
 						xhr.setRequestHeader(header, token);
 					},
 					timeout: 6000,
-					success: function (data) {
-						response(data);
-					},
+					success: function( data ) {
+						$("#listAdds").empty();
+						$.each(data, function(index, item){
+							$("#listAdds").append("<a class='list-group-item list-group-item-action flex-column align-items-start'><div class='d-flex w-100'><span class='mr-2'>" + item[0] + " &#60" + item[1] + "&#62</span></div></a>");
+	       				});
+		          	},
 					error: function (e) {
 						
 					}
 				});
 			},
-			minLength: 3
+			minLength: 1
 		});
 });

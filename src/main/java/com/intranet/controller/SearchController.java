@@ -51,7 +51,7 @@ public class SearchController {
 		
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
-
+	
 	@PostMapping(path = "/user/autocomplete/name", consumes = "text/plain", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Map<String, Object>> autocompleteNames(@RequestBody String name){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

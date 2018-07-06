@@ -9,4 +9,5 @@ public interface UserService {
 	public void save(User user);
 	public void update(User user);
 	public List<User> findAll(User user);
+	public List<User> findConfirms(User user);
 }

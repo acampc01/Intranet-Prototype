@@ -1,6 +1,7 @@
 
 package com.intranet.model;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,7 +16,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Transient;
 
 @Entity
@@ -42,6 +46,10 @@ public class User {
 	
 	@Column(name = "active")
 	private int active = 0;
+	
+	@CreatedDate
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date creation = new Date();
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "folder_id")
@@ -137,6 +145,14 @@ public class User {
 
 	public void setRoot(Folder root) {
 		this.root = root;
+	}
+
+	public Date getCreation() {
+		return creation;
+	}
+
+	public void setCreation(Date creation) {
+		this.creation = creation;
 	}
 
 	public boolean isAdmin() {

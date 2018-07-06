@@ -48,6 +48,7 @@ public class OwnFilesController {
 			modelAndView.addObject("root", folder);
 			modelAndView.addObject("files", folder.getFiles());
 			modelAndView.addObject("folders", folder.getFolders());
+			modelAndView.addObject("notifications", userService.findConfirms(user));
 
 			Date last = new Date(0);
 			for (File file : user.getRoot().getFiles()) {
