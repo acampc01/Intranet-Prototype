@@ -44,17 +44,20 @@
 		            </span>
 		          </a>
 		          <div class="dropdown-menu" aria-labelledby="alertsDropdown">
-		            <h6 class="dropdown-header">New Alerts:</h6>
-		            <div class="dropdown-divider"></div>
-		            <a class="dropdown-item" th:each="user, userStat:${notifications}" th:unless="${userStat.index >= 3}">
-		              <span class="d-block text-success">
-		                <strong>Confirm</strong>
-		              </span>
-		              <div class="small d-inline" th:text="${user.email}"></div>
-		              <span class="small text-muted" th:text="${#dates.format(user.creation, 'dd-MM')}"></span>
-		            </a>
-		            <div class="dropdown-divider"></div>
-		            <a class="dropdown-item small" th:href="@{/admin/home}">View all alerts</a>
+		            <h6 th:if="${#lists.size(notifications) == 0}" class="dropdown-header alert alert-success m-1">Everything done!</h6>
+		           	<div th:if="${#lists.size(notifications) != 0}">
+						<h6 class="dropdown-header">New Alerts:</h6>
+			            <div class="dropdown-divider"></div>
+			            <a class="dropdown-item" th:each="user, userStat:${notifications}" th:unless="${userStat.index >= 3}">
+			              <span class="d-block text-success">
+			                <strong>Confirm</strong>
+			              </span>
+			              <div class="small d-inline" th:text="${user.email}"></div>
+			              <span class="small text-muted" th:text="${#dates.format(user.creation, 'dd-MM')}"></span>
+			            </a>
+			            <div class="dropdown-divider"></div>
+			            <a class="dropdown-item small" th:href="@{/admin/home}">View all alerts</a>
+			      	</div>
 		          </div>
 		        </li>
 				<li class="nav-item"><a th:attrappend="href=${user.isAdmin()}?@{/admin/home}" class="nav-link  text-white"> <i

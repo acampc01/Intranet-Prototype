@@ -42,7 +42,21 @@
 		  </div>	
 		</div>
 		<div th:if="${#lists.size(notifications) == 0}">
-			<h1>There is not new alerts!</h1>		
+			<h3 class="alert alert-success m-3">There is not new alerts!</h3>		
+		</div>
+		
+		<div class="dropdown-divider ml-3 mr-3"></div>
+		<div class="text-center">
+			<h3 class="alert alert-info mt-2 ml-5 mr-5">Current Active Users</h3>
+		</div>
+		<div class="list-group ml-5 mr-5 mt-2 mb-2">
+		  <a class="list-group-item list-group-item-action flex-column align-items-start" th:each="user:${users}">
+		    <div class="d-flex w-100 justify-content-between">
+		      <h5 class="card-title" th:text="${user.name} + ' ' + ${user.lastName} + '  &#60' + ${user.email} + '&#62'"></h5>
+		    </div>
+		    <p class="mb-1"></p>
+		    <!-- <small>Departamento:</small> -->
+		  </a>
 		</div>
 	</div>
 	

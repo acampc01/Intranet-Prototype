@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -76,21 +75,15 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public List<User> findAll(User user) {
-		Set<Role> roles = user.getRoles();
-		for (Role role : roles) {
-			if(role.isAdmin())
-				return userRepository.findAll();
-		}
-		return null;
+		if(user.isAdmin())
+			return userRepository.findAll();
+		return new ArrayList<User>();
 	}
 
 	@Override
 	public List<User> findConfirms(User user) {
-		Set<Role> roles = user.getRoles();
-		for (Role role : roles) {
-			if(role.isAdmin())
+		if(user.isAdmin())
 				return userRepository.findAllByActive(0);
-		}
 		return new ArrayList<User>();
 	}
 

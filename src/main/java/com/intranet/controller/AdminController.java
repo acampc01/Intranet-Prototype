@@ -1,5 +1,8 @@
 package com.intranet.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +24,16 @@ public class AdminController {
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
+		List<User> urs = userService.findAll(user);
+		List<User> users = new ArrayList<User>();
+		for (User u : urs) {
+			if(!u.isAdmin() && u.getActive() == 1) {
+				users.add(u);
+			}
+		}
+		
 		modelAndView.addObject("user", user);
+		modelAndView.addObject("users", users);
 		modelAndView.addObject("notifications", userService.findConfirms(user));
 		modelAndView.setViewName("/admin/home");
 		return modelAndView;
