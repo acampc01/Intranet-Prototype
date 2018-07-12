@@ -21,15 +21,15 @@ import com.intranet.repository.UserRepository;
 public class UserServiceImpl implements UserService{
 
 	private final static String UPLOADED_FOLDER = DemoApplication.getFolderPath();
-
+	
 	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
-	private RoleRepository roleRepository;
-
-	@Autowired
 	private FolderRepository folderRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -49,28 +49,42 @@ public class UserServiceImpl implements UserService{
 			role.setRole("USER");
 			roleRepository.save(role);
 		}
-		user.setRoles(new HashSet<Role>(Arrays.asList(role)));	
-
-		String path = UPLOADED_FOLDER + user.getEmail().split("@")[0];
-		java.io.File f = new java.io.File(path);
-		if(!f.exists()) {
+		user.setRoles(new HashSet<Role>(Arrays.asList(role)));
+		
+//		String path = UPLOADED_FOLDER + user.getEmail().split("@")[0];
+//		java.io.File f = new java.io.File(path);
+//		if(!f.exists()) {
+//			userRepository.save(user);
+//			f.mkdirs();
+//
+//			Folder folder = new Folder();
+//			folder.setName(user.getEmail().split("@")[0]);
+//			folder.setOwner(user);
+//			folder.setParent(null);
+//			folderRepository.save(folder);
+//
+//			user.setRoot(folder);
 			userRepository.save(user);
-			f.mkdirs();
-
-			Folder folder = new Folder();
-			folder.setName(user.getEmail().split("@")[0]);
-			folder.setOwner(user);
-			folder.setParent(null);
-			folderRepository.save(folder);
-
-			user.setRoot(folder);
-			userRepository.save(user);
-		}
+		//}
 	}
 
 	@Override
+	public void remove(User user) {
+		user.setRoot(null);
+		user.getSharedFiles().clear();
+		user.getSharedFolders().clear();
+		user.getRoles().clear();
+		userRepository.delete(user);
+	}
+	
+	@Override
 	public void update(User user) {
 		userRepository.save(user);
+	}
+	
+	@Override
+	public User findOne(Integer id) {
+		return userRepository.getOne(id);
 	}
 
 	@Override
@@ -87,4 +101,20 @@ public class UserServiceImpl implements UserService{
 		return new ArrayList<User>();
 	}
 
+//	String path = UPLOADED_FOLDER + user.getEmail().split("@")[0];
+//	java.io.File f = new java.io.File(path);
+//	if(!f.exists()) {
+//		userRepository.save(user);
+//		f.mkdirs();
+//
+//		Folder folder = new Folder();
+//		folder.setName(user.getEmail().split("@")[0]);
+//		folder.setOwner(user);
+//		folder.setParent(null);
+//		folderRepository.save(folder);
+//
+//		user.setRoot(folder);
+//		userRepository.save(user);
+//	}
+	
 }

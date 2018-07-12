@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
@@ -60,6 +61,10 @@ public class Folder {
 	@JoinTable(name = "folder_folder", joinColumns = @JoinColumn(name = "folder_id"), inverseJoinColumns = @JoinColumn(name = "id_folder"))
 	private Set<Folder> folders;
 	
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "user_folders_s", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "folder_id"))
+	private Set<User> sharedUsers;
+	
 	@PrePersist
 	protected void onCreate() {
 		lastUpdate = creation = new Date();
@@ -68,6 +73,10 @@ public class Folder {
 	@PreUpdate
 	protected void onUpdate() {
 		lastUpdate = new Date();
+	}
+	
+	public boolean isShared() {
+		return sharedUsers.size() != 0;
 	}
 
 	public int getId() {
@@ -136,5 +145,13 @@ public class Folder {
 
 	public void setDownload(Date download) {
 		this.download = download;
+	}
+	
+	public Set<User> getSharedUsers() {
+		return sharedUsers;
+	}
+
+	public void setSharedUsers(Set<User> sharedUsers) {
+		this.sharedUsers = sharedUsers;
 	}
 }

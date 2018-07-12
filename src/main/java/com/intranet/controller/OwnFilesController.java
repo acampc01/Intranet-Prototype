@@ -29,9 +29,17 @@ public class OwnFilesController {
 
 	@RequestMapping(value="/user/files", method = RequestMethod.GET)
 	public ModelAndView myFiles(){
+		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		ModelAndView modelAndView = new ModelAndView(new RedirectView("/user/files/" + user.getRoot().getId() , true));
+		if(user != null) {
+			user.setLastConnect(new Date());
+			userService.update(user);
+			modelAndView.setView(new RedirectView("/user/files/" + user.getRoot().getId() , true));
+			return modelAndView;
+		}
+		
+		modelAndView.setView(new RedirectView("/login"));
 		return modelAndView;
 	}
 
@@ -43,33 +51,38 @@ public class OwnFilesController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
-		if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {
-			modelAndView.addObject("user", user);
-			modelAndView.addObject("root", folder);
-			modelAndView.addObject("files", folder.getFiles());
-			modelAndView.addObject("folders", folder.getFolders());
-			modelAndView.addObject("notifications", userService.findConfirms(user));
+		try {
+			if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {
+				modelAndView.addObject("user", user);
+				modelAndView.addObject("root", folder);
+				modelAndView.addObject("files", folder.getFiles());
+				modelAndView.addObject("folders", folder.getFolders());
+				modelAndView.addObject("notifications", userService.findConfirms(user));
 
-			Date last = new Date(0);
-			for (File file : user.getRoot().getFiles()) {
-				if(file.getLastUpdate().after(last))
-					last = file.getLastUpdate();
+				Date last = new Date(0);
+				for (File file : user.getRoot().getFiles()) {
+					if(file.getLastUpdate().after(last))
+						last = file.getLastUpdate();
+				}
+
+				if(folder.getLastUpdate().after(last))
+					last = folder.getLastUpdate();
+
+				if( !last.equals(new Date(0)) )
+					modelAndView.addObject("lastDate", last);
+				else
+					modelAndView.addObject("lastDate", new Date());
+
+				modelAndView.setViewName("/user/files");
+				return modelAndView;
 			}
 
-			if(folder.getLastUpdate().after(last))
-				last = folder.getLastUpdate();
-
-			if( !last.equals(new Date(0)) )
-				modelAndView.addObject("lastDate", last);
-			else
-				modelAndView.addObject("lastDate", new Date());
-
-			modelAndView.setViewName("/user/files");
+			modelAndView.setView(new RedirectView("/user/files"));
+			return modelAndView;
+		}catch(Exception e) {
+			modelAndView.setView(new RedirectView("/user/files"));
 			return modelAndView;
 		}
-
-		modelAndView.setView(new RedirectView("/user/files"));
-		return modelAndView;
 	}
 }
 

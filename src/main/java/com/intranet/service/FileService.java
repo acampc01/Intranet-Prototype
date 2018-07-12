@@ -12,4 +12,5 @@ public interface FileService {
 	public File findById(Integer id);
 	Set<File> findByOwner(User owner);
 	File findByParentAndName(Folder parent, String name);
+	public void remove(File file);
 }

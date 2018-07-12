@@ -51,6 +51,9 @@ public class User {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creation = new Date();
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date lastConnect;
+	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "folder_id")
 	private Folder root;
@@ -60,11 +63,11 @@ public class User {
 	private Set<Role> roles;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "sharedFiles", joinColumns = @JoinColumn(name = "file_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	@JoinTable(name = "user_files_s", joinColumns = @JoinColumn(name = "file_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<File> sharedFiles;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "sharedFolders", joinColumns = @JoinColumn(name = "folder_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	@JoinTable(name = "user_folders_s", joinColumns = @JoinColumn(name = "folder_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<Folder> sharedFolders;
 
 	public int getId() {
@@ -153,6 +156,14 @@ public class User {
 
 	public void setCreation(Date creation) {
 		this.creation = creation;
+	}
+
+	public Date getLastConnect() {
+		return lastConnect;
+	}
+
+	public void setLastConnect(Date lastConnect) {
+		this.lastConnect = lastConnect;
 	}
 
 	public boolean isAdmin() {

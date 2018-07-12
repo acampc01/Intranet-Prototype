@@ -30,7 +30,7 @@ public class FileServiceImpl implements FileService{
 
 	@Override
 	public File findByParentAndName(Folder parent, String name) {
-		return fileRepository.findByParentAndName(parent,name);
+		return fileRepository.findByParentAndName(parent, name);
 	}
 
 	@Override
@@ -41,6 +41,16 @@ public class FileServiceImpl implements FileService{
 	@Override
 	public Set<File> findByOwner(User owner) {
 		return fileRepository.findByOwner(owner);
+	}
+
+	@Override
+	public void remove(File file) {
+		if(!file.getSharedUsers().isEmpty()) {
+			
+		} else {
+			file.getParent().getFiles().remove(file);
+			fileRepository.delete(file);
+		}
 	}
 	
 }

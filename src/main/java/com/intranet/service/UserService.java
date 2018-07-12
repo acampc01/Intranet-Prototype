@@ -8,6 +8,8 @@ public interface UserService {
 	public User findUserByEmail(String email);
 	public void save(User user);
 	public void update(User user);
+	public void remove(User user);
+	public User findOne(Integer id);
 	public List<User> findAll(User user);
 	public List<User> findConfirms(User user);
 }

@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -80,7 +79,7 @@ public class FileRestController {
 		return modelAndView;
 	}
 
-	@PostMapping("/user/upload/files/{id_folder}")
+	@RequestMapping(value = "/user/upload/files/{id_folder}", method = RequestMethod.POST)
 	public ResponseEntity<?> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") Integer id) {
 		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
 				.filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
