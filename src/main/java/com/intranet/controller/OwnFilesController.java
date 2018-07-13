@@ -1,6 +1,10 @@
 package com.intranet.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -46,18 +50,46 @@ public class OwnFilesController {
 	@RequestMapping(value = "/user/files/{id_folder}", method = RequestMethod.GET)
 	public ModelAndView getFolderFiles(@PathVariable("id_folder") Integer id) {
 		Folder folder = folderService.findById(id);
-
+		
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
+		System.out.println(id);
+		System.out.println(folder.getSharedUsers().toString());
+		System.out.println(user.getSharedFolders().toString());
+		
 		try {
 			if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {
 				modelAndView.addObject("user", user);
 				modelAndView.addObject("root", folder);
-				modelAndView.addObject("files", folder.getFiles());
-				modelAndView.addObject("folders", folder.getFolders());
 				modelAndView.addObject("notifications", userService.findConfirms(user));
+				
+				List<File> files = new ArrayList<File>(folder.getFiles());
+				Collections.sort(files, new Comparator<File>(){
+		           	@Override
+					public int compare(File o1, File o2) {
+						 return o2.getLastUpdate().compareTo(o1.getLastUpdate());
+					}
+		        });
+				for (File file : new ArrayList<File>(files)) {
+					if(!file.getSharedUsers().contains(user) && !file.getOwner().equals(user))
+						files.remove(file);
+				}
+				
+				List<Folder> folders = new ArrayList<Folder>(folder.getFolders());
+				Collections.sort(folders, new Comparator<Folder>(){
+		           	@Override
+					public int compare(Folder o1, Folder o2) {
+						 return o2.getLastUpdate().compareTo(o1.getLastUpdate());
+					}
+		        });
+				for (Folder fold : new ArrayList<Folder>(folders)) {	
+					if(!fold.getSharedUsers().contains(user) && !fold.getOwner().equals(user))
+						folders.remove(fold);
+				}
+				modelAndView.addObject("files", files);
+				modelAndView.addObject("folders", folders);
 
 				Date last = new Date(0);
 				for (File file : user.getRoot().getFiles()) {

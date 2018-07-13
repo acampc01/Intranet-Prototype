@@ -63,11 +63,11 @@ public class User {
 	private Set<Role> roles;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "user_files_s", joinColumns = @JoinColumn(name = "file_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	@JoinTable(name = "user_files_s", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "file_id"))
 	private Set<File> sharedFiles;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "user_folders_s", joinColumns = @JoinColumn(name = "folder_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	@JoinTable(name = "user_folders_s", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "folder_id"))
 	private Set<Folder> sharedFolders;
 
 	public int getId() {
@@ -172,6 +172,10 @@ public class User {
 				return true;
 		}
 		return false;
+	}
+	
+	public String toString() {
+		return this.getName();
 	}
 
 }

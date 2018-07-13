@@ -39,7 +39,7 @@
 								<tr>
 									<th>File Name</th>
 									<th>Owner</th>
-									<th>Creation Date</th>
+									<th>Download Date</th>
 									<th>Last Update</th>
 									<th>Options</th>
 								</tr>
@@ -53,8 +53,8 @@
 										style="text-decoration: none;"></a></td>
 									<td
 										th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
-									<td th:text="${#dates.format(folder.creation, 'dd-MM-yyyy')}">Creation
-										Date</td>
+									<td th:if="${folder.download} == null"><i class="fa fa-minus" aria-hidden="true"></i></td>
+									<td th:if="${folder.download} != null" th:text="${#dates.format(folder.download, 'dd-MM-yyyy')}">Download Date</td>
 									<td th:text="${#dates.format(folder.lastUpdate, 'dd-MM-yyyy')}">Update
 										Date</td>
 									<td>
@@ -85,8 +85,8 @@
 									</td>
 									<td
 										th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
-									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation
-										Date</td>
+									<td th:if="${file.download} == null"><i class="fa fa-minus" aria-hidden="true"></i></td>
+									<td th:if="${file.download} != null" th:text="${#dates.format(file.download, 'dd-MM-yyyy')}">Download Date</td>
 									<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update
 										Date</td>
 									<td>
@@ -97,8 +97,8 @@
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a class="" href="#" data-toggle="modal"
-													data-target="#shareModal"><i class="fa fa-share-alt"
+												<a class="" th:href="@{/user/share}"> <!-- data-toggle="modal"
+													data-target="#shareModal" --><i class="fa fa-share-alt"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">

@@ -22,52 +22,52 @@
 
 	<div class="content-wrapper">
 		<div class="container-fluid">
-			<!-- Breadcrumbs-->
-			<!-- <ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-				<li class="breadcrumb-item active">Tables</li>
-			</ol> -->
-			<!-- Example DataTables Card-->
 			<div class="card mb-3">
 				<div class="card-header">
-					<i class="fa fa-table"></i> Shared With Me
+					<i class="fa fa-table"></i>
+					<span>Shared With You</span>
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table row-border" id="dataTable" width="100%"
+						<table class="table " id="dataTable" width="100%"
 							cellspacing="0">
-							<thead>
+							<thead class="text-white" style="background-color:#51C3F1;">
 								<tr>
 									<th>File Name</th>
 									<th>Owner</th>
-									<th>Creation Date</th>
+									<th>Download Date</th>
 									<th>Last Update</th>
 									<th>Options</th>
 								</tr>
 							</thead>
 							<tbody>
-
 								<tr id="tablaFolders" th:each="folder:${folders}">
 									<td><i class="fa fa-folder"
-										style="font-size: 24px; color: #7E8C95;"></i> <a class="ml-2"
+										style="font-size: 24px; color: #7E8C95;"></i><a class="ml-2"
 										th:text="${folder.name}"
 										th:href="@{/user/files/} + ${folder.id}"
 										style="text-decoration: none;"></a></td>
 									<td
 										th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
-									<td th:text="${#dates.format(folder.creation, 'dd-MM-yyyy')}">Creation
-										Date</td>
+									<td th:if="${folder.download} == null"><i class="fa fa-minus" aria-hidden="true"></i></td>
+									<td th:if="${folder.download} != null" th:text="${#dates.format(folder.download, 'dd-MM-yyyy')}">Download Date</td>
 									<td th:text="${#dates.format(folder.lastUpdate, 'dd-MM-yyyy')}">Update
 										Date</td>
 									<td>
 										<div class="row">
 											<div class="col-4">
-												<a href=""> <i
+												<a th:href="'/user/download/folder/' + ${folder.id}"> <i
 													class="fa fa-download"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a href=""> <i class="fa fa-share-alt"
+												<a href="#" data-toggle="modal"
+													data-target="#shareModal">
+													<i class="fa fa-share-alt"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+											<div class="col-4">
+												<a href="#" id="delete"><input type="hidden" th:value="${folder.id}"><i class="fa fa-trash-o" aria-hidden="true"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 										</div>
@@ -81,20 +81,25 @@
 									</td>
 									<td
 										th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
-									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation
-										Date</td>
+									<td th:if="${file.download} == null"><i class="fa fa-minus" aria-hidden="true"></i></td>
+									<td th:if="${file.download} != null" th:text="${#dates.format(file.download, 'dd-MM-yyyy')}">Download Date</td>
 									<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update
 										Date</td>
 									<td>
 										<div class="row">
 											<div class="col-4">
-												<a class="" href=""> <i
+												<a class="" th:href="'/user/download/' + ${file.id}"><i
 													class="fa fa-download"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a class="" href=""> <i
-													class="fa fa-share-alt" style="font-size: 24px; color: black"></i></a>
+												<a class="" th:href="@{/user/share}"> <!-- data-toggle="modal"
+													data-target="#shareModal" --><i class="fa fa-share-alt"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+											<div class="col-4">
+												<a href="#" id="delete"><input type="hidden" th:value="${file.id}"><i class="fa fa-trash-o"
+													style="font-size: 24px; color: black"></i></a>
 											</div>
 										</div>
 									</td>

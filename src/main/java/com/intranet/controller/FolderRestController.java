@@ -100,42 +100,6 @@ public class FolderRestController {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	//	@RequestMapping("/user/download/folder/{id_folder}")
-	//	public ResponseEntity<Resource> downloadFile(@PathVariable("id_folder") Integer id, HttpServletRequest request) {
-	//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	//		User user = userService.findUserByEmail(auth.getName());
-	//		Folder folder = folderService.findById(id);
-	//
-	//		try {
-	//			if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {
-	//				createZip(folder);
-	//
-	//				Path pathFile = Paths.get(getPath(folder) + ".zip");
-	//				Resource resource = null;
-	//				try {
-	//					resource = new UrlResource(pathFile.toUri());
-	//				} catch (MalformedURLException e) {}
-	//
-	//				String contentType = null;
-	//				try {
-	//					contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-	//				} catch (IOException ex) {}
-	//
-	//				if(contentType == null) {
-	//					contentType = "application/octet-stream";
-	//				}
-	//
-	//				return ResponseEntity.ok()
-	//						.contentType(MediaType.parseMediaType(contentType))
-	//						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-	//						.body(resource);
-	//			}
-	//		} catch (Exception e) {}
-	//
-	//		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	//	}
-
-
 	@Async
 	private void createZip(Folder folder) throws IOException {
 		String sourceFile = getPath(folder);
