@@ -1,5 +1,8 @@
 $(document).ready(function () {
 
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+
 	$("#upload_files").on('click', function(e){
 		e.preventDefault();
 		$('#progress').show();
@@ -7,8 +10,6 @@ $(document).ready(function () {
 	});
 
 	$("#uploadFiles").on('change', function(){
-		var token = $("meta[name='_csrf']").attr("content");
-		var header = $("meta[name='_csrf_header']").attr("content");
 		var root = $("#folder").val();
 	
 		$.ajax({
@@ -58,9 +59,6 @@ $(document).ready(function () {
 	$("#newFolderBtn").click(function (event) {
 		if( $("#nameNewFolder").val() !== ""){
 			event.preventDefault();
-
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
 			var root = $("#folder").val();
 			
 			$.ajax({
@@ -81,9 +79,39 @@ $(document).ready(function () {
 				    }, 1000);
 					
 				},
-				error: function (e) {}
+				error: function (e) {
+					$('#folderModal').modal('toggle');
+					alertify.error('Error Creating!');
+				}
 			});
 		}   
+	});
+	
+	$("a#delete").on('click', function(event){
+		var data = $(this).find("input").val();
+		event.preventDefault();
+		var msg = alertify.error('Click here to delete', 5);
+		msg.callback = function (isClicked) {
+			if(isClicked)
+				$.ajax({
+					type: "DELETE",
+					url: "/file/delete/".concat(data),
+					cache: false,
+					beforeSend: function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					timeout: 6000,
+					success: function (data) {
+						alertify.success('Resource Deleted!');
+						setTimeout(function(){
+							location.reload();
+					    }, 1000);
+					},
+					error: function (e) {}
+				});
+			else
+				alertify.error('Not Deleted!');
+		};
 	});
 
 });

@@ -41,9 +41,8 @@ public class FolderRestController {
 	@Autowired
 	private FolderService folderService;
 
-	@SuppressWarnings("rawtypes")
 	@PostMapping(path = "/user/create/folder/{id_folder}", consumes = "text/plain")
-	public ResponseEntity<?> createFolder(@PathVariable("id_folder") Integer id, @RequestBody String name) {
+	public ResponseEntity<Folder> createFolder(@PathVariable("id_folder") Integer id, @RequestBody String name) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
@@ -61,8 +60,9 @@ public class FolderRestController {
 			folderService.save(newFolder);
 			folderService.update(root);
 			userService.update(user);
+			return new ResponseEntity<Folder>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity<Folder>(HttpStatus.BAD_REQUEST);
 	}
 
 	@RequestMapping("/user/download/folder/{id_folder}")

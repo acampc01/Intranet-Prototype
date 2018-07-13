@@ -23,7 +23,7 @@
 	<div class="content-wrapper">
 		<div class="container-fluid">
 			<div class="row" th:if="${#lists.size(notifications) != 0}">
-				<div class="col-4 mb-3" th:each="user:${notifications}">
+				<div class="col col-sm-4 col-sm mb-3" th:each="user:${notifications}">
 					<div class="card border-primary">
 				    	<div class="card-body">
 					        <div class="d-flex w-100 justify-content-between">
@@ -48,14 +48,14 @@
 		<!-- <div th:if="${#lists.size(notifications) == 0}">
 			<h3 class="alert alert-success m-3">There are no new alerts!</h3>
 		</div> -->
-
+		
 		<div class="text-center">
 			<h3 class="alert alert-info mt-2 ml-4 mr-4 border-primary">Current Active Users</h3>
 		</div>
 
 		<div class="container-fluid">
 			<div class="row" th:if="${#lists.size(users) != 0}">
-				<div class="col-4 mb-3" th:each="user:${users}">
+				<div class="col col-sm-4 col-sm mb-3" th:each="user:${users}">
 				    <div class="card" th:classappend="${user.active == 1} ? border-primary">
 						<div class="card-body">
 							<div class="d-flex w-100 justify-content-between">

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,12 +41,12 @@ public class AdminController {
 	@Autowired
 	private FolderService folderService;
 
-	@RequestMapping(value = "/admin/prueba", method = RequestMethod.GET)
-	public ResponseEntity<User> prueba() {
-		Folder f = folderService.findById(39);
-		clear(f);
-		return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
-	}
+//	@RequestMapping(value = "/admin/prueba", method = RequestMethod.GET)
+//	public ResponseEntity<User> prueba() {
+//		Folder f = folderService.findById(39);
+//		clear(f);
+//		return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+//	}
 	
 	@RequestMapping(value = "/admin/home", method = RequestMethod.GET)
 	public ModelAndView home() {
@@ -141,6 +143,34 @@ public class AdminController {
 			}
 		}
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(value = "/file/delete/{id_file}", method = RequestMethod.DELETE)
+	public ResponseEntity<File> deleteFile(@PathVariable("id_file") Integer id) {
+		File file = fileService.findById(id);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+
+		try {
+			if(user != null && file != null) {
+				if(file.getOwner().equals(user) || file.getSharedUsers().contains(user)){
+					clear(file);
+					return new ResponseEntity<File>(HttpStatus.NO_CONTENT);
+				}
+			}
+		} catch (EntityNotFoundException e) {}
+		
+		try {
+			Folder folder = folderService.findById(id);
+			if(user != null && folder != null) {
+				if(folder.getOwner().equals(user) || folder.getSharedUsers().contains(user)){
+					clear(folder);
+					return new ResponseEntity<File>(HttpStatus.NO_CONTENT);
+				}
+			}
+		} catch (EntityNotFoundException e) {}
+		
+		return new ResponseEntity<File>(HttpStatus.NOT_FOUND);
 	}
 
 	@Async

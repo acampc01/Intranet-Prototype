@@ -3,6 +3,8 @@ package com.intranet.service;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,12 +37,14 @@ public class FileServiceImpl implements FileService{
 
 	@Override
 	public File findById(Integer id) {
-		return fileRepository.getOne(id);
+		return fileRepository.getOne(id); 
 	}
 
 	@Override
 	public Set<File> findByOwner(User owner) {
-		return fileRepository.findByOwner(owner);
+		Set<File> files = fileRepository.findByOwner(owner);
+		files.addAll(owner.getSharedFiles());
+		return files;
 	}
 
 	@Override

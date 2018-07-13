@@ -511,6 +511,7 @@ footer.sticky-footer {
 	}
 }
 
-#folder {
-	display: none;
+li.paginate_button.active > a.page-link {
+	background-color: #51C3F1;
+	border-color: #51C3F1;
 }

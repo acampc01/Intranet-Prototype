@@ -13,18 +13,18 @@
 			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion" style="background-color:#225366;">
 				<li class="nav-item" data-toggle="tooltip" data-placement="right"
 					><a class="nav-link text-white"
-					th:href="@{/user/files/} + ${user.root.id}"> <i
-						class="fa fa-fw fa-folder"></i> <span class="nav-link-text">My
+					th:href="@{/user/files/} + ${user.root.id}"><i
+						class="fa fa-fw fa-folder"></i><span class="d-lg-none">My Files</span><span class="nav-link-text">My
 							Files</span>
 				</a></li>
 				<li class="nav-item" data-toggle="tooltip" data-placement="right"
 					><a class="nav-link text-white"
 					th:href="@{/user/shared}"> <i class="fa fa-fw fa-share-alt"></i>
-						<span class="nav-link-text">Shared With Me</span>
+						<span class="d-lg-none">Shared With Me</span><span class="nav-link-text">Shared With Me</span>
 				</a></li>
 				<li class="nav-item" data-toggle="tooltip" data-placement="right"><a class="nav-link text-white"
 					th:href="@{/user/search}"><i class="fa fa-fw fa-search" aria-hidden="true"></i>
-						<span class="nav-link-text">Search</span>
+						<span class="d-lg-none">Search</span><span class="nav-link-text">Search</span>
 				</a></li>
 			</ul>
 			<ul class="navbar-nav sidenav-toggler">
@@ -32,6 +32,7 @@
 					id="sidenavToggler"> <i class="fa fa-fw fa-angle-left"></i>
 				</a></li>
 			</ul>
+			
 			<!-- TOP NAVBAR -->
 			<ul class="navbar-nav ml-auto">
 				<!-- NOTIFICATIONS -->
@@ -112,7 +113,7 @@
 				<div class="modal-footer">
 					<button class="btn btn-secondary" type="button"
 						data-dismiss="modal">Cancel</button>
-					<a class="btn btn-primary" th:href="@{/logout}">Logout</a>
+					<a class="btn btn-primary" style="background-color:#51C3F1;" th:href="@{/logout}">Logout</a>
 				</div>
 			</div>
 		</div>
@@ -121,7 +122,7 @@
 	<!-- Create Folder -->
 	<div th:if="${root != null}" class="modal fade" id="folderModal" tabindex="-1" role="dialog"
 		aria-labelledby="folderModalLabel" aria-hidden="true">
-		<input id="folder" th:value="${root.id}">
+		<input type="hidden" id="folder" th:value="${root.id}">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<form id="createFolder" method="POST">
@@ -133,7 +134,7 @@
 					<div class="modal-footer">
 						<button class="btn btn-secondary" type="button"
 							data-dismiss="modal">Cancel</button>
-						<button class="btn btn-primary" id="newFolderBtn" type="Submit">Create</button>
+						<button class="btn btn-primary" style="background-color:#51C3F1;" id="newFolderBtn" type="Submit">Create</button>
 					</div>
 				</form>
 			</div>

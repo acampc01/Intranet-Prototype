@@ -13,7 +13,7 @@ $(document).ready(function () {
 			},
 			timeout: 6000,
 			success: function (data) {
-				alertify.success('User Refused!');
+				alertify.error('User Refused!');
 				setTimeout(function(){
 					location.reload();
 			    }, 1000);

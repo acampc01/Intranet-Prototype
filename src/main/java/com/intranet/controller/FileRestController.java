@@ -51,7 +51,7 @@ public class FileRestController {
 
 	@Autowired
 	private FolderService folderService;
-
+	
 	@RequestMapping(value="/user/file/{id_file}", method = RequestMethod.GET)
 	public ModelAndView embed(@PathVariable("id_file") Integer id) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -80,21 +80,21 @@ public class FileRestController {
 	}
 
 	@RequestMapping(value = "/user/upload/files/{id_folder}", method = RequestMethod.POST)
-	public ResponseEntity<?> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") Integer id) {
+	public ResponseEntity<File> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") Integer id) {
 		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
 				.filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
 
 		if (StringUtils.isEmpty(uploadedFileName)) {
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
 		try {
 			saveUploadedFiles(Arrays.asList(uploadfiles), id);
 		} catch (IOException e) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<File>(HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<File>(HttpStatus.OK);
 	}
 
 	@RequestMapping("/user/download/{id_file}")

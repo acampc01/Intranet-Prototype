@@ -35,7 +35,7 @@
 					<div class="table-responsive">
 						<table class="table " id="dataTable" width="100%"
 							cellspacing="0">
-							<thead style="background-color:#51C3F1;">
+							<thead class="text-white" style="background-color:#51C3F1;">
 								<tr>
 									<th>File Name</th>
 									<th>Owner</th>
@@ -60,13 +60,18 @@
 									<td>
 										<div class="row">
 											<div class="col-4">
-												<a class="" th:href="'/user/download/folder/' + ${folder.id}"> <i
+												<a th:href="'/user/download/folder/' + ${folder.id}"> <i
 													class="fa fa-download"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a href=""> <i
-													class="fa fa-share-alt"
+												<a href="#" data-toggle="modal"
+													data-target="#shareModal">
+													<i class="fa fa-share-alt"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+											<div class="col-4">
+												<a href="#" id="delete"><input type="hidden" th:value="${folder.id}"><i class="fa fa-trash-o" aria-hidden="true"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 										</div>
@@ -87,13 +92,17 @@
 									<td>
 										<div class="row">
 											<div class="col-4">
-												<a class="" th:href="'/user/download/' + ${file.id}"> <i
+												<a class="" th:href="'/user/download/' + ${file.id}"><i
 													class="fa fa-download"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
 												<a class="" href="#" data-toggle="modal"
 													data-target="#shareModal"><i class="fa fa-share-alt"
+													style="font-size: 24px; color: black"></i></a>
+											</div>
+											<div class="col-4">
+												<a href="#" id="delete"><input type="hidden" th:value="${file.id}"><i class="fa fa-trash-o"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 										</div>
@@ -110,7 +119,7 @@
 		</div>
 	</div>
 
-	<!-- Share Modal-->
+	<!-- SHARE MODAL -->
 	<div class="modal fade" id="shareModal" tabindex="-1" role="dialog"
 		aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
