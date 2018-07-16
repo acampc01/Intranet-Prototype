@@ -66,9 +66,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public List<User> findAll(User user) {
-		if(user.isAdmin())
-			return userRepository.findAllByActive(1);
-		return new ArrayList<User>();
+		return userRepository.findAllByActive(1);
 	}
 
 	@Override

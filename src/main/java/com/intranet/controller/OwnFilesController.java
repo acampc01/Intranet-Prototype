@@ -47,6 +47,7 @@ public class OwnFilesController {
 		return modelAndView;
 	}
 
+	//TODO sharing system for folder and file --> share process after click share 
 	@RequestMapping(value = "/user/files/{id_folder}", method = RequestMethod.GET)
 	public ModelAndView getFolderFiles(@PathVariable("id_folder") Integer id) {
 		Folder folder = folderService.findById(id);

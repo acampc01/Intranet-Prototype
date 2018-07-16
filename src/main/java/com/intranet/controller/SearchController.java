@@ -39,6 +39,17 @@ public class SearchController {
 	@Autowired
 	private FileService fileService;
 
+	@RequestMapping(value="/user/search", method = RequestMethod.GET)
+	public ModelAndView search() {
+		ModelAndView modelAndView = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		modelAndView.addObject("user", user);
+		modelAndView.addObject("notifications", userService.findConfirms(user));
+		modelAndView.setViewName("user/search");
+		return modelAndView;
+	}
+	
 	@PostMapping(path = "/user/autocomplete", consumes = "text/plain", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Map<String, Object>> autocomplete(@RequestBody String search){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -60,24 +71,14 @@ public class SearchController {
 		List<User> users = userService.findAll(user);
 		if(users == null)
 			return new ResponseEntity<Map<Object, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
-
+		
+		users.remove(user);
 		HashMap<Object, Object> map = createJSON(name, users);
 
 		if(map == null)
 			return new ResponseEntity<Map<Object, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
 
 		return new ResponseEntity<Map<Object, Object>>(map, HttpStatus.OK);
-	}
-
-	@RequestMapping(value="/user/search", method = RequestMethod.GET)
-	public ModelAndView search() {
-		ModelAndView modelAndView = new ModelAndView();
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		User user = userService.findUserByEmail(auth.getName());
-		modelAndView.addObject("user", user);
-		modelAndView.addObject("notifications", userService.findConfirms(user));
-		modelAndView.setViewName("user/search");
-		return modelAndView;
 	}
 
 	@Async
@@ -124,7 +125,7 @@ public class SearchController {
 		HashMap<Object, Object> map = new HashMap<Object, Object>();
 		try {
 			for (User user : users) {
-				if(user.getEmail().split("@")[0].toLowerCase().contains(name.toLowerCase()) && !user.isAdmin()) {
+				if(user.getEmail().split("@")[0].toLowerCase().contains(name.toLowerCase()) || name.equals("empty")) {
 					HashMap<String, String> datos = new HashMap<String, String>();
 					datos.put("id", String.valueOf(user.getId()));
 					datos.put("email", user.getEmail());

@@ -65,8 +65,9 @@
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a href="#" data-toggle="modal"
+												<a href="#" id="shareModalLink" data-toggle="modal"
 													data-target="#shareModal">
+													<input type="hidden" th:value="${folder.id}">
 													<i class="fa fa-share-alt"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
@@ -97,8 +98,10 @@
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a class="" th:href="@{/user/share}"> <!-- data-toggle="modal"
-													data-target="#shareModal" --><i class="fa fa-share-alt"
+												<a href="#" id="shareModalLink" data-toggle="modal"
+													data-target="#shareModal">
+													<input type="hidden" th:value="${file.id}">
+													<i class="fa fa-share-alt"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
@@ -124,23 +127,23 @@
 		aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Share With:</h5>
-				</div>
 				<div class="modal-body">
-					<div id="shareWrapper" class="border border-dark rounded mx-auto" style="background-color:#9dd9d2;"> 
+					<div id="shareWrapper" class="border border-dark rounded mx-auto" style="background-color:#225366;"> 
 						<form id="sUf">
-							<input id="searchUser" class="border-dark m-2 w-50 form-control" type="text">
+							<input id="dTs" type="hidden" value="">
+							<input id="searchUser" class="border-dark m-2 w-50 form-control d-inline-flex" type="text" placeholder="Name or Email..">
+							<a th:if="${user.isAdmin()}" href='#' id='addAll' class='btn btn-primary btn-sm' style="background-color:#51C3F1;border-color:#51C3F1;"><i class='fa fa-plus' aria-hidden='true'></i> Add All</a>
+							<a href='#' id='removeAll' class='btn btn-danger btn-sm'><i class='fa fa-times' aria-hidden='true'></i> Clear All</a>
 						</form>
 					</div>
-					<div id="shareContent" class="bg-white">
+					<div id="shareContent" class="bg-white mt-2">
 						
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-secondary" type="button"
 						data-dismiss="modal">Cancel</button>
-					<a class="btn btn-primary" style="background-color:#51C3F1;" href>Share</a>
+					<a class="btn btn-primary" style="background-color:#51C3F1;border-color:#51C3F1;" href>Share</a>
 				</div>
 			</div>
 		</div>
@@ -160,6 +163,11 @@
 			$(".modal").on("hidden.bs.modal", function() {
 			 	$("#searchUser").val('');
 		  		$("#shareContent").empty();
+		  	});
+			
+			$("a#shareModalLink").on("click", function() {
+				var inp = $(this).find("input").val();
+				$("#dTs").val(inp);
 		  	});
 		});
 	</script>
