@@ -45,28 +45,35 @@ $(document).ready(function () {
 			$("#searchFiles").val('');
 		});
 		
-		$("#nameU").autocomplete({
+		$("#searchUser").autocomplete({
 			source: function( request, response ) {
 				$.ajax({ 
 					type: "POST",
 					url: "/user/autocomplete/name",
 					contentType: "text/plain",
+					dataType: "json",
 					data: request.term,
 					beforeSend: function(xhr) {
 						xhr.setRequestHeader(header, token);
 					},
-					timeout: 6000,
 					success: function( data ) {
-						$("#listAdds").empty();
-						$.each(data, function(index, item){
-							$("#listAdds").append("<a class='list-group-item list-group-item-action flex-column align-items-start'><div class='d-flex w-100'><span class='mr-2'>" + item[0] + " &#60" + item[1] + "&#62</span></div></a>");
-	       				});
+						response($.map(data, function(v,i){
+							return {
+						    	label: v.name + " <" + v.email + ">",
+						    	value: v.email
+							};
+						}));
 		          	},
 					error: function (e) {
 						
 					}
 				});
 			},
-			minLength: 1
+			minLength: 1,
+			select: function( event, ui ){
+				$("#shareContent").append("<div><div class='border border-dark rounded m-2 p-1 d-inline-flex' id='shareContent'>" + ui.item.value + "</div><a class='text-danger' href='#'><i class='fa fa-times' aria-hidden='true'></i></a></div>");
+			}
 		});
+		$( "#searchUser" ).autocomplete( "option", "appendTo", "#sUf" );
+		    
 });

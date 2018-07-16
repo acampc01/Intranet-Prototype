@@ -53,20 +53,20 @@ public class SearchController {
 	}
 
 	@PostMapping(path = "/user/autocomplete/name", consumes = "text/plain", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Map<String, Object>> autocompleteNames(@RequestBody String name){
+	public ResponseEntity<Map<Object, Object>> autocompleteNames(@RequestBody String name){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
 		List<User> users = userService.findAll(user);
 		if(users == null)
-			return new ResponseEntity<Map<String, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Map<Object, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
 
-		HashMap<String, Object> map = createJSON(name, users);
+		HashMap<Object, Object> map = createJSON(name, users);
 
 		if(map == null)
-			return new ResponseEntity<Map<String, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Map<Object, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
 
-		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		return new ResponseEntity<Map<Object, Object>>(map, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/user/search", method = RequestMethod.GET)
@@ -120,12 +120,15 @@ public class SearchController {
 	}
 
 	@Async
-	public HashMap<String, Object> createJSON(String name, List<User> users){
-		HashMap<String, Object> map = new HashMap<>();
+	public HashMap<Object, Object> createJSON(String name, List<User> users){
+		HashMap<Object, Object> map = new HashMap<Object, Object>();
 		try {
 			for (User user : users) {
 				if(user.getEmail().split("@")[0].toLowerCase().contains(name.toLowerCase()) && !user.isAdmin()) {
-					String[] datos = {user.getName(), user.getEmail()};
+					HashMap<String, String> datos = new HashMap<String, String>();
+					datos.put("id", String.valueOf(user.getId()));
+					datos.put("email", user.getEmail());
+					datos.put("name", user.getName());
 					map.put(String.valueOf(user.getId()), datos);
 				}		
 			}

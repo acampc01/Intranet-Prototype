@@ -177,7 +177,10 @@ public class AdminController {
 	private void clear(Folder folder) {
 		if(folder != null)
 			if(folder.isShared()) {
-				
+				try {
+					User no = folder.getSharedUsers().iterator().next();
+					givesFolder(no, folder);
+				} catch (IOException e) {}
 			}else {
 				for (Folder son : folder.getFolders()) {
 					clear(son);
@@ -192,9 +195,7 @@ public class AdminController {
 						FileUtils.forceDelete(f);
 						folderService.remove(folder);
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				} catch (IOException e) {}
 			}
 	}
 	
@@ -202,44 +203,43 @@ public class AdminController {
 	private void clear(File file) {
 		if(file != null)
 			if(file.isShared()) {
-				
+				try {
+					User no = file.getSharedUsers().iterator().next();
+					givesFile(no, file);
+				} catch (IOException e) {}
 			}else {
 				try {
 					java.io.File f = new java.io.File(getPath(file));
 					if(f.isFile()) {
-						FileUtils.forceDelete(f);
 						fileService.remove(file);
+						FileUtils.forceDelete(f);
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				} catch (IOException e) {}
 			}
 	}
 
-	private void givesFile(User newOwner, File file) {
-		file.setOwner(newOwner);
+	private void givesFile(User no, File file) throws IOException {
+		java.io.File f = new java.io.File(getPath(file));
+		FileUtils.moveFile(f, new java.io.File(getPath(no.getRoot())));
+		
+		file.setOwner(no);
+		no.getSharedFiles().remove(file);
+		file.getSharedUsers().remove(no);
+		
 		fileService.update(file);
-
-		for (File fil : newOwner.getSharedFiles()) {
-			if(fil.equals(file)) {
-				newOwner.getSharedFiles().remove(fil);
-				userService.update(newOwner);
-				return;
-			}
-		}
+		userService.update(no);
 	}
 
-	private void givesFolder(User newOwner, Folder folder) {
-		folder.setOwner(newOwner);
+	private void givesFolder(User no, Folder folder) throws IOException {
+		java.io.File f = new java.io.File(getPath(folder));
+		FileUtils.moveDirectory(f, new java.io.File(getPath(no.getRoot())));
+		
+		folder.setOwner(no);
+		no.getSharedFolders().remove(folder);
+		folder.getSharedUsers().remove(no);
+		
 		folderService.update(folder);
-
-		for (Folder fold : newOwner.getSharedFolders()) {
-			if(fold.equals(folder)) {
-				newOwner.getSharedFolders().remove(fold);
-				userService.update(newOwner);
-				return;
-			}
-		}
+		userService.update(no);
 	}
 
 	@Async

@@ -55,9 +55,9 @@ public class OwnFilesController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
-		System.out.println(id);
-		System.out.println(folder.getSharedUsers().toString());
-		System.out.println(user.getSharedFolders().toString());
+//		System.out.println(id);
+//		System.out.println(folder.getSharedUsers().toString());
+//		System.out.println(user.getSharedFolders().toString());
 		
 		try {
 			if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {
