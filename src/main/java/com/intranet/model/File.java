@@ -3,7 +3,6 @@ package com.intranet.model;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
@@ -55,8 +53,7 @@ public class File {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User owner;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "user_files_s", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "file_id"))
+	@ManyToMany(mappedBy="sharedFiles")
 	private Set<User> sharedUsers;
 
 	@PrePersist

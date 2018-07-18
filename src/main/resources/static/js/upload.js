@@ -86,32 +86,5 @@ $(document).ready(function () {
 			});
 		}   
 	});
-	
-	$("a#delete").on('click', function(event){
-		var data = $(this).find("input").val();
-		event.preventDefault();
-		var msg = alertify.error('Click here to delete', 5);
-		msg.callback = function (isClicked) {
-			if(isClicked)
-				$.ajax({
-					type: "DELETE",
-					url: "/file/delete/".concat(data),
-					cache: false,
-					beforeSend: function(xhr) {
-						xhr.setRequestHeader(header, token);
-					},
-					timeout: 6000,
-					success: function (data) {
-						alertify.success('Resource Deleted!');
-						setTimeout(function(){
-							location.reload();
-					    }, 1000);
-					},
-					error: function (e) {}
-				});
-			else
-				alertify.error('Not Deleted!');
-		};
-	});
 
 });

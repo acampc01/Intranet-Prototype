@@ -89,7 +89,7 @@ public class SearchController {
 			for (File file : files) {
 				if(file.getName().toLowerCase().split("\\.")[0].equals(search.toLowerCase()) || file.getName().toLowerCase().split("\\.")[0].contains(search.toLowerCase())) {
 					String[] datos = {file.getName(), ""+file.getParent().getId(), file.getLastUpdate().toString(), file.getParent().getName(), file.getOwner().getName()};
-					map.put(""+file.getId(), datos);
+					map.put(String.valueOf(file.getId()), datos);
 				}
 				switch(file.getFormat()) {
 				case "pdf":
@@ -106,7 +106,7 @@ public class SearchController {
 					reader.close();
 					if(!pages.isEmpty()) {
 						String[] datos = {file.getName(), ""+file.getParent().getId(), file.getLastUpdate().toString(), file.getParent().getName(), file.getOwner().getName(), pages.toString()};
-						map.put(""+file.getId(), datos);
+						map.put(String.valueOf(file.getId()), datos);
 					}
 					break;
 				default:
@@ -142,7 +142,6 @@ public class SearchController {
 	@Async
 	private String getPath(File file) {
 		String path = "";
-
 		Folder aux = new Folder();
 		aux.setParent(file.getParent());
 		while(aux.getParent() != null) {

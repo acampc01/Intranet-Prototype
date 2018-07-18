@@ -69,7 +69,7 @@ $(document).ready(function () {
 			},
 			minLength: 1,
 			select: function( event, ui ){
-				$("#shareContent").append("<div id='dataU'><div class='border border-dark rounded m-2 p-1 d-inline-flex' id='shareContent'>" + ui.item.value + "</div><a href='#' id='removeU' class='text-danger'><i class='fa fa-times' aria-hidden='true'></i></a></div>");
+				$("#shareContent").append("<div id='dataU'><div class='border border-dark rounded m-2 p-1 d-inline-flex' id='shareContent'><span id='uE'>" + ui.item.value + "</span></div><a href='#' id='removeU' class='text-danger'><i class='fa fa-times' aria-hidden='true'></i></a></div>");
 				$("a#removeU").on('click', function(event){
 					event.preventDefault();
 				    $(this).parent().remove();
@@ -97,8 +97,9 @@ $(document).ready(function () {
 					xhr.setRequestHeader(header, token);
 				},
 				success: function( data ) {
+					$("#shareContent").empty();
 					$.map(data, function(v,i){
-						$("#shareContent").append("<div id='dataU'><div class='border border-dark rounded m-2 p-1 d-inline-flex' id='shareContent'>" + v.email + "</div><a href='#' id='removeU' class='text-danger'><i class='fa fa-times' aria-hidden='true'></i></a></div>");
+						$("#shareContent").append("<div id='dataU'><div class='border border-dark rounded m-2 p-1 d-inline-flex' id='shareContent'><span id='uE'>" + v.email + "</span></div><a href='#' id='removeU' class='text-danger'><i class='fa fa-times' aria-hidden='true'></i></a></div>");
 						$("a#removeU").on('click', function(event){
 							event.preventDefault();
 						    $(this).parent().remove();
@@ -109,4 +110,38 @@ $(document).ready(function () {
 				error: function (e) { }
 			});
 		});
+		
+		$("a#letsShare").on('click', function(event){
+			event.preventDefault();
+			
+			var elems = $("[id=uE]");
+			var emails = [];
+			
+			$.each(elems, function(i,e){
+				emails.push(e.firstChild.data);
+			});
+			
+			$.ajax({
+				type: "PUT",
+				url: "/user/share/files/".concat($("#dTs").val()),
+				data: {
+					emails
+				},
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
+				success: function( data ) {
+					alertify.success('Shared Correctly!');
+	          	},
+				error: function (e) {
+					alertify.error('Error Sharing!');
+				}
+			});
+			
+			$("#shareModal").modal('hide');
+		});
 });
+
+/*$.each(arr, function(i,e){
+	console.log(e.firstChild.data);
+});*/

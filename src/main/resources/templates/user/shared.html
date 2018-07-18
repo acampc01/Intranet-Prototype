@@ -29,19 +29,21 @@
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table " id="dataTable" width="100%"
+						<table class="table table-hover" id="dataTable" width="100%"
 							cellspacing="0">
 							<thead class="text-white" style="background-color:#51C3F1;">
 								<tr>
 									<th>File Name</th>
 									<th>Owner</th>
-									<th>Download Date</th>
+									<th>Download</th>
+									<th>Creation</th>
 									<th>Last Update</th>
-									<th>Options</th>
+									<!-- <th>Options</th> -->
 								</tr>
 							</thead>
 							<tbody>
-								<tr id="tablaFolders" th:each="folder:${folders}">
+								<tr id="fila" th:each="folder:${folders}">
+									<input type="hidden" th:value="${folder.id}">
 									<td><i class="fa fa-folder"
 										style="font-size: 24px; color: #7E8C95;"></i><a class="ml-2"
 										th:text="${folder.name}"
@@ -51,29 +53,30 @@
 										th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
 									<td th:if="${folder.download} == null"><i class="fa fa-minus" aria-hidden="true"></i></td>
 									<td th:if="${folder.download} != null" th:text="${#dates.format(folder.download, 'dd-MM-yyyy')}">Download Date</td>
-									<td th:text="${#dates.format(folder.lastUpdate, 'dd-MM-yyyy')}">Update
-										Date</td>
-									<td>
+									<td th:text="${#dates.format(folder.creation, 'dd-MM-yyyy')}">Creation Date</td>
+									<td th:text="${#dates.format(folder.lastUpdate, 'dd-MM-yyyy')}">Update Date</td>
+									<!-- <td>
 										<div class="row">
 											<div class="col-4">
-												<a th:href="'/user/download/folder/' + ${folder.id}"> <i
+												<a th:href="'/user/download/folder/' + ${folder.id}"><i
 													class="fa fa-download"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a href="#" data-toggle="modal"
+												<a href="#" id="shareModalLink" data-toggle="modal"
 													data-target="#shareModal">
 													<i class="fa fa-share-alt"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a href="#" id="delete"><input type="hidden" th:value="${folder.id}"><i class="fa fa-trash-o" aria-hidden="true"
+												<a href="#" id="delete"><i class="fa fa-trash-o" aria-hidden="true"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 										</div>
-									</td>
+									</td> -->
 								</tr>
-								<tr th:each="file:${files}">
+								<tr id="fila" th:each="file:${files}">
+									<input type="hidden" th:value="${file.id}">
 									<td><i th:if="${file.format == 'zip'}" class="fa fa-file-archive-o" style="font-size: 24px; color: #0079CA;"></i>
 										<i th:if="${file.format != 'zip'}" class="fa fa-file-text" style="font-size: 24px; color: #0079CA;"></i>
 										<a th:if="${file.format == 'pdf'}" class="ml-2" th:text="${file.name}" th:href="@{/user/file/} + ${file.id}"></a>
@@ -83,9 +86,10 @@
 										th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
 									<td th:if="${file.download} == null"><i class="fa fa-minus" aria-hidden="true"></i></td>
 									<td th:if="${file.download} != null" th:text="${#dates.format(file.download, 'dd-MM-yyyy')}">Download Date</td>
+									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation Date</td>
 									<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update
 										Date</td>
-									<td>
+									<!-- <td>
 										<div class="row">
 											<div class="col-4">
 												<a class="" th:href="'/user/download/' + ${file.id}"><i
@@ -93,8 +97,10 @@
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
-												<a class="" th:href="@{/user/share}"> <!-- data-toggle="modal"
-													data-target="#shareModal" --><i class="fa fa-share-alt"
+												<a href="#" id="shareModalLink" data-toggle="modal"
+													data-target="#shareModal">
+													<input type="hidden" th:value="${file.id}">
+													<i class="fa fa-share-alt"
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 											<div class="col-4">
@@ -102,7 +108,7 @@
 													style="font-size: 24px; color: black"></i></a>
 											</div>
 										</div>
-									</td>
+									</td> -->
 								</tr>
 							</tbody>
 						</table>
@@ -115,9 +121,44 @@
 		</div>
 	</div>
 
+	<!-- SHARE MODAL -->
+	<div class="modal fade" id="shareModal" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div id="shareWrapper" class="rounded mx-auto" style="background-color:#51C3F1;"> <!-- border border-dark -->
+						<form id="sUf">
+							<input id="dTs" type="hidden" value="">
+							<input id="searchUser" class="m-2 w-50 form-control d-inline-flex" type="text" placeholder="Name or Email..">
+							<a th:if="${user.isAdmin()}" href='#' id='addAll' class='btn btn-sm text-white' style="background-color:#225366;"><i class='fa fa-plus' aria-hidden='true'></i> Add All</a>
+							<a href='#' id='removeAll' class='btn btn-danger btn-sm'><i class='fa fa-times' aria-hidden='true'></i> Clear All</a>
+						</form>
+					</div>
+					<div id="sharedWith"></div>
+					<div id="shareContent" class="bg-white mt-2"></div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button"
+						data-dismiss="modal">Cancel</button>
+					<a id="letsShare" class="btn btn-primary" style="background-color:#51C3F1;border-color:#51C3F1;" href>Share</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Footer -->
 	<th:block th:include="includes/footer :: footer"></th:block>
 	<th:block th:include="includes/scripts :: scripts"></th:block>
+	<script th:src="@{/js/search.js}"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".modal").on("hidden.bs.modal", function() {
+			 	$("#searchUser").val('');
+		  		$("#shareContent").empty();
+		  	});
+		});
+	</script>
 </body>
 
 </html>

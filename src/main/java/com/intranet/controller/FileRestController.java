@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,6 +80,97 @@ public class FileRestController {
 		return modelAndView;
 	}
 
+	@RequestMapping(value = "/user/share/files/{id_resource}", method = RequestMethod.PUT)
+	public ResponseEntity<String> shareFiles(@RequestParam("emails[]") String[] emails, @PathVariable("id_resource") Integer id){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User u = userService.findUserByEmail(auth.getName());
+		
+		if(emails.length != 0) {
+			for (int i = 0; i < emails.length; i++) {
+				User user = userService.findUserByEmail(emails[i]);
+				if(user != null) {
+					try {
+						File file = fileService.findById(id);
+						shareFile(file, u, user);
+					} catch (EntityNotFoundException e) {}
+					
+					try {
+						Folder folder = folderService.findById(id);
+						shareFolder(folder, u, user);
+					} catch (EntityNotFoundException e) {}
+				}
+			}
+			return new ResponseEntity<String>(HttpStatus.OK);
+		}
+			
+		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+	}
+	
+	@RequestMapping(value = "/user/file/shared/users/{id_resource}", method = RequestMethod.GET)
+	public HashMap<String, Object> sharedWith(@PathVariable("id_resource") Integer id){
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		
+		File file = fileService.findById(id);
+		try {
+			if(file.getOwner().equals(user) || file.getSharedUsers().contains(user)) {
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				for (User u : file.getSharedUsers()) {
+					HashMap<String, String> data = new HashMap<String, String>();
+					data.put("name", u.getName());
+					data.put("email", u.getEmail());
+					map.put(String.valueOf(u.getId()), data);
+				}
+				return map;
+			}
+		} catch (EntityNotFoundException e) {}
+		
+		Folder folder = folderService.findById(id);
+		try {
+			if(folder.getOwner().equals(user) || folder.getSharedUsers().contains(user)) {
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				for (User u : folder.getSharedUsers()) {
+					HashMap<String, String> data = new HashMap<String, String>();
+					data.put("name", u.getName());
+					data.put("email", u.getEmail());
+					map.put(String.valueOf(u.getId()), data);
+				}
+				return map;
+			}
+		} catch (EntityNotFoundException e) {}
+		
+		return new HashMap<String,Object>();
+	}
+	
+	@Async
+	private void shareFolder(Folder folder, User owner, User user) {
+		if( (folder != null && !folder.getSharedUsers().contains(user) && !folder.getOwner().equals(user)) && (folder.getOwner().equals(owner) || folder.getSharedUsers().contains(owner))) {
+			for (Folder f : folder.getFolders()) {
+				shareFolder(f, owner, user);
+			}
+			
+			for (File file : folder.getFiles()) {
+				shareFile(file, owner, user);
+			}
+			
+			folder.getSharedUsers().add(user);
+			user.getSharedFolders().add(folder);
+			folderService.update(folder);
+			userService.update(user);
+		}
+	}
+	
+	@Async
+	private void shareFile(File file, User owner, User user) {
+		if( (file != null && !file.getSharedUsers().contains(user) && !file.getOwner().equals(user)) && (file.getOwner().equals(owner) || file.getSharedUsers().contains(owner))) {
+			file.getSharedUsers().add(user);
+			user.getSharedFiles().add(file);
+			fileService.update(file);
+			userService.update(user);
+		}
+	}
+	
 	@RequestMapping(value = "/user/upload/files/{id_folder}", method = RequestMethod.POST)
 	public ResponseEntity<File> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") Integer id) {
 		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
