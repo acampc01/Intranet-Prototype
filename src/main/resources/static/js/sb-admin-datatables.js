@@ -13,8 +13,15 @@ $(document).ready(function() {
 			{ "width": "45%", "targets": 0 }
 		],
 		"pageLength": 25,
-		"lengthMenu": [5, 25, 50, 100]
+		"lengthMenu": [5, 25, 50, 100],
+		"render": function ( data, type, row, meta ) {
+      		return '<a href="'+data+'">Download</a>';
+    	}
 	});
+  
+  	/*$('#dataTable').delegate('tbody > tr > td', 'click', function () {
+  		window.open("/hola");
+  	});*/
   
         $.contextMenu({
             selector: '#fila', 
@@ -40,11 +47,12 @@ $(document).ready(function() {
 							},
 							success: function( data ) {
 								$("#sharedWith").empty();
-								if($.trim(data)){
-									var emails = "Shared with";
-									$.each(data, function(e, i) {
-										emails = emails.concat(" " + i.email + ",");
-									});
+								var emails = "Shared with";
+								$.each(data, function(e, i) {
+									emails = emails.concat(" " + i.email + ",");
+								});
+								
+								if(emails !== "Shared with") {
 									emails = emails.substring(0, emails.length - 1);
 									$("#sharedWith").append("<small>" + emails + "</small>");
 								}

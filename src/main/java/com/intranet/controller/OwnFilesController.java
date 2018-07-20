@@ -47,7 +47,6 @@ public class OwnFilesController {
 		return modelAndView;
 	}
 
-	//TODO sharing system for folder and file --> share process after click share 
 	@RequestMapping(value = "/user/files/{id_folder}", method = RequestMethod.GET)
 	public ModelAndView getFolderFiles(@PathVariable("id_folder") Integer id) {
 		Folder folder = folderService.findById(id);
@@ -55,10 +54,6 @@ public class OwnFilesController {
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-
-//		System.out.println(id);
-//		System.out.println(folder.getSharedUsers().toString());
-//		System.out.println(user.getSharedFolders().toString());
 		
 		try {
 			if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {

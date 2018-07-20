@@ -81,38 +81,130 @@
 								</tr>
 								<tr id="fila" th:each="file:${files}">
 									<input type="hidden" th:value="${file.id}">
-									<td><i th:if="${file.format == 'zip'}" class="fa fa-file-archive-o" style="font-size: 24px; color: #0079CA;"></i>
-										<i th:if="${file.format != 'zip'}" class="fa fa-file-text" style="font-size: 24px; color: #0079CA;"></i>
-										<a th:if="${file.format == 'pdf'}" class="ml-2" th:text="${file.name}" th:href="@{/user/file/} + ${file.id}"></a>
-										<a th:if="${file.format != 'pdf'}" class="ml-2" th:text="${file.name}" ></a>
+									<td>
+										<th:block th:switch="${file.format}">
+											<div th:remove="tag" th:case="'txt'">
+												<i class="fa fa-file-text-o" aria-hidden="true" style="font-size: 24px; color: #0079CA;"></i>
+											</div>
+											<div th:remove="tag" th:case="'log'">
+												<i class="fa fa-file-text-o" aria-hidden="true" style="font-size: 24px; color: #0079CA;"></i>
+											</div>
+											<div th:remove="tag" th:case="'pdf'">
+												<i class="fa fa-file-pdf-o" aria-hidden="true" style="font-size: 24px; color: #EE2E31;"></i>
+											</div>
+											<div th:remove="tag" th:case="'doc'">
+												<i class="fa fa-file-word-o" aria-hidden="true" style="font-size: 24px; color: #0079CA;"></i>
+											</div>
+											<div th:remove="tag" th:case="'docx'">
+												<i class="fa fa-file-word-o" aria-hidden="true" style="font-size: 24px; color: #0079CA;"></i>
+											</div>
+											<div th:remove="tag" th:case="'docm'">
+												<i class="fa fa-file-word-o" aria-hidden="true" style="font-size: 24px; color: #0079CA;"></i>
+											</div>
+											<div th:remove="tag" th:case="'xlsx'">
+												<i class="fa fa-file-excel-o" aria-hidden="true" style="font-size: 24px; color: #058E3F;"></i>
+											</div>
+											<div th:remove="tag" th:case="'xlsm'">
+												<i class="fa fa-file-excel-o" aria-hidden="true" style="font-size: 24px; color: #058E3F;"></i>
+											</div>
+											<div th:remove="tag" th:case="'xltx'">
+												<i class="fa fa-file-excel-o" aria-hidden="true" style="font-size: 24px; color: #058E3F;"></i>
+											</div>
+											<div th:remove="tag" th:case="'xltm'">
+												<i class="fa fa-file-excel-o" aria-hidden="true" style="font-size: 24px; color: #058E3F;"></i>
+											</div>
+											<div th:remove="tag" th:case="'xlam'">
+												<i class="fa fa-file-excel-o" aria-hidden="true" style="font-size: 24px; color: #058E3F;"></i>
+											</div>
+											<div th:remove="tag" th:case="'pptx'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'pptm'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'potm'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'ppam'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'ppsx'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'ppsm'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'c'">
+												<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'cpp'">
+												<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'h'">
+												<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'java'">
+												<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'html'">
+												<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'js'">
+												<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'css'">
+												<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'json'">
+												<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'avi'">
+												<i class="fa fa-film" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'mp4'">
+												<i class="fa fa-film" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'mov'">
+												<i class="fa fa-film" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'mp3'">
+												<i class="fa fa-file-audio-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'wmv'">
+												<i class="fa fa-file-audio-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'jpg'">
+												<i class="fa fa-file-image-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'ico'">
+												<i class="fa fa-file-image-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'jpeg'">
+												<i class="fa fa-file-image-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'png'">
+												<i class="fa fa-file-image-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'svg'">
+												<i class="fa fa-file-image-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'zip'">
+												<i class="fa fa-file-archive-o" aria-hidden="true" style="font-size: 24px; color: #F7B801;"></i>
+											</div>
+										  	<div th:remove="tag" th:case="'rar'">
+												<i class="fa fa-file-archive-o" aria-hidden="true" style="font-size: 24px; color: #F7B801;"></i>
+											</div>
+										  	<div th:remove="tag" th:case="*">
+										  		<i class="fa fa-file-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
+										  	</div>
+										</th:block>
+										<a class="ml-2" th:text="${file.name}" ></a>
 									</td>
-									<td
-										th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
+									<td th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
 									<td th:if="${file.download} == null"><i class="fa fa-minus" aria-hidden="true"></i></td>
 									<td th:if="${file.download} != null" th:text="${#dates.format(file.download, 'dd-MM-yyyy')}">Download Date</td>
 									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation Date</td>
-									<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update
-										Date</td>
-									<!-- <td>
-										<div class="row">
-											<div class="col-4">
-												<a class="" th:href="'/user/download/' + ${file.id}"><i
-													class="fa fa-download"
-													style="font-size: 24px; color: black"></i></a>
-											</div>
-											<div class="col-4">
-												<a href="#" id="shareModalLink" data-toggle="modal"
-													data-target="#shareModal">
-													<input type="hidden" th:value="${file.id}">
-													<i class="fa fa-share-alt"
-													style="font-size: 24px; color: black"></i></a>
-											</div>
-											<div class="col-4">
-												<a href="#" id="delete"><input type="hidden" th:value="${file.id}"><i class="fa fa-trash-o"
-													style="font-size: 24px; color: black"></i></a>
-											</div>
-										</div>
-									</td> -->
+									<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update Date</td>
 								</tr>
 							</tbody>
 						</table>
@@ -171,3 +263,6 @@
 </body>
 
 </html>
+
+<!-- <a th:if="${file.format == 'pdf'}" class="ml-2" th:text="${file.name}" th:href="@{/user/file/} + ${file.id}"></a> -->
+										

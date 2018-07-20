@@ -23,19 +23,21 @@
 	<th:block th:include="includes/navbar :: navbar"></th:block>
 
 	<div class="content-wrapper">
-		
 		<form class="ml-3 mr-3" role="search">
 			<div class="input-group">
 				<input id="searchFiles" type="text" class="form-control" placeholder="Search">
 				<div class="input-group-btn">
-					<button id="clear" class="btn btn-dark ml-1" type="submit">
-						<i class="fa fa fa-times" aria-hidden="true" style="font-size: 24px;"></i>
-					</button>
+					<button id="clear" class="btn text-white ml-1" type="submit" style="background-color:#51C3F1;">Clear</button>
 				</div>
 			</div>
 		</form>
-		<div class="list-group mt-3 mb-3 ml-3 mr-3" id="search-list" role="tablist">
+		<!-- <div class="list-group mt-3 mb-3 ml-3 mr-3" id="search-list" role="tablist">
 
+	    </div> -->
+	    <div class="container-fluid">
+		    <div id="search-list" class="row m-2">
+				
+			</div>
 	    </div>
 	</div>
 

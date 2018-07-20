@@ -18,17 +18,18 @@ $(document).ready(function () {
 						$("#search-list").empty();
 						if(Object.keys(data).length != 0){
 							$.each(data, function(index, item) {
-								var append = "<a href='/user/files/" + item[1] + "' class='list-group-item list-group-item-action flex-column align-items-start'><div class='d-flex w-100 justify-content-between'> <h5 class='mb-1'>" + item[0] + "</h5> <small>" + item[2] + "</small></div><p class='mb-1 d-inline'>File location: " + item[3] + "</p><p class='ml-3 mb-1 d-inline'>Owner: " + item[4] + "</p>";
-	       						
+								var append = "<div class='m-2 col card'><div class='card-body'><h5 class='card-title'>" + item[0] + "</h5><small class='card-text mr-3'>Owner: " + item[3] + "</small><small class='card-text mr-3'>Parent Folder: " + item[1] + "</small>";
+	       					
 	       						if(item.length == 6)
-	       							append += "<p class='ml-3 mb-1 d-inline'>Coincidence Pages: " + item[5] + "</p>";
+	       							append += "<small class='mb-2 d-inline'>Coincidence: " + item[5] + "</small>";
 	       							
-	       						append+="</a>";
+	       						append+="</div><div class='card-footer'><small class='text-muted'>Last update: " + item[2] + "</small></div></div>";
 	       						
 	       						$("#search-list").append(append);
+	       						//$("#search-list").append("<div class='w-100'></div>");
 	       					});
        					}else{
-       						$("#search-list").append("<p>Oops, couldnt find any file.</p>");
+       						$("#search-list").append("<div class='alert alert-danger text-center'><strong>Oops, couldnt find any file.</strong></div>");
        					}
 					},
 					error: function (e) {

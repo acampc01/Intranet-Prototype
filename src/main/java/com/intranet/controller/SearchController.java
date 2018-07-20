@@ -1,10 +1,12 @@
 package com.intranet.controller;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,12 @@ import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
 import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
 import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 
+import org.apache.poi.EmptyFileException;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+
 @Controller
 public class SearchController {
 
@@ -49,7 +57,7 @@ public class SearchController {
 		modelAndView.setViewName("user/search");
 		return modelAndView;
 	}
-	
+
 	@PostMapping(path = "/user/autocomplete", consumes = "text/plain", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Map<String, Object>> autocomplete(@RequestBody String search){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -71,7 +79,7 @@ public class SearchController {
 		List<User> users = userService.findAll(user);
 		if(users == null)
 			return new ResponseEntity<Map<Object, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
-		
+
 		users.remove(user);
 		HashMap<Object, Object> map = createJSON(name, users);
 
@@ -84,38 +92,26 @@ public class SearchController {
 	@Async
 	public HashMap<String, Object> createJSON(String search, User user){
 		HashMap<String, Object> map = new HashMap<>();
-		try {
-			Set<File> files = fileService.findByOwner(user);
-			for (File file : files) {
-				if(file.getName().toLowerCase().split("\\.")[0].equals(search.toLowerCase()) || file.getName().toLowerCase().split("\\.")[0].contains(search.toLowerCase())) {
-					String[] datos = {file.getName(), ""+file.getParent().getId(), file.getLastUpdate().toString(), file.getParent().getName(), file.getOwner().getName()};
-					map.put(String.valueOf(file.getId()), datos);
-				}
-				switch(file.getFormat()) {
-				case "pdf":
-					List<Integer> pages = new ArrayList<Integer>();
-					PdfReader reader = new PdfReader(getPath(file));
-					PdfReaderContentParser parser = new PdfReaderContentParser(reader);
-					TextExtractionStrategy strategy;
-					for (int i = 1; i <= reader.getNumberOfPages(); i++) {
-						strategy = parser.processContent(i, new SimpleTextExtractionStrategy());
-						if(strategy.getResultantText().toLowerCase().contains(search.toLowerCase())){
-							pages.add(i);
-						}
-					}
-					reader.close();
-					if(!pages.isEmpty()) {
-						String[] datos = {file.getName(), ""+file.getParent().getId(), file.getLastUpdate().toString(), file.getParent().getName(), file.getOwner().getName(), pages.toString()};
-						map.put(String.valueOf(file.getId()), datos);
-					}
-					break;
-				default:
-
-					break;
-				}
+		List<File> files = new ArrayList<File>(fileService.findByOwner(user));
+		files.addAll(user.getSharedFiles());
+		for (File file : files) {
+			if(file.getName().toLowerCase().split("\\.")[0].equals(search.toLowerCase()) || file.getName().toLowerCase().split("\\.")[0].contains(search.toLowerCase())) {
+				String[] datos = {file.getName(), ""+file.getParent().getId(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Found by name"};
+				map.put(String.valueOf(file.getId()), datos);
 			}
-		} catch (Exception e) {
-			return null;
+			switch(file.getFormat()) {
+			case "pdf":
+				readPDF(map, search, file);
+				break;
+			case "doc":
+				readDocFile(map, search, file);
+				break;
+			case "docx":
+				readDocxFile(map, search, file);
+				break;
+			default:
+				break;
+			}
 		}
 		return map;
 	}
@@ -152,6 +148,73 @@ public class SearchController {
 		path = DemoApplication.getFolderPath() + path;
 		path += file.getName();
 		return path;
+	}
+
+	@Async
+	public void readDocFile(HashMap<String, Object> map, String search, File file) {
+		try {	
+			java.io.File f = new java.io.File(getPath(file));
+			FileInputStream fis = new FileInputStream(f.getAbsolutePath());
+			HWPFDocument doc = new HWPFDocument(fis);
+			WordExtractor we = new WordExtractor(doc);
+			String[] paragraphs = we.getParagraphText();
+
+			for (String para : paragraphs) {
+				if(para.toString().toLowerCase().contains(search.toLowerCase())) {
+					fis.close();
+					we.close();
+					
+					String[] datos = {file.getName(), "" + file.getParent().getId(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Found inside"};
+					map.put(String.valueOf(file.getId()), datos);
+					return;
+				}
+			}
+			fis.close();
+			we.close();
+		} catch (IOException | EmptyFileException e) {}
+	}
+
+	@Async
+	public void readDocxFile(HashMap<String,Object> map, String search, File file) {
+		try {
+			java.io.File f = new java.io.File(getPath(file));
+			FileInputStream fis = new FileInputStream(f.getAbsolutePath());
+			XWPFDocument document = new XWPFDocument(fis);
+			List<XWPFParagraph> paragraphs = document.getParagraphs();
+			for (XWPFParagraph para : paragraphs) {
+				if(para.getText().toLowerCase().contains(search.toLowerCase())) {
+					fis.close();
+					document.close();
+					
+					String[] datos = {file.getName(), "" + file.getParent().getId(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Found inside"};
+					map.put(String.valueOf(file.getId()), datos);
+					return;
+				}
+			}
+			fis.close();
+			document.close();
+		} catch (IOException | EmptyFileException e) {}
+	}
+	
+	@Async
+	public void readPDF(HashMap<String, Object> map, String search, File file) {
+		try {
+			List<Integer> pages = new ArrayList<Integer>();
+			PdfReader reader = new PdfReader(getPath(file));
+			PdfReaderContentParser parser = new PdfReaderContentParser(reader);
+			TextExtractionStrategy strategy;
+			for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+				strategy = parser.processContent(i, new SimpleTextExtractionStrategy());
+				if(strategy.getResultantText().toLowerCase().contains(search.toLowerCase())){
+					pages.add(i);
+				}
+			}
+			reader.close();
+			if(!pages.isEmpty()) {
+				String[] datos = {file.getName(), ""+file.getParent().getId(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Pages " + pages.toString()};
+				map.put(String.valueOf(file.getId()), datos);
+			}
+		} catch (IOException | EmptyFileException e) {}
 	}
 
 }

@@ -40,9 +40,7 @@ public class FileServiceImpl implements FileService{
 
 	@Override
 	public Set<File> findByOwner(User owner) {
-		Set<File> files = fileRepository.findByOwner(owner);
-		files.addAll(owner.getSharedFiles());
-		return files;
+		return fileRepository.findByOwner(owner);
 	}
 
 	@Override

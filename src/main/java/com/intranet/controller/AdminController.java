@@ -40,13 +40,6 @@ public class AdminController {
 
 	@Autowired
 	private FolderService folderService;
-
-//	@RequestMapping(value = "/admin/prueba", method = RequestMethod.GET)
-//	public ResponseEntity<User> prueba() {
-//		Folder f = folderService.findById(39);
-//		clear(f);
-//		return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
-//	}
 	
 	@RequestMapping(value = "/admin/home", method = RequestMethod.GET)
 	public ModelAndView home() {
@@ -147,18 +140,20 @@ public class AdminController {
 	
 	@RequestMapping(value = "/file/delete/{id_file}", method = RequestMethod.DELETE)
 	public ResponseEntity<File> deleteFile(@PathVariable("id_file") Integer id) {
-		File file = fileService.findById(id);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
 		try {
+			File file = fileService.findById(id);
 			if(user != null && file != null) {
 				if(file.getOwner().equals(user) || file.getSharedUsers().contains(user)){
 					clear(file);
 					return new ResponseEntity<File>(HttpStatus.NO_CONTENT);
 				}
 			}
-		} catch (EntityNotFoundException e) {}
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
 		
 		try {
 			Folder folder = folderService.findById(id);
@@ -168,7 +163,9 @@ public class AdminController {
 					return new ResponseEntity<File>(HttpStatus.NO_CONTENT);
 				}
 			}
-		} catch (EntityNotFoundException e) {}
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
 		
 		return new ResponseEntity<File>(HttpStatus.NOT_FOUND);
 	}
@@ -180,7 +177,9 @@ public class AdminController {
 				try {
 					User no = folder.getSharedUsers().iterator().next();
 					givesFolder(no, folder);
-				} catch (IOException e) {}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}else {
 				for (Folder son : folder.getFolders()) {
 					clear(son);
@@ -195,7 +194,9 @@ public class AdminController {
 						FileUtils.forceDelete(f);
 						folderService.remove(folder);
 					}
-				} catch (IOException e) {}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 	}
 	
@@ -206,7 +207,9 @@ public class AdminController {
 				try {
 					User no = file.getSharedUsers().iterator().next();
 					givesFile(no, file);
-				} catch (IOException e) {}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}else {
 				try {
 					java.io.File f = new java.io.File(getPath(file));
@@ -214,27 +217,40 @@ public class AdminController {
 						fileService.remove(file);
 						FileUtils.forceDelete(f);
 					}
-				} catch (IOException e) {}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 	}
 
+	@Async
 	private void givesFile(User no, File file) throws IOException {
 		java.io.File f = new java.io.File(getPath(file));
-		FileUtils.moveFile(f, new java.io.File(getPath(no.getRoot())));
+		FileUtils.moveFile(f, new java.io.File( getPath(no.getRoot())+"//"+file.getName()));
 		
-		file.setOwner(no);
 		no.getSharedFiles().remove(file);
 		file.getSharedUsers().remove(no);
+		file.setOwner(no);
+		if(file.getParent().getParent() == null) {
+			file.getParent().getFiles().remove(file);
+			file.setParent(no.getRoot());
+			no.getRoot().getFiles().add(file);
+		}
 		
 		fileService.update(file);
 		userService.update(no);
 	}
 
+	@Async
 	private void givesFolder(User no, Folder folder) throws IOException {
 		java.io.File f = new java.io.File(getPath(folder));
-		FileUtils.moveDirectory(f, new java.io.File(getPath(no.getRoot())));
+		FileUtils.moveDirectory(f, new java.io.File(getPath(no.getRoot())+"//"+folder.getName()));
 		
 		folder.setOwner(no);
+		folder.getParent().getFolders().remove(folder);
+		folder.setParent(no.getRoot());
+		folder.getParent().getFolders().add(folder);
+		
 		no.getSharedFolders().remove(folder);
 		folder.getSharedUsers().remove(no);
 		

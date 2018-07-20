@@ -143,34 +143,6 @@ public class FileRestController {
 		return new HashMap<String,Object>();
 	}
 	
-	@Async
-	private void shareFolder(Folder folder, User owner, User user) {
-		if( (folder != null && !folder.getSharedUsers().contains(user) && !folder.getOwner().equals(user)) && (folder.getOwner().equals(owner) || folder.getSharedUsers().contains(owner))) {
-			for (Folder f : folder.getFolders()) {
-				shareFolder(f, owner, user);
-			}
-			
-			for (File file : folder.getFiles()) {
-				shareFile(file, owner, user);
-			}
-			
-			folder.getSharedUsers().add(user);
-			user.getSharedFolders().add(folder);
-			folderService.update(folder);
-			userService.update(user);
-		}
-	}
-	
-	@Async
-	private void shareFile(File file, User owner, User user) {
-		if( (file != null && !file.getSharedUsers().contains(user) && !file.getOwner().equals(user)) && (file.getOwner().equals(owner) || file.getSharedUsers().contains(owner))) {
-			file.getSharedUsers().add(user);
-			user.getSharedFiles().add(file);
-			fileService.update(file);
-			userService.update(user);
-		}
-	}
-	
 	@RequestMapping(value = "/user/upload/files/{id_folder}", method = RequestMethod.POST)
 	public ResponseEntity<File> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") Integer id) {
 		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
@@ -226,6 +198,34 @@ public class FileRestController {
 	}
 
 	@Async
+	private void shareFolder(Folder folder, User owner, User user) {
+		if( (folder != null && !folder.getSharedUsers().contains(user) && !folder.getOwner().equals(user)) && (folder.getOwner().equals(owner) || folder.getSharedUsers().contains(owner))) {
+			for (Folder f : folder.getFolders()) {
+				shareFolder(f, owner, user);
+			}
+			
+			for (File file : folder.getFiles()) {
+				shareFile(file, owner, user);
+			}
+			
+			folder.getSharedUsers().add(user);
+			user.getSharedFolders().add(folder);
+			folderService.update(folder);
+			userService.update(user);
+		}
+	}
+	
+	@Async
+	private void shareFile(File file, User owner, User user) {
+		if( (file != null && !file.getSharedUsers().contains(user) && !file.getOwner().equals(user)) && (file.getOwner().equals(owner) || file.getSharedUsers().contains(owner))) {
+			file.getSharedUsers().add(user);
+			user.getSharedFiles().add(file);
+			fileService.update(file);
+			userService.update(user);
+		}
+	}
+	
+	@Async
 	private void saveUploadedFiles(List<MultipartFile> files, int id) throws IOException {
 		Folder folder = folderService.findById(id);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -233,9 +233,9 @@ public class FileRestController {
 
 		if(folder.getOwner().equals(user) || user.getSharedFolders().contains(folder)) {
 			for (MultipartFile file : files) {
-				if (file.isEmpty()) {
-					continue;
-				}
+//				if (file.isEmpty()) {
+//					continue;
+//				}
 
 				File f = new File();
 				f.setName(file.getOriginalFilename());
@@ -245,8 +245,7 @@ public class FileRestController {
 				fileService.save(f);
 
 				String path = getPath(f);
-
-				if(fileService.findByParentAndName(f.getParent(),f.getName()) != null) {
+				if(fileService.findByParentAndName(f.getParent(), f.getName()) != null) {
 					folder.getFiles().add(f);
 					folderService.update(folder);
 				}
