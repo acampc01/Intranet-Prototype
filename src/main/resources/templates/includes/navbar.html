@@ -13,7 +13,7 @@
 			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion" style="background-color:#225366;">
 				<li class="nav-item" data-toggle="tooltip" data-placement="right"
 					><a class="nav-link text-white"
-					th:href="@{/user/files/} + ${user.root.id}"><i
+					th:href="@{/user/files/} + ${user.root.encrypt()}"><i
 						class="fa fa-fw fa-folder"></i><span class="d-lg-none">My Files</span><span class="nav-link-text">My
 							Files</span>
 				</a></li>
@@ -122,7 +122,7 @@
 	<!-- Create Folder -->
 	<div th:if="${root != null}" class="modal fade" id="folderModal" tabindex="-1" role="dialog"
 		aria-labelledby="folderModalLabel" aria-hidden="true">
-		<input type="hidden" id="folder" th:value="${root.id}">
+		<input type="hidden" id="folder" th:value="${root.encrypt()}">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<form id="createFolder" method="POST">

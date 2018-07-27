@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,16 +25,19 @@ import com.intranet.service.UserService;
 @Controller
 public class SharedFilesController {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private UserService userService;
 
 	@RequestMapping(value="/user/shared", method = RequestMethod.GET)
 	public ModelAndView myShared(){
 		ModelAndView modelAndView = new ModelAndView();
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		User user = userService.findUserByEmail(auth.getName());
 
 		try {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			User user = userService.findUserByEmail(auth.getName());
+			
 			modelAndView.addObject("user", user);
 			modelAndView.addObject("notifications", userService.findConfirms(user));
 			
@@ -72,6 +77,7 @@ public class SharedFilesController {
 			modelAndView.setViewName("user/shared");
 			return modelAndView;
 		}catch(Exception e) {
+			log.error(e.getMessage());
 			modelAndView.setView(new RedirectView("/user/files"));
 			return modelAndView;
 		}

@@ -22,19 +22,20 @@ $(document).ready(function () {
 			processData: false,
 			async: true,
 			beforeSend: function(xhr) {
+				$("#downloadModal").modal('show');
 				xhr.setRequestHeader(header, token);
 				//xhr.upload.addEventListener('progress', progress, false);
 			},
 			xhr: function (){
 				var jqXHR = null;
                 if ( window.ActiveXObject ) {
-                	jqXHR = new window.ActiveXObject( "Microsoft.XMLHTTP" );
+                	jqXHR = new window.ActiveXObject("Microsoft.XMLHTTP");
                	} else {
                     jqXHR = new window.XMLHttpRequest();
                 }
                 
                 //Upload progress
-                jqXHR.upload.addEventListener( "progress", function ( evt ) {
+                jqXHR.upload.addEventListener("progress", function ( evt ) {
 					if ( evt.lengthComputable ) {
                     	var percentComplete = Math.round( (evt.loaded * 100) / evt.total );
                     	
@@ -47,12 +48,16 @@ $(document).ready(function () {
             },
 			timeout: 600000,
 			success: function (data) {
-				alertify.success('Files Uploaded!');
 				setTimeout(function(){
 					location.reload();
-			    }, 2000);
+			    }, 1000);
 			},
-			error: function (e) {}
+			error: function (e) {
+				alertify.error("Error Uploading");
+				setTimeout(function(){
+					location.reload();
+			    }, 500);
+			}
 		});
 	});
 

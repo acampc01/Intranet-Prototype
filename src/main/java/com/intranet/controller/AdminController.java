@@ -7,6 +7,8 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.intranet.DemoApplication;
+import com.intranet.model.Encryptor;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
 import com.intranet.model.User;
@@ -30,6 +33,8 @@ import com.intranet.service.UserService;
 @RestController
 public class AdminController {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private final static String UPLOADED_FOLDER = DemoApplication.getFolderPath();
 
 	@Autowired
@@ -53,7 +58,6 @@ public class AdminController {
 				users.add(u);
 			}
 		}
-
 		modelAndView.addObject("user", user);
 		modelAndView.addObject("users", users);
 		modelAndView.addObject("notifications", userService.findConfirms(user));
@@ -62,7 +66,9 @@ public class AdminController {
 	}
 
 	@RequestMapping(value = "/admin/accept/{id_user}", method = RequestMethod.PUT)
-	public ResponseEntity<User> acceptUser(@PathVariable("id_user") Integer id) {
+	public ResponseEntity<User> acceptUser(@PathVariable("id_user") String nid) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
@@ -90,12 +96,15 @@ public class AdminController {
 			userService.update(u);
 			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
 		}
-
+		log.error("Non admin user trying to accept a user.");
+		
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/admin/refuse/{id_user}", method = RequestMethod.DELETE)
-	public ResponseEntity<User> refuseUser(@PathVariable("id_user") Integer id) {
+	public ResponseEntity<User> refuseUser(@PathVariable("id_user") String nid) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
@@ -104,25 +113,33 @@ public class AdminController {
 			userService.remove(u);
 			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
 		}
+		log.error("Non admin user trying to refuse a user.");
+		
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	}
 
-	@RequestMapping(value = "/admin/disarm/{id_user}", method = RequestMethod.PUT)
-	public ResponseEntity<User> deactiveUser(@PathVariable("id_user") Integer id) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		User user = userService.findUserByEmail(auth.getName());
-
-		if(user != null && user.isAdmin()) {
-			User u = userService.findOne(id);
-			u.setActive(0);
-			userService.update(u);
-			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-	}
+//	@RequestMapping(value = "/admin/disarm/{id_user}", method = RequestMethod.PUT)
+//	public ResponseEntity<User> deactiveUser(@PathVariable("id_user") String nid) {
+//		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+//		
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		User user = userService.findUserByEmail(auth.getName());
+//
+//		if(user != null && user.isAdmin()) {
+//			User u = userService.findOne(id);
+//			u.setActive(0);
+//			userService.update(u);
+//			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+//		}
+//		
+//		
+//		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+//	}
 
 	@RequestMapping(value = "/admin/delete/{id_user}", method = RequestMethod.DELETE)
-	public ResponseEntity<User> deleteUser(@PathVariable("id_user") Integer id) {
+	public ResponseEntity<User> deleteUser(@PathVariable("id_user") String nid) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
@@ -135,36 +152,52 @@ public class AdminController {
 				return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
 			}
 		}
+		log.error("Non admin user trying to delete a user.");
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	}
 	
 	@RequestMapping(value = "/file/delete/{id_file}", method = RequestMethod.DELETE)
-	public ResponseEntity<File> deleteFile(@PathVariable("id_file") Integer id) {
+	public ResponseEntity<File> deleteFile(@PathVariable("id_file") String nid) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
 		try {
 			File file = fileService.findById(id);
 			if(user != null && file != null) {
-				if(file.getOwner().equals(user) || file.getSharedUsers().contains(user)){
+				if(file.getOwner().equals(user)){
 					clear(file);
+					return new ResponseEntity<File>(HttpStatus.NO_CONTENT);
+				}
+				if(file.getSharedUsers().contains(user)) {
+					file.getSharedUsers().remove(user);
+					user.getSharedFiles().remove(file);
+					fileService.update(file);
+					userService.update(user);
 					return new ResponseEntity<File>(HttpStatus.NO_CONTENT);
 				}
 			}
 		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
+			log.debug("Deleting Resource: " + e.getMessage());
 		}
 		
 		try {
 			Folder folder = folderService.findById(id);
 			if(user != null && folder != null) {
-				if(folder.getOwner().equals(user) || folder.getSharedUsers().contains(user)){
+				if(folder.getOwner().equals(user)){
 					clear(folder);
+					return new ResponseEntity<File>(HttpStatus.NO_CONTENT);
+				}
+				if(folder.getSharedUsers().contains(user)) {
+					folder.getSharedUsers().remove(user);
+					user.getSharedFolders().remove(folder);
+					folderService.update(folder);
+					userService.update(user);
 					return new ResponseEntity<File>(HttpStatus.NO_CONTENT);
 				}
 			}
 		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
+			log.debug("Deleting Resource: " + e.getMessage());
 		}
 		
 		return new ResponseEntity<File>(HttpStatus.NOT_FOUND);
@@ -178,7 +211,7 @@ public class AdminController {
 					User no = folder.getSharedUsers().iterator().next();
 					givesFolder(no, folder);
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.debug("Error with shared folder: " + e.getMessage());
 				}
 			}else {
 				for (Folder son : folder.getFolders()) {
@@ -191,11 +224,11 @@ public class AdminController {
 				try {
 					java.io.File f = new java.io.File(getPath(folder));
 					if(f.isDirectory()) {
-						FileUtils.forceDelete(f);
 						folderService.remove(folder);
+						FileUtils.forceDelete(f);
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.debug("Deleting folder: " + e.getMessage());
 				}
 			}
 	}
@@ -208,7 +241,7 @@ public class AdminController {
 					User no = file.getSharedUsers().iterator().next();
 					givesFile(no, file);
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.debug("Error with shared file: " + e.getMessage());
 				}
 			}else {
 				try {
@@ -218,7 +251,7 @@ public class AdminController {
 						FileUtils.forceDelete(f);
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.debug("Deleting file: " + e.getMessage());
 				}
 			}
 	}

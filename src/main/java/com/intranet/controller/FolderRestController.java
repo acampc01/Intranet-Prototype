@@ -13,6 +13,8 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.intranet.DemoApplication;
+import com.intranet.model.Encryptor;
 import com.intranet.model.Folder;
 import com.intranet.model.User;
 import com.intranet.service.FolderService;
@@ -35,6 +38,8 @@ import com.intranet.service.UserService;
 @RestController
 public class FolderRestController {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	private UserService userService;
 
@@ -42,7 +47,9 @@ public class FolderRestController {
 	private FolderService folderService;
 
 	@PostMapping(path = "/user/create/folder/{id_folder}", consumes = "text/plain")
-	public ResponseEntity<Folder> createFolder(@PathVariable("id_folder") Integer id, @RequestBody String name) {
+	public ResponseEntity<Folder> createFolder(@PathVariable("id_folder") String nid, @RequestBody String name) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
@@ -66,7 +73,9 @@ public class FolderRestController {
 	}
 
 	@RequestMapping("/user/download/folder/{id_folder}")
-	public ResponseEntity<Resource> downloadFile(@PathVariable("id_folder") Integer id, HttpServletResponse response) {
+	public ResponseEntity<Resource> downloadFolder(@PathVariable("id_folder") String nid, HttpServletResponse response) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 		Folder folder = folderService.findById(id);
@@ -79,9 +88,9 @@ public class FolderRestController {
 				java.io.File file = pathZip.toFile();
 				
 				
-				response.setContentType("application/octet-stream");
+				response.setContentType("application/zip");
 				response.setHeader("Content-disposition", "attachment; filename=" + file.getName());
-
+				
 				OutputStream out = response.getOutputStream();
 				FileInputStream in = new FileInputStream(file);
 
@@ -95,9 +104,11 @@ public class FolderRestController {
 				folder.setDownload(new Date());
 				folderService.update(folder);
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			log.info(e.getMessage());
+		}
 
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
 	}
 
 	@Async

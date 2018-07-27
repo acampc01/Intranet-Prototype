@@ -1,5 +1,7 @@
 package com.intranet.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.intranet.DemoApplication;
+import com.intranet.model.Encryptor;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
 import com.intranet.model.User;
@@ -44,6 +47,8 @@ import org.springframework.http.MediaType;
 @RestController
 public class FileRestController {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private UserService userService;
 
@@ -54,7 +59,9 @@ public class FileRestController {
 	private FolderService folderService;
 	
 	@RequestMapping(value="/user/file/{id_file}", method = RequestMethod.GET)
-	public ModelAndView embed(@PathVariable("id_file") Integer id) {
+	public ModelAndView embed(@PathVariable("id_file") String nid) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -68,36 +75,45 @@ public class FileRestController {
 				try {
 					Files.copy(Paths.get(src.getPath()) , Paths.get(temp.getPath()), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 
 				modelAndView.addObject("pdf", file.getName());
 				temp.delete();
 			}
-		}catch(EntityNotFoundException e) {}
+		}catch(EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
 
 		modelAndView.setViewName("user/file");
 		return modelAndView;
 	}
 
 	@RequestMapping(value = "/user/share/files/{id_resource}", method = RequestMethod.PUT)
-	public ResponseEntity<String> shareFiles(@RequestParam("emails[]") String[] emails, @PathVariable("id_resource") Integer id){
+	public ResponseEntity<String> shareFiles(@RequestParam("emails[]") String[] emails, @PathVariable("id_resource") String nid){
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User u = userService.findUserByEmail(auth.getName());
 		
 		if(emails.length != 0) {
 			for (int i = 0; i < emails.length; i++) {
+				emails[i] = emails[i].split("-")[1].trim();
 				User user = userService.findUserByEmail(emails[i]);
 				if(user != null) {
 					try {
 						File file = fileService.findById(id);
 						shareFile(file, u, user);
-					} catch (EntityNotFoundException e) {}
+					} catch (EntityNotFoundException e) {
+						log.error(e.getMessage());
+					}
 					
 					try {
 						Folder folder = folderService.findById(id);
 						shareFolder(folder, u, user);
-					} catch (EntityNotFoundException e) {}
+					} catch (EntityNotFoundException e) {
+						log.error(e.getMessage());
+					}
 				}
 			}
 			return new ResponseEntity<String>(HttpStatus.OK);
@@ -107,8 +123,9 @@ public class FileRestController {
 	}
 	
 	@RequestMapping(value = "/user/file/shared/users/{id_resource}", method = RequestMethod.GET)
-	public HashMap<String, Object> sharedWith(@PathVariable("id_resource") Integer id){
-		
+	public HashMap<String, Object> sharedWith(@PathVariable("id_resource") String nid){
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 		
@@ -124,7 +141,9 @@ public class FileRestController {
 				}
 				return map;
 			}
-		} catch (EntityNotFoundException e) {}
+		} catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
 		
 		Folder folder = folderService.findById(id);
 		try {
@@ -138,13 +157,17 @@ public class FileRestController {
 				}
 				return map;
 			}
-		} catch (EntityNotFoundException e) {}
+		} catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
 		
 		return new HashMap<String,Object>();
 	}
 	
 	@RequestMapping(value = "/user/upload/files/{id_folder}", method = RequestMethod.POST)
-	public ResponseEntity<File> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") Integer id) {
+	public ResponseEntity<File> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") String nid) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
 		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
 				.filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
 
@@ -155,14 +178,17 @@ public class FileRestController {
 		try {
 			saveUploadedFiles(Arrays.asList(uploadfiles), id);
 		} catch (IOException e) {
+			log.error(e.getMessage());
 			return new ResponseEntity<File>(HttpStatus.BAD_REQUEST);
 		}
 
 		return new ResponseEntity<File>(HttpStatus.OK);
 	}
 
-	@RequestMapping("/user/download/{id_file}")
-	public ResponseEntity<Resource> downloadFile(@PathVariable("id_file") Integer id, HttpServletRequest request) {
+	@RequestMapping("/user/download/file/{id_file}")
+	public ResponseEntity<Resource> downloadFile(@PathVariable("id_file") String nid, HttpServletRequest request) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 		File file = fileService.findById(id);
@@ -178,7 +204,9 @@ public class FileRestController {
 				String contentType = null;
 				try {
 					contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-				} catch (IOException ex) {}
+				} catch (IOException ex) {
+					log.info("Could not determine file type");
+				}
 
 				if(contentType == null) {
 					contentType = "application/octet-stream";
@@ -189,10 +217,12 @@ public class FileRestController {
 				
 				return ResponseEntity.ok()
 						.contentType(MediaType.parseMediaType(contentType))
-						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename().replace("%20", " ")+ "\"")
 						.body(resource);
 			}
-		}catch(EntityNotFoundException e) {}
+		}catch(EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
 
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}

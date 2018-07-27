@@ -2,6 +2,8 @@ package com.intranet.controller;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,9 +39,13 @@ import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class SearchController {
+
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private UserService userService;
@@ -96,8 +102,8 @@ public class SearchController {
 		files.addAll(user.getSharedFiles());
 		for (File file : files) {
 			if(file.getName().toLowerCase().split("\\.")[0].equals(search.toLowerCase()) || file.getName().toLowerCase().split("\\.")[0].contains(search.toLowerCase())) {
-				String[] datos = {file.getName(), ""+file.getParent().getId(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Found by name"};
-				map.put(String.valueOf(file.getId()), datos);
+				String[] datos = {file.getName(), ""+file.getParent().encrypt(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Found by name"};
+				map.put(file.encrypt(), datos);
 			}
 			switch(file.getFormat()) {
 			case "pdf":
@@ -110,6 +116,7 @@ public class SearchController {
 				readDocxFile(map, search, file);
 				break;
 			default:
+				readDefault(map, search, file);
 				break;
 			}
 		}
@@ -123,13 +130,14 @@ public class SearchController {
 			for (User user : users) {
 				if(user.getEmail().split("@")[0].toLowerCase().contains(name.toLowerCase()) || name.equals("empty")) {
 					HashMap<String, String> datos = new HashMap<String, String>();
-					datos.put("id", String.valueOf(user.getId()));
+					datos.put("id", user.encrypt());
 					datos.put("email", user.getEmail());
 					datos.put("name", user.getName());
-					map.put(String.valueOf(user.getId()), datos);
+					map.put(user.encrypt(), datos);
 				}		
 			}
 		} catch (Exception e) {
+			log.error(e.getMessage());
 			return null;
 		}
 		return map;
@@ -164,14 +172,16 @@ public class SearchController {
 					fis.close();
 					we.close();
 					
-					String[] datos = {file.getName(), "" + file.getParent().getId(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Found inside"};
-					map.put(String.valueOf(file.getId()), datos);
+					String[] datos = {file.getName(), "" + file.getParent().encrypt(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Found inside"};
+					map.put(file.encrypt(), datos);
 					return;
 				}
 			}
 			fis.close();
 			we.close();
-		} catch (IOException | EmptyFileException e) {}
+		} catch (IOException | EmptyFileException e) {
+			log.debug(e.getMessage());
+		}
 	}
 
 	@Async
@@ -186,14 +196,16 @@ public class SearchController {
 					fis.close();
 					document.close();
 					
-					String[] datos = {file.getName(), "" + file.getParent().getId(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Found inside"};
-					map.put(String.valueOf(file.getId()), datos);
+					String[] datos = {file.getName(), "" + file.getParent().encrypt(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Found inside"};
+					map.put(file.encrypt(), datos);
 					return;
 				}
 			}
 			fis.close();
 			document.close();
-		} catch (IOException | EmptyFileException e) {}
+		} catch (IOException | EmptyFileException e) {
+			log.debug(e.getMessage());
+		}
 	}
 	
 	@Async
@@ -205,16 +217,36 @@ public class SearchController {
 			TextExtractionStrategy strategy;
 			for (int i = 1; i <= reader.getNumberOfPages(); i++) {
 				strategy = parser.processContent(i, new SimpleTextExtractionStrategy());
-				if(strategy.getResultantText().toLowerCase().contains(search.toLowerCase())){
+				if(strategy.getResultantText().toLowerCase().contains(search.toLowerCase()))
 					pages.add(i);
-				}
 			}
 			reader.close();
 			if(!pages.isEmpty()) {
-				String[] datos = {file.getName(), ""+file.getParent().getId(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Pages " + pages.toString()};
-				map.put(String.valueOf(file.getId()), datos);
+				String[] datos = {file.getName(), "" + file.getParent().encrypt(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Pages " + pages.toString()};
+				map.put(file.encrypt(), datos);
 			}
-		} catch (IOException | EmptyFileException e) {}
+		} catch (IOException | EmptyFileException e) {
+			log.debug(e.getMessage());
+		}
+	}
+	
+	@Async
+	public void readDefault(HashMap<String, Object> map, String search, File file) {
+		try {
+			List<Integer> coincidences = new ArrayList<Integer>();
+			int l = 1;
+			for (String line : Files.readAllLines(Paths.get(getPath(file)))) {
+				if(line.toLowerCase().contains(search.toLowerCase()))
+					coincidences.add(l);
+				l++;
+			}
+			if(!coincidences.isEmpty()) {
+				String[] datos = {file.getName(), "" + file.getParent().encrypt(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Pages " + coincidences.toString()};
+				map.put(file.encrypt(), datos);
+			}
+		} catch (IOException e) {
+			log.error("Invalid plain text format");
+		}
 	}
 
 }

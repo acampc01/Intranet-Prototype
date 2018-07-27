@@ -43,11 +43,11 @@
 							</thead>
 							<tbody>
 								<tr id="fila" th:each="folder:${folders}">
-									<input type="hidden" th:value="${folder.id}">
+									<input type="hidden" data-type="folder" th:value="${folder.encrypt()}">
 									<td><i class="fa fa-folder"
 										style="font-size: 24px; color: #7E8C95;"></i><a class="ml-2"
 										th:text="${folder.name}"
-										th:href="@{/user/files/} + ${folder.id}"
+										th:href="@{/user/files/} + ${folder.encrypt()}"
 										style="text-decoration: none;"></a></td>
 									<td
 										th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
@@ -55,28 +55,9 @@
 									<td th:if="${folder.download} != null" th:text="${#dates.format(folder.download, 'dd-MM-yyyy')}">Download Date</td>
 									<td th:text="${#dates.format(folder.creation, 'dd-MM-yyyy')}">Creation Date</td>
 									<td th:text="${#dates.format(folder.lastUpdate, 'dd-MM-yyyy')}">Update Date</td>
-									<!-- <td>
-										<div class="row">
-											<div class="col-4">
-												<a th:href="'/user/download/folder/' + ${folder.id}"><i
-													class="fa fa-download"
-													style="font-size: 24px; color: black"></i></a>
-											</div>
-											<div class="col-4">
-												<a href="#" id="shareModalLink" data-toggle="modal"
-													data-target="#shareModal">
-													<i class="fa fa-share-alt"
-													style="font-size: 24px; color: black"></i></a>
-											</div>
-											<div class="col-4">
-												<a href="#" id="delete"><i class="fa fa-trash-o" aria-hidden="true"
-													style="font-size: 24px; color: black"></i></a>
-											</div>
-										</div>
-									</td> -->
 								</tr>
 								<tr id="fila" th:each="file:${files}">
-									<input type="hidden" th:value="${file.id}">
+									<input type="hidden" data-type="file" th:value="${file.encrypt()}">
 									<td>
 										<th:block th:switch="${file.format}">
 											<div th:remove="tag" th:case="'txt'">
@@ -203,26 +184,6 @@
 									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation Date</td>
 									<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update
 										Date</td>
-									<!-- <td>
-										<div class="row">
-											<div class="col-4">
-												<a class="" th:href="'/user/download/' + ${file.id}"><i
-													class="fa fa-download"
-													style="font-size: 24px; color: black"></i></a>
-											</div>
-											<div class="col-4">
-												<a href="#" id="shareModalLink" data-toggle="modal"
-													data-target="#shareModal">
-													<input type="hidden" th:value="${file.id}">
-													<i class="fa fa-share-alt"
-													style="font-size: 24px; color: black"></i></a>
-											</div>
-											<div class="col-4">
-												<a href="#" id="delete"><input type="hidden" th:value="${file.id}"><i class="fa fa-trash-o"
-													style="font-size: 24px; color: black"></i></a>
-											</div>
-										</div>
-									</td> -->
 								</tr>
 							</tbody>
 						</table>
@@ -267,10 +228,23 @@
 	<script th:src="@{/js/search.js}"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$(".modal").on("hidden.bs.modal", function() {
-			 	$("#searchUser").val('');
+			$("#shareModal").on("hidden.bs.modal", function() {
+				$("#searchUser").val('');
 		  		$("#shareContent").empty();
 		  	});
+		  	
+		  	$("#editModal").on("hidden.bs.modal", function() {
+				
+		  	});
+		});
+	</script>
+	<script type="text/javascript">
+		$("body").niceScroll({
+			fixed:true,
+			zindex:'99999999',
+			cursorcolor: '#51C3F1',
+			cursorborderradius: 0,
+			cursorborder:'none'
 		});
 	</script>
 </body>

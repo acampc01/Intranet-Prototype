@@ -18,15 +18,14 @@ $(document).ready(function () {
 						$("#search-list").empty();
 						if(Object.keys(data).length != 0){
 							$.each(data, function(index, item) {
-								var append = "<div class='m-2 col card'><div class='card-body'><h5 class='card-title'>" + item[0] + "</h5><small class='card-text mr-3'>Owner: " + item[3] + "</small><small class='card-text mr-3'>Parent Folder: " + item[1] + "</small>";
+								var append = "<div class='m-2'><div class='card'><div class='card-body'><h5 class='card-title'>" + item[0] + "</h5><small class='card-text mr-3'>Owner: " + item[4] + "</small><small class='card-text mr-3'>Parent Folder: " + item[3] + "</small>";
 	       					
 	       						if(item.length == 6)
-	       							append += "<small class='mb-2 d-inline'>Coincidence: " + item[5] + "</small>";
+	       							append += "<div class='w-100'></div><small class='mb-2 d-inline'>Coincidence: " + item[5] + "</small>";
 	       							
-	       						append+="</div><div class='card-footer'><small class='text-muted'>Last update: " + item[2] + "</small></div></div>";
+	       						append+="</div><div class='card-footer'><small class='text-muted'>Last update: " + item[2] + "</small></div></div></div>";
 	       						
 	       						$("#search-list").append(append);
-	       						//$("#search-list").append("<div class='w-100'></div>");
 	       					});
        					}else{
        						$("#search-list").append("<div class='alert alert-danger text-center'><strong>Oops, couldnt find any file.</strong></div>");
@@ -61,7 +60,7 @@ $(document).ready(function () {
 						response($.map(data, function(v,i){
 							return {
 						    	label: v.name + " <" + v.email + ">",
-						    	value: v.email
+						    	value: v.name + " - " + v.email
 							};
 						}));
 		          	},
@@ -70,11 +69,19 @@ $(document).ready(function () {
 			},
 			minLength: 1,
 			select: function( event, ui ){
-				$("#shareContent").append("<div id='dataU'><div class='border border-dark rounded m-2 p-1 d-inline-flex' id='shareContent'><span id='uE'>" + ui.item.value + "</span></div><a href='#' id='removeU' class='text-danger'><i class='fa fa-times' aria-hidden='true'></i></a></div>");
-				$("a#removeU").on('click', function(event){
-					event.preventDefault();
-				    $(this).parent().remove();
+				var doit = true;
+				$('div#dataU').each(function(){
+					if($(this).find('#shareContent').find('#uE:contains(' + ui.item.value + ')').exists())
+						doit = false;
 				});
+				
+				if(doit){
+					$("#shareContent").append("<div id='dataU' data-value='" + ui.item.value + "'><div class='border border-dark rounded m-2 p-1' id='shareContent'><span id='uE' class='m-3'>" + ui.item.value + "</span><a href='#' id='removeU' class='text-danger pull-right'><i class='fa fa-times' aria-hidden='true'></i></a></div></div>");
+					$("a#removeU").on('click', function(event){
+						event.preventDefault();
+					    $(this).parent().parent().remove();
+					});
+				}
 				$("#searchUser").val('');
 				return false;
 			}
@@ -100,10 +107,10 @@ $(document).ready(function () {
 				success: function( data ) {
 					$("#shareContent").empty();
 					$.map(data, function(v,i){
-						$("#shareContent").append("<div id='dataU'><div class='border border-dark rounded m-2 p-1 d-inline-flex' id='shareContent'><span id='uE'>" + v.email + "</span></div><a href='#' id='removeU' class='text-danger'><i class='fa fa-times' aria-hidden='true'></i></a></div>");
+						$("#shareContent").append("<div id='dataU'><div class='border border-dark rounded m-2 p-1' id='shareContent'><span id='uE' class='m-3'>" + v.name + " - " + v.email + "</span><a href='#' id='removeU' class='text-danger pull-right'><i class='fa fa-times' aria-hidden='true'></i></a></div></div>");
 						$("a#removeU").on('click', function(event){
 							event.preventDefault();
-						    $(this).parent().remove();
+						    $(this).parent().parent().remove();
 						});
 						$("#searchUser").val('');
 					});
@@ -141,8 +148,8 @@ $(document).ready(function () {
 			
 			$("#shareModal").modal('hide');
 		});
+		
+		$.fn.exists = function () {
+		    return this.length !== 0;
+		}
 });
-
-/*$.each(arr, function(i,e){
-	console.log(e.firstChild.data);
-});*/

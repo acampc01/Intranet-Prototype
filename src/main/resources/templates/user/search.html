@@ -31,11 +31,8 @@
 				</div>
 			</div>
 		</form>
-		<!-- <div class="list-group mt-3 mb-3 ml-3 mr-3" id="search-list" role="tablist">
-
-	    </div> -->
 	    <div class="container-fluid">
-		    <div id="search-list" class="row m-2">
+		    <div id="search-list" class="card-group m-2">
 				
 			</div>
 	    </div>
@@ -46,6 +43,15 @@
 	<th:block th:include="includes/scripts :: scripts"></th:block>
 	
 	<script th:src="@{/js/search.js}"></script>
+	<script type="text/javascript">
+		$("body").niceScroll({
+			fixed:true,
+			zindex:'99999999',
+			cursorcolor: '#51C3F1',
+			cursorborderradius: 0,
+			cursorborder:'none'
+		});
+	</script>
 </body>
 
 </html>

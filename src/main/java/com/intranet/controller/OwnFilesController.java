@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.intranet.model.Encryptor;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
 import com.intranet.model.User;
@@ -25,6 +28,8 @@ import com.intranet.service.UserService;
 @Controller
 public class OwnFilesController {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private UserService userService;
 
@@ -39,7 +44,7 @@ public class OwnFilesController {
 		if(user != null) {
 			user.setLastConnect(new Date());
 			userService.update(user);
-			modelAndView.setView(new RedirectView("/user/files/" + user.getRoot().getId() , true));
+			modelAndView.setView(new RedirectView("/user/files/" + user.getRoot().encrypt() , true));
 			return modelAndView;
 		}
 		
@@ -48,14 +53,15 @@ public class OwnFilesController {
 	}
 
 	@RequestMapping(value = "/user/files/{id_folder}", method = RequestMethod.GET)
-	public ModelAndView getFolderFiles(@PathVariable("id_folder") Integer id) {
-		Folder folder = folderService.findById(id);
-		
+	public ModelAndView getFolderFiles(@PathVariable("id_folder") String nid) {
 		ModelAndView modelAndView = new ModelAndView();
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		User user = userService.findUserByEmail(auth.getName());
-		
 		try {
+			Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+			
+			Folder folder = folderService.findById(id);
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			User user = userService.findUserByEmail(auth.getName());
+			
 			if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {
 				modelAndView.addObject("user", user);
 				modelAndView.addObject("root", folder);
@@ -108,9 +114,11 @@ public class OwnFilesController {
 			modelAndView.setView(new RedirectView("/user/files"));
 			return modelAndView;
 		}catch(Exception e) {
+			log.error(e.getMessage());
 			modelAndView.setView(new RedirectView("/user/files"));
 			return modelAndView;
 		}
 	}
+
 }
 

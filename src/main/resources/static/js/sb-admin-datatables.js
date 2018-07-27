@@ -30,7 +30,7 @@ $(document).ready(function() {
                 	name: "Edit", 
                 	icon: "edit",
                 	callback: function(key, opt, e) {
-               		
+               			$("#editModal").modal('show');
                 	}
                 },
                 "share": {
@@ -66,7 +66,7 @@ $(document).ready(function() {
                		name: "Download",
                		icon: "fa-download",
                 	callback: function(key, opt, e) {
-                		window.location="/user/download/folder/" + $(this).find("input").val();
+                		window.open("/user/download/".concat($(this).find("input").data("type")) + "/".concat($(this).find("input").val()), '_blank');
                 	}
                 },
                 "delete": {

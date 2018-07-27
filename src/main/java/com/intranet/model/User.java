@@ -70,6 +70,10 @@ public class User {
 	@JoinTable(name = "user_folders_s", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "folder_id"))
 	private Set<Folder> sharedFolders;
 
+	public String encrypt() {
+		return Encryptor.encrypt(new Integer(id).toString());
+	}
+	
 	public int getId() {
 		return id;
 	}

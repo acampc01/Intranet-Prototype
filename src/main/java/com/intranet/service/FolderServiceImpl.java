@@ -36,9 +36,7 @@ public class FolderServiceImpl implements FolderService{
 
 	@Override
 	public void remove(Folder folder) {
-		if(!folder.getSharedUsers().isEmpty()) {
-			
-		}else {
+		if(folder.getSharedUsers().isEmpty()) {
 			for (Folder fold : folder.getFolders()) {
 				remove(fold);
 			}

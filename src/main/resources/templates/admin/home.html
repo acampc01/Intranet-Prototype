@@ -35,10 +35,10 @@
 					        </div>
 					        <p class="card-text" th:text="${user.email}"></p>
 							<a id="refuse" class="btn btn-danger btn-sm pull-right mr-2 text-white"><i class="fa fa-times" aria-hidden="true"></i>
-							<input type="hidden" th:value="${user.id}"></input>
+							<input type="hidden" th:value="${user.encrypt()}"></input>
 					        Refuse</a>
 					        <a id="accept" class="btn btn-sm pull-right mr-2 text-white border-primary" style="background-color:#51C3F1;"><i class="fa fa-check" aria-hidden="true"></i>
-					        <input type="hidden" th:value="${user.id}"></input>
+					        <input type="hidden" th:value="${user.encrypt()}"></input>
 					        Accept</a>
 				      	</div>
 				    </div>
@@ -64,7 +64,7 @@
 								<small th:if="${user.lastConnect == null}">Last connection: never</small>
 							</div>
 							<p class="card-text" th:text="${user.email}"></p>
-							<a id="delete" class="btn btn-danger btn-sm pull-right mr-2 text-white"><i class="fa fa-times" aria-hidden="true"></i><input type="hidden" th:value="${user.id}"></a>
+							<a id="delete" class="btn btn-danger btn-sm pull-right mr-2 text-white"><i class="fa fa-times" aria-hidden="true"></i><input type="hidden" th:value="${user.encrypt()}"></a>
 						</div>
 					</div>
 				</div>
@@ -78,6 +78,15 @@
 	<th:block th:include="includes/footer :: footer"></th:block>
 	<th:block th:include="includes/scripts :: scripts"></th:block>
 	<script th:src="@{/js/admin/admin.js}"></script>
+	<script type="text/javascript">
+		$("body").niceScroll({
+			fixed:true,
+			zindex:'99999999',
+			cursorcolor: '#51C3F1',
+			cursorborderradius: 0,
+			cursorborder:'none'
+		});
+	</script>
 </body>
 
 </html>

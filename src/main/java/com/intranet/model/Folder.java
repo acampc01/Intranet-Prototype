@@ -74,6 +74,10 @@ public class Folder {
 		lastUpdate = new Date();
 	}
 	
+	public String encrypt() {
+		return Encryptor.encrypt(new Integer(id).toString());
+	}
+	
 	public boolean isShared() {
 		return sharedUsers.size() != 0;
 	}
