@@ -269,7 +269,7 @@ public class FileRestController {
 
 				File f = new File();
 				f.setName(file.getOriginalFilename());
-				f.setFormat(file.getOriginalFilename().split("\\.")[ (file.getOriginalFilename().split("\\.").length-1) ]);
+				f.setFormat(file.getOriginalFilename().split("\\.")[ (file.getOriginalFilename().split("\\.").length-1) ].toLowerCase());
 				f.setParent(folder);
 				f.setOwner(user);
 				fileService.save(f);

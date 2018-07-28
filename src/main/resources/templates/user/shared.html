@@ -177,8 +177,7 @@
 										</th:block>
 										<a class="ml-2" th:text="${file.name}" ></a>
 									</td>
-									<td
-										th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
+									<td th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
 									<td th:if="${file.download} == null"><i class="fa fa-minus" aria-hidden="true"></i></td>
 									<td th:if="${file.download} != null" th:text="${#dates.format(file.download, 'dd-MM-yyyy')}">Download Date</td>
 									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation Date</td>
@@ -217,6 +216,80 @@
 					<button class="btn btn-secondary" type="button"
 						data-dismiss="modal">Cancel</button>
 					<a id="letsShare" class="btn btn-primary" style="background-color:#51C3F1;border-color:#51C3F1;" href>Share</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- EDIT MODAL -->
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+		aria-labelledby="editModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col border border-dark rounded m-3 p-3">
+							<label for="fileName">Name</label>
+							<form method="POST">
+								<input type="text" id="fileName" class="form-control form-control-sm" value="Archivo.form" placeholder="File Name" required>
+							</form>
+						</div>
+						<div class="col border border-dark rounded m-3 p-3">
+							<div class="row">
+								<div class="col d-inline">
+									<div class="m-2">
+										<small for="fileFormat" class="d-block">File Format:</small>
+										<span id="fileFormat" class="font-weight-bold d-block">form</span>
+									</div>
+									<div class="m-2">
+										<small for="fileOwner" class="d-block">Owner:</small>
+										<span id="fileOwner" class="font-weight-bold d-block">Admin</span>
+									</div>
+									<div class="m-2">
+										<small for="parFolder" class="d-block">Parent Folder:</small>
+										<span id="parFolder" class="font-weight-bold d-block">Admin</span>
+									</div>
+									<div class="m-2">
+										<small for="numShares" class="d-block">Users With Access:</small>
+										<span id="numShares" class="font-weight-bold d-block">100</span>
+									</div>
+								</div>
+								<div class="col d-inline">
+									<div class="m-2">
+										<small for="fileCreation" class="d-block">Creation:</small>
+										<span id="fileCreation" class="font-weight-bold d-block">19-07-2018 09:07</span>
+									</div>
+									<div class="m-2">
+										<small for="fileUpdate" class="d-block">Last Update:</small>
+										<span id="fileUpdate" class="font-weight-bold d-block">19-07-2018 09:07</span>
+									</div>
+									<div class="m-2">
+										<small for="fileDownload" class="d-block">Last Download:</small>
+										<span id="fileDownload" class="font-weight-bold d-block">19-07-2018 09:07</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button"
+						data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+					<a id="letsShare" class="btn btn-primary" style="background-color:#51C3F1;border-color:#51C3F1;" href>Confirm</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- UPLOAD MODAL -->
+	<div class="modal" data-backdrop="static" data-keyboard="false" id="downloadModal" tabindex="-1" role="dialog"
+		aria-labelledby="downModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div id="progress" class="progress" style="height: 5px;">
+						<div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 1%"></div>
+					</div>
 				</div>
 			</div>
 		</div>

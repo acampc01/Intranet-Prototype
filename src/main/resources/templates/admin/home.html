@@ -37,7 +37,7 @@
 							<a id="refuse" class="btn btn-danger btn-sm pull-right mr-2 text-white"><i class="fa fa-times" aria-hidden="true"></i>
 							<input type="hidden" th:value="${user.encrypt()}"></input>
 					        Refuse</a>
-					        <a id="accept" class="btn btn-sm pull-right mr-2 text-white border-primary" style="background-color:#51C3F1;"><i class="fa fa-check" aria-hidden="true"></i>
+					        <a id="accept" class="btn btn-sm pull-right mr-2 text-white" style="background-color:#51C3F1;border-color:#51C3F1;"><i class="fa fa-check" aria-hidden="true"></i>
 					        <input type="hidden" th:value="${user.encrypt()}"></input>
 					        Accept</a>
 				      	</div>
@@ -65,13 +65,67 @@
 							</div>
 							<p class="card-text" th:text="${user.email}"></p>
 							<a id="delete" class="btn btn-danger btn-sm pull-right mr-2 text-white"><i class="fa fa-times" aria-hidden="true"></i><input type="hidden" th:value="${user.encrypt()}"></a>
+							<a id="editU" data-toggle="modal" data-target="#editModal" class="btn btn-sm pull-right mr-2 text-white" style="background-color:#51C3F1;border-color:#51C3F1;"><i class="fa fa-edit" aria-hidden="true"></i><input type="hidden" th:value="${user.encrypt()}"></a>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		
+	</div>
+	
+	<!-- EDIT MODAL -->
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+		aria-labelledby="editModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<form method="POST">
+						<div class="row border border-dark rounded m-3 p-3">
+							<div class="col col-4">
+								<div class="m-2 form-group">
+									<small for="userName">Name:</small>
+									<input type="text" id="userName" class="form-control form-control-sm" value="" placeholder="User Name" required></input>
+								</div>
+								<div class="m-2 form-group">
+									<small for="userLastName" class="d-block">Last Name:</small>
+									<input id="userLastName" class="form-control form-control-sm" value="" placeholder="Last Name" required></input>
+								</div>
+								<div class="m-2 form-group">
+									<small for="userEmail" class="d-block">Email:</small>
+									<input id="userEmail" class="form-control form-control-sm" value="" placeholder="Email" required></input>
+								</div>							</div>
+							<div class="col col-8">
+								<div class="row m-2">
+									<div class="col d-inline">
+										<div class="m-2">
+											<small for="userActive" class="d-block">Active:</small>
+											<span id="userActive" class="font-weight-bold d-block">Yes</span>
+										</div>
+										<div class="m-2">
+											<small for="userCreation" class="d-block">Creation:</small>
+											<span id="userCreation" class="font-weight-bold d-block">19-07-2018 09:07</span>
+										</div>
+										<div class="m-2">
+											<small for="userConnect" class="d-block">Last Connect:</small>
+											<span id="userConnect" class="font-weight-bold d-block">23-06-2018 10:17</span>
+										</div>
+									</div>
+									<div class="col d-inline">
+										<div class="m-2">
+											<small for="userRole" class="d-block">Role:</small>
+											<span id="userRole" class="font-weight-bold d-block">Admin</span>
+										</div>
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+					<a class="btn btn-primary btn-sm pull-right mr-3 mb-3" style="background-color:#51C3F1;border-color:#51C3F1;" href>Confirm</a>
+					<button class="btn btn-secondary btn-sm pull-right mr-1" type="button" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<!-- Footer -->

@@ -241,11 +241,11 @@ public class SearchController {
 				l++;
 			}
 			if(!coincidences.isEmpty()) {
-				String[] datos = {file.getName(), "" + file.getParent().encrypt(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Pages " + coincidences.toString()};
+				String[] datos = {file.getName(), "" + file.getParent().encrypt(), new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()), file.getParent().getName(), file.getOwner().getName(), "Lines " + coincidences.toString()};
 				map.put(file.encrypt(), datos);
 			}
 		} catch (IOException e) {
-			log.error("Invalid plain text format");
+			log.debug("Invalid plain text format");
 		}
 	}
 
