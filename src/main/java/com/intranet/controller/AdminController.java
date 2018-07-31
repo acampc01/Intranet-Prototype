@@ -1,8 +1,11 @@
 package com.intranet.controller;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -16,8 +19,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -118,24 +123,6 @@ public class AdminController {
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	}
 
-//	@RequestMapping(value = "/admin/disarm/{id_user}", method = RequestMethod.PUT)
-//	public ResponseEntity<User> deactiveUser(@PathVariable("id_user") String nid) {
-//		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
-//		
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//		User user = userService.findUserByEmail(auth.getName());
-//
-//		if(user != null && user.isAdmin()) {
-//			User u = userService.findOne(id);
-//			u.setActive(0);
-//			userService.update(u);
-//			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
-//		}
-//		
-//		
-//		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-//	}
-
 	@RequestMapping(value = "/admin/delete/{id_user}", method = RequestMethod.DELETE)
 	public ResponseEntity<User> deleteUser(@PathVariable("id_user") String nid) {
 		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
@@ -203,6 +190,93 @@ public class AdminController {
 		return new ResponseEntity<File>(HttpStatus.NOT_FOUND);
 	}
 
+	@RequestMapping(path = "/user/data/{id_user}", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> autocompleteNames(@PathVariable("id_user") String nid){
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		
+		HashMap<String, Object> map = null;
+		try {
+			if(user != null && user.isAdmin()) {
+				User u = userService.findOne(id);
+				if(u != null && !u.isAdmin()) {
+					map = new HashMap<String, Object>();
+					HashMap<String, String> datos = new HashMap<String, String>();
+					datos.put("name", u.getName());
+					datos.put("lname", u.getLastName());
+					datos.put("email", u.getEmail());
+
+					if(u.getActive() == 1)
+						datos.put("active", "Yes");
+					else
+						datos.put("active", "No");
+					
+					if(u.isAdmin())
+						datos.put("role", "ADMIN");
+					else
+						datos.put("role", "USER");
+					
+					datos.put("creation", new SimpleDateFormat("dd-MM-yyyy hh:MM").format(u.getCreation()));
+					
+					if(u.getLastConnect() != null)
+						datos.put("update", new SimpleDateFormat("dd-MM-yyyy hh:MM").format(u.getLastConnect()));
+					else
+						datos.put("update", null);
+					
+					map.put(nid, datos);
+				}
+			}
+		}catch(EntityNotFoundException e) {
+			e.printStackTrace();
+			log.error(e.getMessage());
+		}
+
+		if(map == null) {
+			log.error("Error getting user data");
+			return new ResponseEntity<Map<String, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+	}
+	
+	@PostMapping(path = "/user/edit/{id_user}")
+	public ResponseEntity<File> createFolder(@PathVariable("id_user") String nid, @RequestParam("datos[]") String[] data) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+
+		try {
+			if(user != null && user.isAdmin()) {
+				User u = userService.findOne(id);
+				if(u != null && !u.isAdmin()) {
+					u.setName(data[0]);
+					u.setLastName(data[1]);
+					
+					try {
+						User aux = userService.findUserByEmail(data[2]);
+						if(aux == null || (aux != null && aux.equals(u))) {
+							u.setEmail(data[2]);
+							userService.update(u);
+							return new ResponseEntity<File>(HttpStatus.OK);
+						}
+					}catch(EntityNotFoundException e) {
+						log.error("Duplicated email");
+						return new ResponseEntity<File>(HttpStatus.CONFLICT);
+					}
+				}
+			}
+		}catch(EntityNotFoundException e) {
+			e.printStackTrace();
+			log.error(e.getMessage());
+		}
+
+		log.error("Error editing");
+		return new ResponseEntity<File>(HttpStatus.BAD_REQUEST);
+	}
+	
 	@Async
 	private void clear(Folder folder) {
 		if(folder != null)

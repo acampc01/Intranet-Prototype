@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,10 +33,12 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -57,6 +61,72 @@ public class FileRestController {
 
 	@Autowired
 	private FolderService folderService;
+	
+	@RequestMapping(path = "/user/file/data/{id_file}", method = RequestMethod.GET)
+	public ResponseEntity<Map<String, Object>> autocompleteNames(@PathVariable("id_file") String nid){
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		
+		HashMap<String, Object> map = null;
+		File file = fileService.findById(id);
+		try {
+			if(user.getSharedFiles().contains(file) || file.getOwner().equals(user)) {
+				map = new HashMap<String, Object>();
+				HashMap<String, String> datos = new HashMap<String, String>();
+				datos.put("name", file.getName().split("\\.")[0]);
+				datos.put("format", file.getFormat());
+				datos.put("owner", file.getOwner().getName());
+				datos.put("parent", file.getParent().getName());
+				datos.put("access", "" + file.getSharedUsers().size());
+				datos.put("creation", new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getCreation()));
+				datos.put("update", new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getLastUpdate()));
+				
+				if(file.getDownload() != null)
+					datos.put("download", new SimpleDateFormat("dd-MM-yyyy hh:MM").format(file.getDownload()));
+				else
+					datos.put("download", null);
+				
+				map.put(nid, datos);
+				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			}
+		}catch(EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		
+		Folder folder = folderService.findById(id);
+		try {
+			if(user.getSharedFolders().contains(folder) || folder.getOwner().equals(user)) {
+				map = new HashMap<String, Object>();
+				HashMap<String, String> datos = new HashMap<String, String>();
+				datos.put("name", folder.getName());
+				datos.put("format", null);
+				datos.put("owner", folder.getOwner().getName());
+				datos.put("parent", folder.getParent().getName());
+				datos.put("access", "" + folder.getSharedUsers().size());
+				datos.put("creation", new SimpleDateFormat("dd-MM-yyyy hh:MM").format(folder.getCreation()));
+				datos.put("update", new SimpleDateFormat("dd-MM-yyyy hh:MM").format(folder.getLastUpdate()));
+				
+				if(folder.getDownload() != null)
+					datos.put("download", new SimpleDateFormat("dd-MM-yyyy hh:MM").format(folder.getDownload()));
+				else
+					datos.put("download", null);
+				
+				map.put(nid, datos);
+				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+			}
+		}catch(EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+
+		if(map == null) {
+			log.error("Incorrect file id");
+			return new ResponseEntity<Map<String, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return new ResponseEntity<Map<String, Object>>(HttpStatus.BAD_REQUEST);
+	}
 	
 	@RequestMapping(value="/user/file/{id_file}", method = RequestMethod.GET)
 	public ModelAndView embed(@PathVariable("id_file") String nid) {
@@ -87,6 +157,70 @@ public class FileRestController {
 
 		modelAndView.setViewName("user/file");
 		return modelAndView;
+	}
+	
+	@PostMapping(path = "/user/edit/file/{id_file}", consumes = "text/plain")
+	public ResponseEntity<File> createFolder(@PathVariable("id_file") String nid, @RequestBody String name) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+
+		File file = fileService.findById(id);
+		try {
+			if(file.getOwner().equals(user) || file.getSharedUsers().contains(user)) {
+				File rename = new File();
+				rename.setParent(file.getParent());
+				rename.setName(name.concat("." + file.getFormat()));
+				
+				try {
+					java.io.File exist = new java.io.File(getPath(rename));
+					if(!exist.exists())
+						Files.move(new java.io.File(getPath(file)).toPath(), exist.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+					else {
+						log.error("Error renaming file");
+						return new ResponseEntity<File>(HttpStatus.CONFLICT);
+					}
+				} catch (IOException ex) {
+					log.error("Error renaming file");
+					return new ResponseEntity<File>(HttpStatus.CONFLICT);
+				}
+				
+				file.setName(name.concat("." + file.getFormat()));
+				fileService.update(file);
+				return new ResponseEntity<File>(HttpStatus.OK);
+			}
+		} catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		
+		Folder folder = folderService.findById(id);
+		try {
+			if(folder.getOwner().equals(user) || folder.getSharedUsers().contains(user)) {
+				Folder rename = new Folder();
+				rename.setParent(folder.getParent());
+				rename.setName(name);
+				
+				java.io.File oldD = new java.io.File(getPath(folder));
+				java.io.File newD = new java.io.File(getPath(rename));
+				
+				if(!newD.exists()) {
+					if(!oldD.renameTo(newD))
+						return new ResponseEntity<File>(HttpStatus.CONFLICT);
+				} else {
+					log.error("Error renaming folder");
+					return new ResponseEntity<File>(HttpStatus.CONFLICT);
+				}
+				
+				folder.setName(name);
+				folderService.update(folder);
+				return new ResponseEntity<File>(HttpStatus.OK);
+			}
+		} catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+
+		return new ResponseEntity<File>(HttpStatus.BAD_REQUEST);
 	}
 
 	@RequestMapping(value = "/user/share/files/{id_resource}", method = RequestMethod.PUT)
@@ -298,6 +432,22 @@ public class FileRestController {
 
 		path = DemoApplication.getFolderPath() + path;
 		path += file.getName();
+		return path;
+	}
+	
+	@Async
+	private String getPath(Folder folder) {
+		String path = "";
+
+		Folder aux = new Folder();
+		aux.setParent(folder.getParent());
+		while(aux.getParent() != null) {
+			path = aux.getParent().getName() + "//" + path;
+			aux = aux.getParent();
+		}
+
+		path = DemoApplication.getFolderPath() + path;
+		path += folder.getName();
 		return path;
 	}
 

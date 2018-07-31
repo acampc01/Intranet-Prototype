@@ -30,7 +30,39 @@ $(document).ready(function() {
                 	name: "Edit", 
                 	icon: "edit",
                 	callback: function(key, opt, e) {
-               			$("#editModal").modal('show');
+                		var inp = $(this).find("input").val();
+						$("#fTc").val(inp);
+						$.ajax({
+							type: "GET",
+							url: "/user/file/data/".concat(inp),
+							beforeSend: function(xhr) {
+								xhr.setRequestHeader(header, token);
+							},
+							success: function( data ) {
+								$.each(data, function(e, i){
+									$("#fileName").val(i.name);
+									
+									if(i.format !== null)
+										$("#fileFormat").text(i.format);
+									else
+										$("#fileFormat").text('Directory');
+										
+									$("#fileOwner").text(i.owner);
+									$("#parFolder").text(i.parent);
+									$("#numShares").text(i.access);
+									$("#fileCreation").text(i.creation);
+									$("#fileUpdate").text(i.update);
+									
+									if(i.download !== null)
+										$("#fileDownload").text(i.download);
+									else
+										$("#fileDownload").text('-');
+									
+									$("#editModal").modal('toggle');
+								});
+							},
+							error: function (e) {}
+						});
                 	}
                 },
                 "share": {
@@ -107,6 +139,34 @@ $(document).ready(function() {
                 }*/
             }
         });
+        
+        $("#fedit").click(function (event) {
+        	event.preventDefault();
+			if( $("#fileName").val() !== "" ){
+				$.ajax({
+					type: "POST",
+					url: "/user/edit/file/".concat( $("#fTc").val() ),
+					data: $("#fileName").val(),
+					contentType: "text/plain",
+					beforeSend: function(xhr) {
+						xhr.setRequestHeader(header, token);
+					},
+					timeout: 600000,
+					success: function (data) {
+						$('#editModal').modal('toggle');
+						alertify.success('Resource Edited!');
+						setTimeout(function(){
+							location.reload();
+					    }, 1000);
+						
+					},
+					error: function (e) {
+						$('#editModal').modal('toggle');
+						alertify.error('Error Editing!');
+					}
+				});
+			}
+		});
 
         $('#fila').on('click', function(e){
             console.log('clicked', this);
