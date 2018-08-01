@@ -217,7 +217,7 @@
 			<div class="modal-footer">
 				<button class="btn btn-secondary" type="button"
 				data-dismiss="modal">Cancel</button>
-				<a id="letsShare" class="btn btn-primary" style="background-color:#51C3F1;border-color:#51C3F1;" href>Share</a>
+				<a id="letsShare" class="btn" style="background-color:#51C3F1;border-color:#51C3F1;" href>Share</a>
 			</div>
 		</div>
 	</div>
@@ -298,10 +298,6 @@ $(document).ready(function() {
 	$("#shareModal").on("hidden.bs.modal", function() {
 		$("#searchUser").val('');
 		$("#shareContent").empty();
-	});
-
-	$("#editModal").on("hidden.bs.modal", function() {
-
 	});
 });
 </script>

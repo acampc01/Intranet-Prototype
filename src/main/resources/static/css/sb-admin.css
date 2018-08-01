@@ -511,7 +511,7 @@ footer.sticky-footer {
 	}
 }
 
-li.paginate_button.active > a.page-link {
+li.paginate_button.page-item.active > a.page-link {
 	background-color: #51C3F1;
 	border-color: #51C3F1;
 }
