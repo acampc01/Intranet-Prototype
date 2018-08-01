@@ -18,7 +18,7 @@ $(document).ready(function () {
 						$("#search-list").empty();
 						if(Object.keys(data).length != 0){
 							$.each(data, function(index, item) {
-								var append = "<div class='m-2'><div class='card'><div class='card-body'><h5 class='card-title'>" + item[0] + "</h5><small class='card-text mr-3'>Owner: " + item[4] + "</small><small class='card-text mr-3'>Parent Folder: " + item[3] + "</small>";
+								var append = "<div class='col-sm-6 p-1'><div class='card w-100 h-100'><div class='card-body'><h5 class='card-title'>" + item[0] + "<a href='/user/files/" + item[1] + "' class='text-dark pull-right ml-3'><i class='fa fa-folder-o' aria-hidden='true'></i></a><a href='/user/file/" + index + "' class='text-dark pull-right'><i class='fa fa-eye' aria-hidden='true'></i></a></h5><small class='card-text mr-3'>Owner: " + item[4] + "</small><small class='card-text mr-3'>Parent Folder: " + item[3] + "</small>";
 	       					
 	       						if(item.length == 6)
 	       							append += "<div class='w-100'></div><small class='mb-2 d-inline'>Coincidence: " + item[5] + "</small>";
@@ -27,6 +27,7 @@ $(document).ready(function () {
 	       						
 	       						$("#search-list").append(append);
 	       					});
+	       					$("body").getNiceScroll().resize();
        					}else{
        						$("#search-list").append("<div class='alert alert-danger text-center'><strong>Oops, couldnt find any file.</strong></div>");
        					}
@@ -36,7 +37,7 @@ $(document).ready(function () {
 					}
 				});
 			},
-			minLength: 3
+			minLength: 2
 		});
 		
 		$("#clear").click(function(event){

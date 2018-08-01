@@ -2,17 +2,17 @@
 <html lang="en">
 
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport"
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="Intranet Drotium">
-<meta name="author" content="Alejandro Campos - Drotium">
-<!-- default header name is X-CSRF-TOKEN -->
-<meta name="_csrf" th:content="${_csrf.token}" />
-<meta name="_csrf_header" th:content="${_csrf.headerName}" />
-<title>Drotium Intranet</title>
-<th:block th:include="includes/links :: links"></th:block>
+	<meta name="description" content="Intranet Drotium">
+	<meta name="author" content="Alejandro Campos - Drotium">
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+	<title>Drotium Intranet</title>
+	<th:block th:include="includes/links :: links"></th:block>
 </head>
 
 <body class="fixed-nav sticky-footer sidenav-toggled" id="page-top">
@@ -25,56 +25,56 @@
 			<div class="row" th:if="${#lists.size(notifications) != 0}">
 				<div class="col col-sm-4 col-sm mb-3" th:each="user:${notifications}">
 					<div class="card border-primary">
-				    	<div class="card-body">
-					        <div class="d-flex w-100 justify-content-between">
-						    	<h5 class="card-title" th:text="${user.name} + ' ' + ${user.lastName}"></h5>
-						       	<div th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:switch="${days.convert(#dates.createNow().getTime() - user.creation.getTime(), millis)}">
-						        	<small th:case="0">Today</small>
-						        	<small th:case="*" th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="${days.convert(#dates.createNow().getTime() - user.creation.getTime(), millis) + ' days ago'}"></small>
-					        	</div>
-					        </div>
-					        <p class="card-text" th:text="${user.email}"></p>
-							<a id="refuse" class="btn btn-danger btn-sm pull-right mr-2 text-white"><i class="fa fa-times" aria-hidden="true"></i>
-							<input type="hidden" th:value="${user.encrypt()}"></input>
-					        Refuse</a>
-					        <a id="accept" class="btn btn-sm pull-right mr-2 text-white" style="background-color:#51C3F1;border-color:#51C3F1;"><i class="fa fa-check" aria-hidden="true"></i>
-					        <input type="hidden" th:value="${user.encrypt()}"></input>
-					        Accept</a>
-				      	</div>
-				    </div>
-				</div>
-			</div>
-		</div>
-		<!-- <div th:if="${#lists.size(notifications) == 0}">
-			<h3 class="alert alert-success m-3">There are no new alerts!</h3>
-		</div> -->
-		
-		<div class="text-center">
-			<h3 class="alert alert-info mt-2 ml-4 mr-4 border-primary">Current Active Users</h3>
-		</div>
-
-		<div class="container-fluid">
-			<div class="row" th:if="${#lists.size(users) != 0}">
-				<div class="col col-sm-4 col-sm mb-3" th:each="user:${users}">
-				    <div class="card" th:classappend="${user.active == 1} ? border-primary">
 						<div class="card-body">
 							<div class="d-flex w-100 justify-content-between">
 								<h5 class="card-title" th:text="${user.name} + ' ' + ${user.lastName}"></h5>
-								<small th:if="${user.lastConnect != null}" th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="'Last connection: ' + ${days.convert(#dates.createNow().getTime() - user.lastConnect.getTime(), millis)} + ' days ago'"></small>
-								<small th:if="${user.lastConnect == null}">Last connection: never</small>
+								<div th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:switch="${days.convert(#dates.createNow().getTime() - user.creation.getTime(), millis)}">
+									<small th:case="0">Today</small>
+									<small th:case="*" th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="${days.convert(#dates.createNow().getTime() - user.creation.getTime(), millis) + ' days ago'}"></small>
+								</div>
 							</div>
 							<p class="card-text" th:text="${user.email}"></p>
-							<a id="delete" class="btn btn-danger btn-sm pull-right mr-2 text-white"><i class="fa fa-times" aria-hidden="true"></i><input type="hidden" th:value="${user.encrypt()}"></a>
-							<a id="editU" class="btn btn-sm pull-right mr-2 text-white" style="background-color:#51C3F1;border-color:#51C3F1;"><i class="fa fa-edit" aria-hidden="true"></i><input type="hidden" th:value="${user.encrypt()}"></a>
+							<a id="refuse" class="btn btn-danger btn-sm pull-right mr-2 text-white"><i class="fa fa-times" aria-hidden="true"></i>
+								<input type="hidden" th:value="${user.encrypt()}"></input>
+								Refuse</a>
+								<a id="accept" class="btn btn-sm pull-right mr-2 text-white" style="background-color:#51C3F1;border-color:#51C3F1;"><i class="fa fa-check" aria-hidden="true"></i>
+									<input type="hidden" th:value="${user.encrypt()}"></input>
+									Accept</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- <div th:if="${#lists.size(notifications) == 0}">
+				<h3 class="alert alert-success m-3">There are no new alerts!</h3>
+			</div> -->
+
+			<div class="text-center">
+				<h3 class="alert alert-info mt-2 ml-4 mr-4 border-primary">Current Active Users</h3>
+			</div>
+
+			<div class="container-fluid">
+				<div class="row" th:if="${#lists.size(users) != 0}">
+					<div class="col col-sm-4 col-sm mb-3" th:each="user:${users}">
+						<div class="card" th:classappend="${user.active == 1} ? border-primary">
+							<div class="card-body">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="card-title" th:text="${user.name} + ' ' + ${user.lastName}"></h5>
+									<small th:if="${user.lastConnect != null}" th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="'Last connection: ' + ${days.convert(#dates.createNow().getTime() - user.lastConnect.getTime(), millis)} + ' days ago'"></small>
+									<small th:if="${user.lastConnect == null}">Last connection: never</small>
+								</div>
+								<p class="card-text" th:text="${user.email}"></p>
+								<a id="delete" class="btn btn-danger btn-sm pull-right mr-2 text-white"><i class="fa fa-times" aria-hidden="true"></i><input type="hidden" th:value="${user.encrypt()}"></a>
+								<a id="editU" class="btn btn-sm pull-right mr-2 text-white" style="background-color:#51C3F1;border-color:#51C3F1;"><i class="fa fa-edit" aria-hidden="true"></i><input type="hidden" th:value="${user.encrypt()}"></a>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	
-	<!-- EDIT MODAL -->
-	<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+
+		<!-- EDIT MODAL -->
+		<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
 		aria-labelledby="editModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<form method="POST">
@@ -82,49 +82,39 @@
 					<div class="modal-body">
 						<form method="POST">
 							<div class="row border border-dark rounded m-3 p-3">
-								<div class="col col-4">
-									<div class="m-2 form-group">
-										<small for="userName">Name:</small>
-										<input type="hidden" id="uTc" value=''>
-										<input type="text" pattern="[a-zA-Z0-9\s]+" id="userName" class="form-control form-control-sm" value="" placeholder="User Name" required></input>
-									</div>
-									<div class="m-2 form-group">
-										<small for="userLastName" class="d-block">Last Name:</small>
-										<input id="userLastName" pattern="[a-zA-Z0-9\s]+" class="form-control form-control-sm" value="" placeholder="Last Name" required></input>
-									</div>
-									<div class="m-2 form-group">
-										<small for="userEmail" class="d-block">Email:</small>
-										<input id="userEmail" pattern="[a-zA-Z0-9.]+@drotium.com" class="form-control form-control-sm" value="" placeholder="Email" required></input>
-									</div>							
+								<div class="col col-md-4 form-group mb-2">
+									<small for="userName" class="d-block">Name:</small>
+									<input type="hidden" id="uTc" value=''>
+									<input type="text" pattern="[a-zA-Z0-9\s]+" id="userName" class="form-control form-control-sm" value="" placeholder="User Name" required></input>
 								</div>
-								<div class="col col-8">
-									<div class="row m-2">
-										<div class="col d-inline">
-											<div class="m-2">
-												<small for="userActive" class="d-block">Active:</small>
-												<span id="userActive" class="font-weight-bold d-block">Yes</span>
-											</div>
-											<div class="m-2">
-												<small for="userCreation" class="d-block">Creation:</small>
-												<span id="userCreation" class="font-weight-bold d-block">19-07-2018 09:07</span>
-											</div>
-											<div class="m-2">
-												<small for="userConnect" class="d-block">Last Connection:</small>
-												<span id="userConnect" class="font-weight-bold d-block">23-06-2018 10:17</span>
-											</div>
-										</div>
-										<div class="col d-inline">
-											<div class="m-2">
-												<small for="userRole" class="d-block">Role:</small>
-												<span id="userRole" class="font-weight-bold d-block">Admin</span>
-											</div>
-										</div>
-									</div>
+								<div class="col col-md-4 form-group mb-2">
+									<small for="userLastName" class="d-block">Last Name:</small>
+									<input id="userLastName" pattern="[a-zA-Z0-9\s]+" class="form-control form-control-sm" value="" placeholder="Last Name" required></input>
+								</div>
+								<div class="col col-md-4 form-group mb-2">
+									<small for="userEmail" class="d-block">Email:</small>
+									<input id="userEmail" pattern="[a-zA-Z0-9.]+@drotium.com" class="form-control form-control-sm" value="" placeholder="Email" required></input>
+								</div>
+								<div class="col col-md-4 form-group mb-2">
+									<small for="userActive" class="d-block">Active:</small>
+									<span id="userActive" class="font-weight-bold d-block">Yes</span>
+								</div>
+								<div class="col col-md-4 form-group mb-2">
+									<small for="userCreation" class="d-block">Creation:</small>
+									<span id="userCreation" class="font-weight-bold d-block">19-07-2018 09:07</span>
+								</div>
+								<div class="col col-md-4 form-group mb-2">
+									<small for="userConnect" class="d-block">Last Connection:</small>
+									<span id="userConnect" class="font-weight-bold d-block">23-06-2018 10:17</span>
+								</div>
+								<div class="col col-md-4 form-group mb-2">
+									<small for="userRole" class="d-block">Role:</small>
+									<span id="userRole" class="font-weight-bold d-block">Admin</span>
 								</div>
 							</div>
 						</form>
-						<input id="uedit" type="submit" class="btn btn-primary btn-sm pull-right mr-3 mb-3" style="background-color:#51C3F1;border-color:#51C3F1;" value="Confirm">
-						<button class="btn btn-secondary btn-sm pull-right mr-1" type="button" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+						<button id="uedit" class="btn btn-sm pull-right mr-3 mb-3" style="background-color:#51C3F1;border-color:#51C3F1;">Confirm</button>
+						<button class="btn btn-dark btn-sm pull-right mr-1" type="button" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
 					</div>
 				</div>
 			</form>
@@ -136,13 +126,13 @@
 	<th:block th:include="includes/scripts :: scripts"></th:block>
 	<script th:src="@{/js/admin/admin.js}"></script>
 	<script type="text/javascript">
-		$("body").niceScroll({
-			fixed:true,
-			zindex:'99999999',
-			cursorcolor: '#51C3F1',
-			cursorborderradius: 0,
-			cursorborder:'none'
-		});
+	$("body").niceScroll({
+		fixed:true,
+		zindex:'99999999',
+		cursorcolor: '#51C3F1',
+		cursorborderradius: 0,
+		cursorborder:'none'
+	});
 	</script>
 </body>
 

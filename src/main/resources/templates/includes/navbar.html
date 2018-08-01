@@ -41,23 +41,21 @@
 		            <i class="fa fa-fw fa-bell text-white"></i>
 		            <span class="d-lg-none">Alerts</span>
 					<span th:if="${#lists.size(notifications) != 0}" class="indicator text-warning d-none d-lg-block">
-		              <span class="badge badge-pill badge-warning" style="background-color:#51C3F1;" th:text="${#lists.size(notifications)}"></span>
+		              <span class="badge badge-pill" style="background-color:#51C3F1;font-size:9px;" th:text="${#lists.size(notifications)}"></span>
 		            </span>
 		          </a>
 		          <div class="dropdown-menu" aria-labelledby="alertsDropdown">
 		            <h6 th:if="${#lists.size(notifications) == 0}" class="dropdown-header m-1">Everything done!</h6>
-		           	<div th:if="${#lists.size(notifications) != 0}">
+		           	<div th:if="${#lists.size(notifications) != 0}" th:remove="tag">
 						<h6 class="dropdown-header">New Alerts:</h6>
 			            <div class="dropdown-divider"></div>
-			            <a class="dropdown-item" th:each="user, userStat:${notifications}" th:unless="${userStat.index >= 3}">
+			            <span class="dropdown-item" th:each="user, userStat:${notifications}" th:unless="${userStat.index >= 3}">
 			              <span class="d-block text-primary">
 			                <strong>Confirm</strong>
 			              </span>
 			              <div class="small d-inline" th:text="${user.email}"></div>
 			              <span class="small text-muted" th:text="${#dates.format(user.creation, 'dd-MM')}"></span>
-			            </a>
-			            <div class="dropdown-divider"></div>
-			            <a class="dropdown-item small" th:href="@{/admin/home}">View all alerts</a>
+			            </span>
 			      	</div>
 		          </div>
 		        </li>
@@ -68,33 +66,26 @@
 				<!-- <li class="nav-item"><a class="nav-link" id="toggleNavColor">
 						<i class="fa fa-fw fa fa-adjust"></i>Toggle
 				</a></li> -->
-				<li th:if="${root != null}" class="nav-item ml-1">
-					<div class="dropdown">
-						<button type="button"
-							class="btn btn-outline-light dropdown-toggle"
-							data-toggle="dropdown">Options</button>
-						<div class="dropdown-menu">
-							<h5 class="dropdown-header">Create</h5>
-							<a class="dropdown-item" href="#" data-toggle="modal"
-								data-target="#folderModal">New Folder</a>
-							<div class="dropdown-divider"></div>
-							<h5 class="dropdown-header">Upload</h5>
-
-							<!-- For Files -->
-							<form method="POST" enctype="multipart/form-data"
-								id="fileUploadForm">
-								<input id="uploadFiles" style="display: none;" type="file"
-									name="files" multiple /> <a class="dropdown-item" href=""
-									id="upload_files">Files</a>
-							</form>
-
-							<!-- For Folder -->
-							<a class="dropdown-item disabled" href="#">Folder</a>
-						</div>
-					</div>
+				<li th:if="${root != null}" class="nav-item ml-1 dropdown">
+					<button type="button" class="btn btn-outline-light btn-sm dropdown-toggle" data-toggle="dropdown">Options</button>
+					<div class="dropdown-menu">
+						<h5 class="dropdown-header">Create</h5>
+						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#folderModal">New Folder</a>
+						<div class="dropdown-divider"></div>	
+						<h5 class="dropdown-header">Upload</h5>
+						
+						<!-- For Files -->
+						<form id="fileUploadForm" style="display: none;" method="POST" enctype="multipart/form-data" >
+							<input id="uploadFiles" type="file" name="files" multiple/>
+						</form>
+						<a id="upload_files" class="dropdown-item" href="">Files</a>
+						
+						<!-- For Folder -->
+						<a class="dropdown-item disabled" href="#">Folder</a>
+					</div>	
 				</li>
 				<li class="nav-item ml-1"><button type="button"
-						class="btn btn-outline-light" data-toggle="modal"
+						class="btn btn-outline-light btn-sm" data-toggle="modal"
 						data-target="#logoutModal">
 						<i class="fa fa-fw fa-sign-out"></i>
 					</button></li>
