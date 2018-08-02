@@ -1,5 +1,6 @@
 $(document).ready(function() {
-
+	document.addEventListener('contextmenu', event => event.preventDefault());
+	
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
 
@@ -22,9 +23,9 @@ $(document).ready(function() {
 	$("tr#fila").on('click',function(){
 		var rsc = $(this).find('input').val();
 		if($(this).find('input').data('type') === "folder")
-			window.location = '/user/files/'.concat(rsc);
+		window.location = '/user/files/'.concat(rsc);
 		else
-			window.location = '/user/file/'.concat(rsc);
+		window.location = '/user/file/'.concat(rsc);
 	});
 
 	$.contextMenu({
@@ -109,71 +110,87 @@ $(document).ready(function() {
 				name: "Delete",
 				icon: "delete",
 				callback: function(key, opt, e) {
-					var data = $(this).find("input").val();
-					var msg = alertify.error('Click here to delete', 5);
-					msg.callback = function (isClicked) {
-						if(isClicked)
-						$.ajax({
-							type: "DELETE",
-							url: "/file/delete/".concat(data),
-							cache: false,
-							beforeSend: function(xhr) {
-								xhr.setRequestHeader(header, token);
-							},
-							timeout: 6000,
-							success: function (data) {
-								alertify.success('Resource Deleted!');
-								setTimeout(function(){
-									location.reload();
-								}, 1000);
-							},
-							error: function (e) {}
-						});
-						else
-						alertify.error('Not Deleted!');
-					};
+					$("#delModal").find('input').val($(this).find('input').val());
+					$("#delModal").modal('toggle');
 				}
 			}
-			/*"sep":"",
-			"quit": {
-			name: "Quit",
-			icon: function(){
-			return 'context-menu-icon context-menu-icon-quit';
 		}
-	}*/
-}
-});
+	});
 
-$("#fedit").click(function (event) {
-	event.preventDefault();
-	if( $("#fileName").val() !== "" ){
+
+	$("#fedit").click(function (event) {
+		event.preventDefault();
+		if( $("#fileName").val() !== "" ){
+			$.ajax({
+				type: "POST",
+				url: "/user/edit/file/".concat( $("#fTc").val() ),
+				data: $("#fileName").val(),
+				contentType: "text/plain",
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
+				timeout: 600000,
+				success: function (data) {
+					$('#editModal').modal('toggle');
+					alertify.success('Resource Edited!');
+					setTimeout(function(){
+						location.reload();
+					}, 1000);
+	
+				},
+				error: function (e) {
+					$('#editModal').modal('toggle');
+					alertify.error('Error Editing!');
+				}
+			});
+		}
+	});
+	
+	$('#fila').on('click', function(e){
+		console.log('clicked', this);
+	});
+	
+	$("#delt").on('click',function(e){
 		$.ajax({
-			type: "POST",
-			url: "/user/edit/file/".concat( $("#fTc").val() ),
-			data: $("#fileName").val(),
-			contentType: "text/plain",
+			type: "DELETE",
+			url: "/file/delete/".concat($("#delModal").find("input").val()),
+			cache: false,
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader(header, token);
 			},
-			timeout: 600000,
+			timeout: 6000,
 			success: function (data) {
-				$('#editModal').modal('toggle');
-				alertify.success('Resource Edited!');
+				alertify.success('Resource Deleted!');
 				setTimeout(function(){
 					location.reload();
 				}, 1000);
-
 			},
 			error: function (e) {
-				$('#editModal').modal('toggle');
-				alertify.error('Error Editing!');
+				alertify.error('You are not resource owner');
+				$("#delModal").modal('toggle');
 			}
 		});
-	}
-});
-
-$('#fila').on('click', function(e){
-	console.log('clicked', this);
-});
-
+	});
+			
+	$("#clar").on('click',function(e){
+		$.ajax({
+			type: "DELETE",
+			url: "/file/clear/".concat($("#delModal").find("input").val()),
+			cache: false,
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader(header, token);
+			},
+			timeout: 6000,
+			success: function (data) {
+				alertify.success('Resource Cleared!');
+				setTimeout(function(){
+					location.reload();
+				}, 1000);
+			},
+			error: function (e) {
+				alertify.error('An error has ocurred');
+				$("#delModal").modal('toggle');
+			}
+		});
+	});
 });

@@ -24,7 +24,7 @@
 		<div class="container-fluid">
 			<div class="row" th:if="${#lists.size(notifications) != 0}">
 				<div class="col col-sm-4 col-sm mb-3" th:each="user:${notifications}">
-					<div class="card border-primary">
+					<div class="card">
 						<div class="card-body">
 							<div class="d-flex w-100 justify-content-between">
 								<h5 class="card-title" th:text="${user.name} + ' ' + ${user.lastName}"></h5>
@@ -56,7 +56,7 @@
 			<div class="container-fluid">
 				<div class="row" th:if="${#lists.size(users) != 0}">
 					<div class="col col-sm-4 col-sm mb-3" th:each="user:${users}">
-						<div class="card" th:classappend="${user.active == 1} ? border-primary">
+						<div class="card" th:classappend="${user.active == 0} ? border-danger">
 							<div class="card-body">
 								<div class="d-flex w-100 justify-content-between">
 									<h5 class="card-title" th:text="${user.name} + ' ' + ${user.lastName}"></h5>
@@ -114,7 +114,7 @@
 							</div>
 						</form>
 						<button id="uedit" class="btn btn-sm pull-right mr-3 mb-3" style="background-color:#51C3F1;border-color:#51C3F1;">Confirm</button>
-						<button class="btn btn-dark btn-sm pull-right mr-1" type="button" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+						<button class="btn btn-elegant btn-sm pull-right mr-1" type="button" data-dismiss="modal">Cancel</i></button>
 					</div>
 				</div>
 			</form>

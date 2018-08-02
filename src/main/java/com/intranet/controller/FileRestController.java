@@ -164,6 +164,7 @@ public class FileRestController {
 					List<String> lines = new ArrayList<String>();
 					for (String line : content) {
 						line = line.replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+						line = line.replaceAll(" ", "&nbsp;");
 						line = line.replace("<", "&#60;");
 						line = line.replace(">", "&#62;");
 						lines.add(line);
@@ -343,6 +344,27 @@ public class FileRestController {
 
 		return new ResponseEntity<File>(HttpStatus.OK);
 	}
+	
+//	@RequestMapping(value = "/user/upload/folder/{id_folder}", method = RequestMethod.POST)
+//	public ResponseEntity<File> uploadFolderMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") String nid, @RequestBody String fName) {
+//		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+//
+//		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
+//				.filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
+//
+//		if (StringUtils.isEmpty(uploadedFileName)) {
+//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//		}
+//
+//		try {
+//			saveUploadedFiles(Arrays.asList(uploadfiles), id);
+//		} catch (IOException e) {
+//			log.error(e.getMessage());
+//			return new ResponseEntity<File>(HttpStatus.BAD_REQUEST);
+//		}
+//
+//		return new ResponseEntity<File>(HttpStatus.OK);
+//	}
 
 	@RequestMapping("/user/download/file/{id_file}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable("id_file") String nid, HttpServletRequest request) {

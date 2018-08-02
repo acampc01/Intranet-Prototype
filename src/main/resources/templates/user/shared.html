@@ -183,8 +183,7 @@
 								<td th:if="${file.download} == null"><i class="fa fa-minus" aria-hidden="true"></i></td>
 								<td th:if="${file.download} != null" th:text="${#dates.format(file.download, 'dd-MM-yyyy')}">Download Date</td>
 								<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation Date</td>
-								<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update
-									Date</td>
+								<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update Date</td>
 								</tr>
 							</tbody>
 						</table>
@@ -215,9 +214,9 @@
 				<div id="shareContent" class="bg-white mt-2"></div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-secondary" type="button"
+				<button class="btn btn-elegant btn-sm" type="button"
 				data-dismiss="modal">Cancel</button>
-				<a id="letsShare" class="btn" style="background-color:#51C3F1;border-color:#51C3F1;" href>Share</a>
+				<a id="letsShare" class="btn btn-sm" style="background-color:#51C3F1;border-color:#51C3F1;" href>Share</a>
 			</div>
 		</div>
 	</div>
@@ -266,7 +265,7 @@ aria-labelledby="editModalLabel" aria-hidden="true">
 					</div>
 				</div>
 				<button id="fedit" class="btn btn-sm pull-right mr-3 mb-3" style="background-color:#51C3F1;border-color:#51C3F1;">Confirm</button>
-				<button class="btn btn-dark btn-sm pull-right mr-1" type="button" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+				<button class="btn btn-elegant btn-sm pull-right mr-1" type="button" data-dismiss="modal">Cancel</button>
 			</form>
 		</div>
 	</div>
@@ -274,6 +273,36 @@ aria-labelledby="editModalLabel" aria-hidden="true">
 
 </div>
 </div>
+
+	<!-- Delete Modal-->
+	<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<h5>Choose delete type</h5>
+					<input type="hidden" value=""/>
+					<div class="row">
+						<div class="col-4 mt-2">
+							<button id="clar" class="btn btn-danger btn-sm w-100" type="button">Clear</button>
+						</div>
+						<div class="col-8 mt-2">
+							<span>Lose the permissions</span>
+							<span class="d-block">Does not delete the resource completely</span>
+						</div>
+						<div class="col-4 mt-2">
+							<button id="delt" class="btn btn-danger btn-sm w-100" type="button">Delete</button>
+						</div>
+						<div class="col-8 mt-3">
+							<span>Delete the resource completely</span>
+						</div>
+					</div>
+					<div class="d-block">
+						<button class="btn btn-elegant btn-sm pull-right" type="button" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 <!-- UPLOAD MODAL -->
 <div class="modal" data-backdrop="static" data-keyboard="false" id="downloadModal" tabindex="-1" role="dialog"

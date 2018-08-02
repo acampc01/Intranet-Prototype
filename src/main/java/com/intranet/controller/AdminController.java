@@ -39,7 +39,7 @@ import com.intranet.service.UserService;
 public class AdminController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	
+
 	private final static String UPLOADED_FOLDER = DemoApplication.getFolderPath();
 
 	@Autowired
@@ -50,7 +50,7 @@ public class AdminController {
 
 	@Autowired
 	private FolderService folderService;
-	
+
 	@RequestMapping(value = "/admin/home", method = RequestMethod.GET)
 	public ModelAndView home() {
 		ModelAndView modelAndView = new ModelAndView();
@@ -102,7 +102,7 @@ public class AdminController {
 			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
 		}
 		log.error("Non admin user trying to accept a user.");
-		
+
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
@@ -119,14 +119,14 @@ public class AdminController {
 			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
 		}
 		log.error("Non admin user trying to refuse a user.");
-		
+
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/admin/delete/{id_user}", method = RequestMethod.DELETE)
 	public ResponseEntity<User> deleteUser(@PathVariable("id_user") String nid) {
 		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
-		
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
@@ -142,8 +142,59 @@ public class AdminController {
 		log.error("Non admin user trying to delete a user.");
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@RequestMapping(value = "/file/delete/{id_file}", method = RequestMethod.DELETE)
+	public ResponseEntity<File> clearFile(@PathVariable("id_file") String nid) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+
+		try {
+			File file = fileService.findById(id);
+			if(user != null && file != null) {
+				if(file.getOwner().equals(user) || user.isAdmin()){
+					try {
+						java.io.File f = new java.io.File(getPath(file));
+						if(f.isFile()) {
+							fileService.remove(file);
+							FileUtils.forceDelete(f);
+						}
+					} catch (IOException e) {
+						log.error("Deleting file: " + e.getMessage());
+					}
+					return new ResponseEntity<File>(HttpStatus.NO_CONTENT);
+				}
+			}
+		} catch (EntityNotFoundException e) {
+			log.error("Deleting Resource: " + e.getMessage());
+		}
+
+		try {
+			Folder folder = folderService.findById(id);
+			if(user != null && folder != null) {
+				if(folder.getOwner().equals(user) || user.isAdmin()){
+					if(folder.getFolders().isEmpty() && folder.getFiles().isEmpty()) {
+						try {
+							java.io.File f = new java.io.File(getPath(folder));
+							if(f.isDirectory()) {
+								folderService.remove(folder);
+								FileUtils.forceDelete(f);
+							}
+						} catch (IOException e) {
+							log.error("Deleting folder: " + e.getMessage());
+						}
+						return new ResponseEntity<File>(HttpStatus.NO_CONTENT);
+					}
+				}
+			}
+		} catch (EntityNotFoundException e) {
+			log.error("Deleting Resource: " + e.getMessage());
+		}
+
+		return new ResponseEntity<File>(HttpStatus.NOT_FOUND);
+	}
+
+	@RequestMapping(value = "/file/clear/{id_file}", method = RequestMethod.DELETE)
 	public ResponseEntity<File> deleteFile(@PathVariable("id_file") String nid) {
 		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -165,9 +216,9 @@ public class AdminController {
 				}
 			}
 		} catch (EntityNotFoundException e) {
-			log.debug("Deleting Resource: " + e.getMessage());
+			log.error("Deleting Resource: " + e.getMessage());
 		}
-		
+
 		try {
 			Folder folder = folderService.findById(id);
 			if(user != null && folder != null) {
@@ -184,19 +235,19 @@ public class AdminController {
 				}
 			}
 		} catch (EntityNotFoundException e) {
-			log.debug("Deleting Resource: " + e.getMessage());
+			log.error("Deleting Resource: " + e.getMessage());
 		}
-		
+
 		return new ResponseEntity<File>(HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(path = "/user/data/{id_user}", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> autocompleteNames(@PathVariable("id_user") String nid){
 		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
-		
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		
+
 		HashMap<String, Object> map = null;
 		try {
 			if(user != null && user.isAdmin()) {
@@ -212,19 +263,19 @@ public class AdminController {
 						datos.put("active", "Yes");
 					else
 						datos.put("active", "No");
-					
+
 					if(u.isAdmin())
 						datos.put("role", "ADMIN");
 					else
 						datos.put("role", "USER");
-					
+
 					datos.put("creation", new SimpleDateFormat("dd-MM-yyyy hh:MM").format(u.getCreation()));
-					
+
 					if(u.getLastConnect() != null)
 						datos.put("update", new SimpleDateFormat("dd-MM-yyyy hh:MM").format(u.getLastConnect()));
 					else
 						datos.put("update", null);
-					
+
 					map.put(nid, datos);
 				}
 			}
@@ -237,10 +288,10 @@ public class AdminController {
 			log.error("Error getting user data");
 			return new ResponseEntity<Map<String, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
+
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
-	
+
 	@PostMapping(path = "/user/edit/{id_user}")
 	public ResponseEntity<File> createFolder(@PathVariable("id_user") String nid, @RequestParam("datos[]") String[] data) {
 		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
@@ -254,7 +305,7 @@ public class AdminController {
 				if(u != null && !u.isAdmin()) {
 					u.setName(data[0]);
 					u.setLastName(data[1]);
-					
+
 					try {
 						User aux = userService.findUserByEmail(data[2]);
 						if(aux == null || (aux != null && aux.equals(u))) {
@@ -276,7 +327,7 @@ public class AdminController {
 		log.error("Error editing");
 		return new ResponseEntity<File>(HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@Async
 	private void clear(Folder folder) {
 		if(folder != null)
@@ -285,7 +336,7 @@ public class AdminController {
 					User no = folder.getSharedUsers().iterator().next();
 					givesFolder(no, folder);
 				} catch (IOException e) {
-					log.debug("Error with shared folder: " + e.getMessage());
+					log.error("Error with shared folder: " + e.getMessage());
 				}
 			}else {
 				for (Folder son : folder.getFolders()) {
@@ -294,7 +345,7 @@ public class AdminController {
 				for (File son : folder.getFiles()) {
 					clear(son);
 				}
-				
+
 				try {
 					java.io.File f = new java.io.File(getPath(folder));
 					if(f.isDirectory()) {
@@ -302,11 +353,11 @@ public class AdminController {
 						FileUtils.forceDelete(f);
 					}
 				} catch (IOException e) {
-					log.debug("Deleting folder: " + e.getMessage());
+					log.error("Deleting folder: " + e.getMessage());
 				}
 			}
 	}
-	
+
 	@Async
 	private void clear(File file) {
 		if(file != null)
@@ -315,7 +366,7 @@ public class AdminController {
 					User no = file.getSharedUsers().iterator().next();
 					givesFile(no, file);
 				} catch (IOException e) {
-					log.debug("Error with shared file: " + e.getMessage());
+					log.error("Error with shared file: " + e.getMessage());
 				}
 			}else {
 				try {
@@ -325,7 +376,7 @@ public class AdminController {
 						FileUtils.forceDelete(f);
 					}
 				} catch (IOException e) {
-					log.debug("Deleting file: " + e.getMessage());
+					log.error("Deleting file: " + e.getMessage());
 				}
 			}
 	}
@@ -334,7 +385,7 @@ public class AdminController {
 	private void givesFile(User no, File file) throws IOException {
 		java.io.File f = new java.io.File(getPath(file));
 		FileUtils.moveFile(f, new java.io.File( getPath(no.getRoot())+"//"+file.getName()));
-		
+
 		no.getSharedFiles().remove(file);
 		file.getSharedUsers().remove(no);
 		file.setOwner(no);
@@ -343,7 +394,7 @@ public class AdminController {
 			file.setParent(no.getRoot());
 			no.getRoot().getFiles().add(file);
 		}
-		
+
 		fileService.update(file);
 		userService.update(no);
 	}
@@ -352,15 +403,15 @@ public class AdminController {
 	private void givesFolder(User no, Folder folder) throws IOException {
 		java.io.File f = new java.io.File(getPath(folder));
 		FileUtils.moveDirectory(f, new java.io.File(getPath(no.getRoot())+"//"+folder.getName()));
-		
+
 		folder.setOwner(no);
 		folder.getParent().getFolders().remove(folder);
 		folder.setParent(no.getRoot());
 		folder.getParent().getFolders().add(folder);
-		
+
 		no.getSharedFolders().remove(folder);
 		folder.getSharedUsers().remove(no);
-		
+
 		folderService.update(folder);
 		userService.update(no);
 	}

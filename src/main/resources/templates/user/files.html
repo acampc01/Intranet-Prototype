@@ -200,117 +200,144 @@
 </div>
 
 <!-- SHARE MODAL -->
-<div class="modal fade" id="shareModal" tabindex="-1" role="dialog"
-aria-labelledby="shareModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg" role="document">
-	<div class="modal-content">
-		<div class="modal-body">
-			<div id="shareWrapper" class="rounded mx-auto" style="background-color:#51C3F1;"> <!-- border border-dark -->
-				<form id="sUf">
-					<input id="dTs" type="hidden" value="">
-					<input id="searchUser" class="m-2 w-50 form-control d-inline-flex" type="text" placeholder="Name or Email..">
-					<a th:if="${user.isAdmin()}" href='#' id='addAll' class='btn btn-sm text-white' style="background-color:#225366;">Everyone</a>
-					<a href='#' id='removeAll' class='btn btn-danger btn-sm'>Clear</a>
-				</form>
-			</div>
-			<div id="sharedWith"></div>
-			<div id="shareContent" class="bg-white mt-2"></div>
-		</div>
-		<div class="modal-footer">
-			<button class="btn btn-secondary" type="button"
-			data-dismiss="modal">Cancel</button>
-			<a id="letsShare" class="btn" style="background-color:#51C3F1;border-color:#51C3F1;" href>Share</a>
-		</div>
-	</div>
-</div>
-</div>
-
-<!-- EDIT MODAL -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
-aria-labelledby="editModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg" role="document">
-	<form method="POST">
+<div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-body">
-				<div class="row border border-dark rounded m-3 p-3">
-					<div class="col col-md-4 form-group mb-2">
-						<small for="fileName">Name:</small>
-						<input type="hidden" id="fTc" value=''>
-						<input type="text" pattern="[a-zA-Z0-9\s]+" id="fileName" class="form-control form-control-sm" value="" placeholder="File Name" required>
-					</div>
-					<div class="col col-md-4 form-group mb-2">
-						<small for="fileFormat" class="d-block">File Format:</small>
-						<span id="fileFormat" class="font-weight-bold d-block"></span>
-					</div>
-					<div class="col col-md-4 form-group mb-2">
-						<small for="fileOwner" class="d-block">Owner:</small>
-						<span id="fileOwner" class="font-weight-bold d-block"></span>
-					</div>
-					<div class="col col-md-4 form-group mb-2">
-						<small for="parFolder" class="d-block">Parent Folder:</small>
-						<span id="parFolder" class="font-weight-bold d-block"></span>
-					</div>
-					<div class="col col-md-4 form-group mb-2">
-						<small for="numShares" class="d-block">Users With Access:</small>
-						<span id="numShares" class="font-weight-bold d-block"></span>
-					</div>
-					<div class="col col-md-4 form-group mb-2">
-						<small for="fileCreation" class="d-block">Creation:</small>
-						<span id="fileCreation" class="font-weight-bold d-block"></span>
-					</div>
-					<div class="col col-md-4 form-group mb-2">
-						<small for="fileUpdate" class="d-block">Last Update:</small>
-						<span id="fileUpdate" class="font-weight-bold d-block"></span>
-					</div>
-					<div class="col col-md-4 form-group mb-2">
-						<small for="fileDownload" class="d-block">Last Download:</small>
-						<span id="fileDownload" class="font-weight-bold d-block"></span>
+				<div id="shareWrapper" class="rounded mx-auto" style="background-color:#51C3F1;"> <!-- border border-dark -->
+					<form id="sUf">
+						<input id="dTs" type="hidden" value="">
+						<input id="searchUser" class="m-2 w-50 form-control d-inline-flex" type="text" placeholder="Name or Email..">
+						<a th:if="${user.isAdmin()}" href='#' id='addAll' class='btn btn-sm text-white' style="background-color:#225366;">Everyone</a>
+						<a href='#' id='removeAll' class='btn btn-danger btn-sm'>Clear</a>
+					</form>
+				</div>
+				<div id="sharedWith"></div>
+				<div id="shareContent" class="bg-white mt-2"></div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-elegant btn-sm" type="button"
+				data-dismiss="modal">Cancel</button>
+				<a id="letsShare" class="btn btn-sm" style="background-color:#51C3F1;border-color:#51C3F1;" href>Share</a>
+			</div>
+		</div>
+	</div>
+	</div>
+	
+	<!-- EDIT MODAL -->
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<form method="POST">
+				<div class="modal-content">
+					<div class="modal-body">
+						<div class="row border border-dark rounded m-3 p-3">
+							<div class="col col-md-4 form-group mb-2">
+								<small for="fileName">Name:</small>
+								<input type="hidden" id="fTc" value=''>
+								<input type="text" pattern="[a-zA-Z0-9\s]+" id="fileName" class="form-control form-control-sm" value="" placeholder="File Name" required>
+							</div>
+							<div class="col col-md-4 form-group mb-2">
+								<small for="fileFormat" class="d-block">File Format:</small>
+								<span id="fileFormat" class="font-weight-bold d-block"></span>
+							</div>
+							<div class="col col-md-4 form-group mb-2">
+								<small for="fileOwner" class="d-block">Owner:</small>
+								<span id="fileOwner" class="font-weight-bold d-block"></span>
+							</div>
+							<div class="col col-md-4 form-group mb-2">
+								<small for="parFolder" class="d-block">Parent Folder:</small>
+								<span id="parFolder" class="font-weight-bold d-block"></span>
+							</div>
+							<div class="col col-md-4 form-group mb-2">
+								<small for="numShares" class="d-block">Users With Access:</small>
+								<span id="numShares" class="font-weight-bold d-block"></span>
+							</div>
+							<div class="col col-md-4 form-group mb-2">
+								<small for="fileCreation" class="d-block">Creation:</small>
+								<span id="fileCreation" class="font-weight-bold d-block"></span>
+							</div>
+							<div class="col col-md-4 form-group mb-2">
+								<small for="fileUpdate" class="d-block">Last Update:</small>
+								<span id="fileUpdate" class="font-weight-bold d-block"></span>
+							</div>
+							<div class="col col-md-4 form-group mb-2">
+								<small for="fileDownload" class="d-block">Last Download:</small>
+								<span id="fileDownload" class="font-weight-bold d-block"></span>
+							</div>
+						</div>
+						<button id="fedit" class="btn btn-sm pull-right mr-3 mb-3" style="background-color:#51C3F1;border-color:#51C3F1;">Confirm</button>
+						<button class="btn btn-elegant btn-sm pull-right mr-1" type="button" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>
-				<button id="fedit" class="btn btn-sm pull-right mr-3 mb-3" style="background-color:#51C3F1;border-color:#51C3F1;">Confirm</button>
-				<button class="btn btn-dark btn-sm pull-right mr-1" type="button" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+			</div>
+		</form>
+	</div>
+	
+	<!-- Delete Modal-->
+	<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<h5>Choose delete type</h5>
+					<input type="hidden" value=""/>
+					<div class="row">
+						<div class="col-4 mt-2">
+							<button id="clar" class="btn btn-danger btn-sm w-100" type="button">Clear</button>
+						</div>
+						<div class="col-8 mt-2">
+							<span>Lose the permissions</span>
+							<span class="d-block">Does not delete the resource completely</span>
+						</div>
+						<div class="col-4 mt-2">
+							<button id="delt" class="btn btn-danger btn-sm w-100" type="button">Delete</button>
+						</div>
+						<div class="col-8 mt-3">
+							<span>Delete the resource completely</span>
+						</div>
+					</div>
+					<div class="d-block">
+						<button class="btn btn-elegant btn-sm pull-right" type="button" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-</form>
-</div>
-</div>
 
-<!-- UPLOAD MODAL -->
-<div class="modal" data-backdrop="static" data-keyboard="false" id="downloadModal" tabindex="-1" role="dialog"
-aria-labelledby="downModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg" role="document">
-	<div class="modal-content">
-		<div class="modal-body">
-			<div id="progress" class="progress" style="height: 5px;">
-				<div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 1%"></div>
+	<!-- UPLOAD MODAL -->
+	<div class="modal" data-backdrop="static" data-keyboard="false" id="downloadModal" tabindex="-1" role="dialog" aria-labelledby="downModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div id="progress" class="progress" style="height: 5px;">
+						<div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 1%"></div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
-</div>
 
-<!-- Footer -->
-<th:block th:include="includes/footer :: footer"></th:block>
-<th:block th:include="includes/scripts :: scripts"></th:block>
-<script th:src="@{/js/search.js}"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-	$("#shareModal").on("hidden.bs.modal", function() {
-		$("#searchUser").val('');
-		$("#shareContent").empty();
+	<!-- Footer -->
+	<th:block th:include="includes/footer :: footer"></th:block>
+	<th:block th:include="includes/scripts :: scripts"></th:block>
+	<script th:src="@{/js/search.js}"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$("#shareModal").on("hidden.bs.modal", function() {
+			$("#searchUser").val('');
+			$("#shareContent").empty();
+		});
 	});
-});
-</script>
-<script type="text/javascript">
-$("body").niceScroll({
-	fixed:true,
-	zindex:'99999999',
-	cursorcolor: '#51C3F1',
-	cursorborderradius: 0,
-	cursorborder:'none'
-});
-</script>
+	</script>
+	<script type="text/javascript">
+	$("body").niceScroll({
+		fixed:true,
+		zindex:'99999999',
+		cursorcolor: '#51C3F1',
+		cursorborderradius: 0,
+		cursorborder:'none'
+	});
+	</script>
 </body>
 
 </html>
