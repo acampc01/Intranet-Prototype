@@ -29,7 +29,7 @@
 			</ul>
 			<ul class="navbar-nav sidenav-toggler">
 				<li class="nav-item"><a class="nav-link text-center"
-					id="sidenavToggler"> <i class="fa fa-fw fa-angle-left"></i>
+					id="sidenavToggler"><i class="fa fa-fw fa-angle-left"></i>
 				</a></li>
 			</ul>
 			
@@ -67,7 +67,7 @@
 						<i class="fa fa-fw fa fa-adjust"></i>Toggle
 				</a></li> -->
 				<li th:if="${root != null}" class="nav-item ml-1 dropdown">
-					<button type="button" class="btn btn-outline-light btn-sm dropdown-toggle" data-toggle="dropdown">Options</button>
+					<button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">Options</button>
 					<div class="dropdown-menu">
 						<h5 class="dropdown-header">Create</h5>
 						<a class="dropdown-item" href="#" data-toggle="modal" data-target="#folderModal">New Folder</a>
@@ -75,17 +75,20 @@
 						<h5 class="dropdown-header">Upload</h5>
 						
 						<!-- For Files -->
-						<form id="fileUploadForm" style="display: none;" method="POST" enctype="multipart/form-data" >
+						<form id="fileUploadForm" style="display: none;" method="POST" enctype="multipart/form-data">
 							<input id="uploadFiles" type="file" name="files" multiple/>
 						</form>
 						<a id="upload_files" class="dropdown-item" href="">Files</a>
 						
 						<!-- For Folder -->
-						<a class="dropdown-item disabled" href="#">Folder</a>
+						<form id="folderUploadForm" style="display: none;" method="POST" enctype="multipart/form-data">
+							<input id="uploadFolder" type="file" name="folder" webkitdirectory multiple/>
+						</form>
+						<a id="upload_folder" class="dropdown-item" href="">Folder</a>
 					</div>	
 				</li>
 				<li class="nav-item ml-1"><button type="button"
-						class="btn btn-outline-light btn-sm" data-toggle="modal"
+						class="btn btn-info btn-sm" data-toggle="modal"
 						data-target="#logoutModal">
 						<i class="fa fa-fw fa-sign-out"></i>
 					</button></li>
@@ -98,13 +101,10 @@
 		aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-secondary" type="button"
-						data-dismiss="modal">Cancel</button>
-					<a class="btn" style="background-color:#51C3F1;border-color:#51C3F1;" th:href="@{/logout}">Logout</a>
+				<div class="modal-body">
+					<h5>Ready to Leave?</h5>
+					<button class="btn btn-elegant btn-sm pull-right" type="button" data-dismiss="modal">Cancel</button>
+					<a class="btn btn-sm pull-right" style="background-color:#51C3F1;border-color:#51C3F1;" th:href="@{/logout}">Logout</a>
 				</div>
 			</div>
 		</div>
@@ -123,9 +123,8 @@
 							required>
 					</div>
 					<div class="modal-footer">
-						<button class="btn btn-secondary" type="button"
-							data-dismiss="modal">Cancel</button>
-						<button class="btn" style="background-color:#51C3F1;border-color:#51C3F1;" id="newFolderBtn" type="Submit">Create</button>
+						<button class="btn btn-elegant btn-sm" type="button" data-dismiss="modal">Cancel</button>
+						<button class="btn btn-sm" style="background-color:#51C3F1;border-color:#51C3F1;" id="newFolderBtn" type="Submit">Create</button>
 					</div>
 				</form>
 			</div>

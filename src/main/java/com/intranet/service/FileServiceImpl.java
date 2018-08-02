@@ -45,10 +45,9 @@ public class FileServiceImpl implements FileService{
 
 	@Override
 	public void remove(File file) {
-		if(file.getSharedUsers().isEmpty()) {
-			file.getParent().getFiles().remove(file);
-			fileRepository.delete(file);
-		}
+		file.getSharedUsers().clear();
+		file.getParent().getFiles().remove(file);
+		fileRepository.delete(file);
 	}
 	
 }
