@@ -130,6 +130,17 @@ public class FileRestController {
 		return new ResponseEntity<Map<String, Object>>(HttpStatus.BAD_REQUEST);
 	}
 
+//	<script th:inline="javascript">
+//	/*<![CDATA[*/
+//		function init() {
+//		    odfcanvas = new odf.OdfCanvas($("#odf"));
+//			odfcanvas.load(/*[[@{'/user/download/file/' + ${file.encrypt()}}]]*/);
+//		}
+//		window.setTimeout(init, 0);
+//	/*]]>*/
+//	</script>
+	
+	
 	@RequestMapping(value="/user/file/{id_file}", method = RequestMethod.GET)
 	public ModelAndView embed(@PathVariable("id_file") String nid) {
 		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
@@ -142,22 +153,12 @@ public class FileRestController {
 			File file = fileService.findById(id);
 			if(user.getSharedFiles().contains(file) || file.getOwner().equals(user)) {
 				modelAndView.addObject("file", file);
-				
-				if(file.getFormat().equals("pdf")) {
-					java.io.File src = new java.io.File(getPath(file));
-					java.io.File temp = new java.io.File("src/main/resources/static/js/pdf/web/" + file.getName());
 
-					try {
-						Files.copy(Paths.get(src.getPath()) , Paths.get(temp.getPath()), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-					} catch (IOException e) {
-						log.error(e.getMessage());
-					}
-					temp.delete();
-					
+				if(file.getFormat().equals("pdf") || file.getFormat().equals("doc") || file.getFormat().equals("docx")) {
 					modelAndView.setViewName("user/file");
 					return modelAndView;
 				}
-				
+
 				List<String> content = null;
 				try {
 					content = Files.readAllLines(Paths.get(getPath(file)));
@@ -170,7 +171,7 @@ public class FileRestController {
 						lines.add(line);
 					}
 					modelAndView.addObject("content", lines);
-					
+
 					modelAndView.setViewName("user/file");
 					return modelAndView;
 				} catch (IOException e) {
@@ -344,27 +345,27 @@ public class FileRestController {
 
 		return new ResponseEntity<File>(HttpStatus.OK);
 	}
-	
-//	@RequestMapping(value = "/user/upload/folder/{id_folder}", method = RequestMethod.POST)
-//	public ResponseEntity<File> uploadFolderMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") String nid, @RequestBody String fName) {
-//		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
-//
-//		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
-//				.filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
-//
-//		if (StringUtils.isEmpty(uploadedFileName)) {
-//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//		}
-//
-//		try {
-//			saveUploadedFiles(Arrays.asList(uploadfiles), id);
-//		} catch (IOException e) {
-//			log.error(e.getMessage());
-//			return new ResponseEntity<File>(HttpStatus.BAD_REQUEST);
-//		}
-//
-//		return new ResponseEntity<File>(HttpStatus.OK);
-//	}
+
+	//	@RequestMapping(value = "/user/upload/folder/{id_folder}", method = RequestMethod.POST)
+	//	public ResponseEntity<File> uploadFolderMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") String nid, @RequestBody String fName) {
+	//		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+	//
+	//		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
+	//				.filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
+	//
+	//		if (StringUtils.isEmpty(uploadedFileName)) {
+	//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	//		}
+	//
+	//		try {
+	//			saveUploadedFiles(Arrays.asList(uploadfiles), id);
+	//		} catch (IOException e) {
+	//			log.error(e.getMessage());
+	//			return new ResponseEntity<File>(HttpStatus.BAD_REQUEST);
+	//		}
+	//
+	//		return new ResponseEntity<File>(HttpStatus.OK);
+	//	}
 
 	@RequestMapping("/user/download/file/{id_file}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable("id_file") String nid, HttpServletRequest request) {
