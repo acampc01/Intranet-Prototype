@@ -129,17 +129,6 @@ public class FileRestController {
 
 		return new ResponseEntity<Map<String, Object>>(HttpStatus.BAD_REQUEST);
 	}
-
-//	<script th:inline="javascript">
-//	/*<![CDATA[*/
-//		function init() {
-//		    odfcanvas = new odf.OdfCanvas($("#odf"));
-//			odfcanvas.load(/*[[@{'/user/download/file/' + ${file.encrypt()}}]]*/);
-//		}
-//		window.setTimeout(init, 0);
-//	/*]]>*/
-//	</script>
-	
 	
 	@RequestMapping(value="/user/file/{id_file}", method = RequestMethod.GET)
 	public ModelAndView embed(@PathVariable("id_file") String nid) {
@@ -154,7 +143,12 @@ public class FileRestController {
 			if(user.getSharedFiles().contains(file) || file.getOwner().equals(user)) {
 				modelAndView.addObject("file", file);
 
-				if(file.getFormat().equals("pdf") || file.getFormat().equals("doc") || file.getFormat().equals("docx")) {
+				if(file.getFormat().equals("odt") || file.getFormat().equals("doc") || file.getFormat().equals("docx") || file.getFormat().equals("docm")) {
+					modelAndView.setViewName("user/file");
+					return modelAndView;
+				}
+				
+				if(file.getFormat().equals("pdf")) {
 					modelAndView.setViewName("user/file");
 					return modelAndView;
 				}
