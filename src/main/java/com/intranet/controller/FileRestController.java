@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import com.intranet.DemoApplication;
 import com.intranet.model.Encryptor;
@@ -144,6 +143,8 @@ public class FileRestController {
 				modelAndView.addObject("file", file);
 
 				if(file.getFormat().equals("odt") || file.getFormat().equals("doc") || file.getFormat().equals("docx") || file.getFormat().equals("docm")) {
+					modelAndView.addObject("content", null);
+					
 					modelAndView.setViewName("user/file");
 					return modelAndView;
 				}
@@ -176,9 +177,14 @@ public class FileRestController {
 			log.error(e.getMessage());
 		}
 
-		modelAndView.setView(new RedirectView("/user/files/" + user.getRoot().encrypt() , true));
+		modelAndView.addObject("content", null);
+		
+		modelAndView.setViewName("user/file");
 		return modelAndView;
 	}
+	//		modelAndView.setView(new RedirectView("/user/files/" + user.getRoot().encrypt() , true));
+	//		return modelAndView;
+	
 
 	@PostMapping(path = "/user/edit/file/{id_file}", consumes = "text/plain")
 	public ResponseEntity<File> createFolder(@PathVariable("id_file") String nid, @RequestBody String name) {

@@ -33,7 +33,7 @@ $(document).ready(function() {
 		items: {
 			"edit": {
 				name: "Edit",
-				icon: "edit",
+				icon: "fa-edit",
 				callback: function(key, opt, e) {
 					var inp = $(this).find("input").val();
 					$("#fTc").val(inp);
@@ -108,7 +108,7 @@ $(document).ready(function() {
 			},
 			"delete": {
 				name: "Delete",
-				icon: "delete",
+				icon: "fa-trash",
 				callback: function(key, opt, e) {
 					$("#delModal").find('input').val($(this).find('input').val());
 					$("#delModal").modal('toggle');

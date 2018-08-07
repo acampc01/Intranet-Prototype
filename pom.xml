@@ -6,7 +6,6 @@
 	<groupId>com.intranet</groupId>
 	<artifactId>Intranet</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
 	<name>Intranet</name>
 
 	<parent>
@@ -115,6 +114,10 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
