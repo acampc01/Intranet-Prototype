@@ -82,7 +82,7 @@ public class SearchController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
-		List<User> users = userService.findAll(user);
+		List<User> users = userService.findAll();
 		if(users == null)
 			return new ResponseEntity<Map<Object, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
 

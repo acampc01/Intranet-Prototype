@@ -1,7 +1,9 @@
 package com.intranet.service;
 
 import java.util.List;
+import java.util.Set;
 
+import com.intranet.model.Notification;
 import com.intranet.model.User;
 
 public interface UserService {
@@ -10,6 +12,6 @@ public interface UserService {
 	public void update(User user);
 	public void remove(User user);
 	public User findOne(Integer id);
-	public List<User> findAll(User user);
-	public List<User> findConfirms(User user);
+	public List<User> findAll();
+	public Set<Notification> findConfirms(User user);
 }

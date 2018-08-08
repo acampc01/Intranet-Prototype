@@ -1,0 +1,12 @@
+.dro-border textarea {
+    border: 1px solid #51C3F1;
+}
+
+.dro-border .form-control:focus {
+    border: 1px solid #51C3F1;
+    box-shadow: 0 0 0 0.2rem rgba(32, 76, 95, .25);
+}
+
+#nType {
+    border: 1px solid #51C3F1;
+}

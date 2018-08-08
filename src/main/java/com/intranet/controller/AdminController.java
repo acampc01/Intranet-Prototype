@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -30,9 +31,11 @@ import com.intranet.DemoApplication;
 import com.intranet.model.Encryptor;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
+import com.intranet.model.Notification;
 import com.intranet.model.User;
 import com.intranet.service.FileService;
 import com.intranet.service.FolderService;
+import com.intranet.service.NotificationService;
 import com.intranet.service.UserService;
 
 @RestController
@@ -46,6 +49,9 @@ public class AdminController {
 	private UserService userService;
 
 	@Autowired
+	private NotificationService notifyService;
+	
+	@Autowired
 	private FileService fileService;
 
 	@Autowired
@@ -56,7 +62,7 @@ public class AdminController {
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		List<User> urs = userService.findAll(user);
+		List<User> urs = userService.findAll();
 		List<User> users = new ArrayList<User>();
 		for (User u : urs) {
 			if(!u.isAdmin() && u.getActive() == 1) {
@@ -66,8 +72,26 @@ public class AdminController {
 		modelAndView.addObject("user", user);
 		modelAndView.addObject("users", users);
 		modelAndView.addObject("notifications", userService.findConfirms(user));
+		modelAndView.addObject("notifies",user.getNotifys());
 		modelAndView.setViewName("admin/home");
 		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/admin/notify", method = RequestMethod.PUT)
+	public ResponseEntity<Notification> notify(@RequestParam("datos[]") String[] data) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		
+		if(user != null && user.isAdmin()) {
+			Notification notify = new Notification();
+			notify.setSender(user);
+			notify.setType(data[0]);
+			notify.setContent(data[1]);
+			notify.getUsers().addAll(userService.findAll());
+			notifyService.save(notify);
+			return new ResponseEntity<Notification>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<Notification>(HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/admin/accept/{id_user}", method = RequestMethod.PUT)
@@ -99,7 +123,14 @@ public class AdminController {
 			if(u.getActive() == 0)
 				u.setActive(1);
 			userService.update(u);
-			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+			
+			Set<Notification> notif = notifyService.findByType("Confirm");
+			for (Notification notification : notif) {
+				if(notification.getSender().equals(u)) {
+					notifyService.remove(notification);
+					return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+				}
+			}
 		}
 		log.error("Non admin user trying to accept a user.");
 
@@ -115,11 +146,17 @@ public class AdminController {
 
 		if(user != null && user.isAdmin()) {
 			User u = userService.findOne(id);
-			userService.remove(u);
-			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+			
+			Set<Notification> notif = notifyService.findByType("Confirm");
+			for (Notification notification : notif) {
+				if(notification.getSender().equals(u)) {
+					notifyService.remove(notification);
+					userService.remove(u);
+					return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+				}
+			}			
 		}
 		log.error("Non admin user trying to refuse a user.");
-
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	}
 

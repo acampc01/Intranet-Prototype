@@ -35,7 +35,8 @@
 			
 			<!-- TOP NAVBAR -->
 			<ul class="navbar-nav ml-auto">
-				<!-- NOTIFICATIONS -->
+				
+				<!-- xxxxxxxxxxxxxxxxxxxx NOTIFICATIONS xxxxxxxxxxxxxxxxxxxx -->
 				<li th:if="${user.isAdmin()}" class="nav-item dropdown">
 		          <a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		            <i class="fa fa-fw fa-bell text-white"></i>
@@ -49,16 +50,18 @@
 		           	<div th:if="${#lists.size(notifications) != 0}" th:remove="tag">
 						<h6 class="dropdown-header">New Alerts:</h6>
 			            <div class="dropdown-divider"></div>
-			            <span class="dropdown-item" th:each="user, userStat:${notifications}" th:unless="${userStat.index >= 3}">
+			            <span class="dropdown-item" th:each="notif, userStat:${notifications}" th:unless="${userStat.index >= 3}">
 			              <span class="d-block text-primary">
 			                <strong>Confirm</strong>
 			              </span>
-			              <div class="small d-inline" th:text="${user.email}"></div>
-			              <span class="small text-muted" th:text="${#dates.format(user.creation, 'dd-MM')}"></span>
+			              <div class="small d-inline" th:text="${notif.sender.email}"></div>
+			              <span class="small text-muted" th:text="${#dates.format(notif.sender.creation, 'dd-MM')}"></span>
 			            </span>
 			      	</div>
 		          </div>
 		        </li>
+		        <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+		        
 				<li class="nav-item"><a th:attrappend="href=${user.isAdmin()}?@{/admin/home}" class="nav-link  text-white"> <i
 						class="fa fa-fw fa fa-user"></i> <span th:text="${user.name}"
 						th:remove="tag">Usuario</span>
