@@ -66,7 +66,7 @@ public class AdminController {
 		modelAndView.addObject("user", user);
 		modelAndView.addObject("users", users);
 		modelAndView.addObject("notifications", userService.findConfirms(user));
-		modelAndView.setViewName("/admin/home");
+		modelAndView.setViewName("admin/home");
 		return modelAndView;
 	}
 
@@ -384,7 +384,7 @@ public class AdminController {
 	@Async
 	private void givesFile(User no, File file) throws IOException {
 		java.io.File f = new java.io.File(getPath(file));
-		FileUtils.moveFile(f, new java.io.File( getPath(no.getRoot())+"//"+file.getName()));
+		FileUtils.moveFile(f, new java.io.File( getPath(no.getRoot())+"/"+file.getName()));
 
 		no.getSharedFiles().remove(file);
 		file.getSharedUsers().remove(no);
@@ -402,7 +402,7 @@ public class AdminController {
 	@Async
 	private void givesFolder(User no, Folder folder) throws IOException {
 		java.io.File f = new java.io.File(getPath(folder));
-		FileUtils.moveDirectory(f, new java.io.File(getPath(no.getRoot())+"//"+folder.getName()));
+		FileUtils.moveDirectory(f, new java.io.File(getPath(no.getRoot())+"/"+folder.getName()));
 
 		folder.setOwner(no);
 		folder.getParent().getFolders().remove(folder);
@@ -423,7 +423,7 @@ public class AdminController {
 		Folder aux = new Folder();
 		aux.setParent(file.getParent());
 		while(aux.getParent() != null) {
-			path = aux.getParent().getName() + "//" + path;
+			path = aux.getParent().getName() + "/" + path;
 			aux = aux.getParent();
 		}
 
@@ -439,7 +439,7 @@ public class AdminController {
 		Folder aux = new Folder();
 		aux.setParent(folder.getParent());
 		while(aux.getParent() != null) {
-			path = aux.getParent().getName() + "//" + path;
+			path = aux.getParent().getName() + "/" + path;
 			aux = aux.getParent();
 		}
 

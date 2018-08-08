@@ -107,7 +107,7 @@ public class OwnFilesController {
 				else
 					modelAndView.addObject("lastDate", new Date());
 
-				modelAndView.setViewName("/user/files");
+				modelAndView.setViewName("user/files");
 				return modelAndView;
 			}
 

@@ -149,7 +149,7 @@ public class SearchController {
 		Folder aux = new Folder();
 		aux.setParent(file.getParent());
 		while(aux.getParent() != null) {
-			path = aux.getParent().getName() + "//" + path;
+			path = aux.getParent().getName() + "/" + path;
 			aux = aux.getParent();
 		}
 

@@ -474,7 +474,7 @@ public class FileRestController {
 		Folder aux = new Folder();
 		aux.setParent(file.getParent());
 		while(aux.getParent() != null) {
-			path = aux.getParent().getName() + "//" + path;
+			path = aux.getParent().getName() + "/" + path;
 			aux = aux.getParent();
 		}
 
@@ -490,7 +490,7 @@ public class FileRestController {
 		Folder aux = new Folder();
 		aux.setParent(folder.getParent());
 		while(aux.getParent() != null) {
-			path = aux.getParent().getName() + "//" + path;
+			path = aux.getParent().getName() + "/" + path;
 			aux = aux.getParent();
 		}
 
