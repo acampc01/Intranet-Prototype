@@ -10,4 +10,5 @@ public interface NotificationService {
 	public Notification findBySender(User sender);
 	public void remove(Notification notify);
 	public void save(Notification notify);
+	public Notification findOne(Integer id);
 }

@@ -70,9 +70,9 @@ public class User {
 	@JoinTable(name = "user_folders_s", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "folder_id"))
 	private Set<Folder> sharedFolders;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "user_notif", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "notif_id"))
-	private Set<Notification> notifys;
+//	@ManyToMany(cascade = CascadeType.ALL)
+//	@JoinTable(name = "user_notif", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "notif_id"))
+//	private Set<Notification> notifys;
 
 	public String encrypt() {
 		return Encryptor.encrypt(new Integer(id).toString());
@@ -150,13 +150,13 @@ public class User {
 		this.sharedFolders = sharedFolders;
 	}
 
-	public Set<Notification> getNotifys() {
-		return notifys;
-	}
-
-	public void setNotifys(Set<Notification> notifys) {
-		this.notifys = notifys;
-	}
+//	public Set<Notification> getNotifys() {
+//		return notifys;
+//	}
+//
+//	public void setNotifys(Set<Notification> notifys) {
+//		this.notifys = notifys;
+//	}
 
 	public Folder getRoot() {
 		return root;

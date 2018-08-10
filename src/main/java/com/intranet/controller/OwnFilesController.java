@@ -23,6 +23,7 @@ import com.intranet.model.File;
 import com.intranet.model.Folder;
 import com.intranet.model.User;
 import com.intranet.service.FolderService;
+import com.intranet.service.NotificationService;
 import com.intranet.service.UserService;
 
 @Controller
@@ -33,6 +34,9 @@ public class OwnFilesController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private NotificationService notifyService;
+	
 	@Autowired
 	private FolderService folderService;
 
@@ -66,6 +70,7 @@ public class OwnFilesController {
 				modelAndView.addObject("user", user);
 				modelAndView.addObject("root", folder);
 				modelAndView.addObject("notifications", userService.findConfirms(user));
+				modelAndView.addObject("notifies", notifyService.findByType("Advice"));
 				
 				List<File> files = new ArrayList<File>(folder.getFiles());
 				Collections.sort(files, new Comparator<File>(){

@@ -27,13 +27,17 @@ public class NotificationServiceImpl implements NotificationService{
 
 	@Override
 	public void remove(Notification notify) {
-		notify.getUsers().clear();
 		notifyRepository.delete(notify);
 	}
 
 	@Override
 	public void save(Notification notify) {
 		notifyRepository.save(notify);
+	}
+
+	@Override
+	public Notification findOne(Integer id) {
+		return notifyRepository.getOne(id);
 	}
 	
 }

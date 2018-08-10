@@ -72,26 +72,9 @@ public class AdminController {
 		modelAndView.addObject("user", user);
 		modelAndView.addObject("users", users);
 		modelAndView.addObject("notifications", userService.findConfirms(user));
-		modelAndView.addObject("notifies",user.getNotifys());
+		modelAndView.addObject("notifies", notifyService.findByType("Advice"));
 		modelAndView.setViewName("admin/home");
 		return modelAndView;
-	}
-	
-	@RequestMapping(value = "/admin/notify", method = RequestMethod.PUT)
-	public ResponseEntity<Notification> notify(@RequestParam("datos[]") String[] data) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		User user = userService.findUserByEmail(auth.getName());
-		
-		if(user != null && user.isAdmin()) {
-			Notification notify = new Notification();
-			notify.setSender(user);
-			notify.setType(data[0]);
-			notify.setContent(data[1]);
-			notify.getUsers().addAll(userService.findAll());
-			notifyService.save(notify);
-			return new ResponseEntity<Notification>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<Notification>(HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/admin/accept/{id_user}", method = RequestMethod.PUT)
@@ -379,6 +362,7 @@ public class AdminController {
 				for (Folder son : folder.getFolders()) {
 					clear(son);
 				}
+
 				for (File son : folder.getFiles()) {
 					clear(son);
 				}

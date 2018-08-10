@@ -20,6 +20,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
 import com.intranet.model.User;
+import com.intranet.service.NotificationService;
 import com.intranet.service.UserService;
 
 @Controller
@@ -29,6 +30,9 @@ public class SharedFilesController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private NotificationService notifyService;
 
 	@RequestMapping(value="/user/shared", method = RequestMethod.GET)
 	public ModelAndView myShared(){
@@ -40,6 +44,7 @@ public class SharedFilesController {
 			
 			modelAndView.addObject("user", user);
 			modelAndView.addObject("notifications", userService.findConfirms(user));
+			modelAndView.addObject("notifies", notifyService.findByType("Advice"));
 			
 			List<File> files = new ArrayList<File>(user.getSharedFiles());
 			Collections.sort(files, new Comparator<File>(){

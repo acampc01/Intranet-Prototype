@@ -36,36 +36,51 @@
 			<!-- TOP NAVBAR -->
 			<ul class="navbar-nav ml-auto">
 				
-				<!-- xxxxxxxxxxxxxxxxxxxx NOTIFICATIONS xxxxxxxxxxxxxxxxxxxx -->
-				<li th:if="${user.isAdmin()}" class="nav-item dropdown">
-		          <a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		            <i class="fa fa-fw fa-bell text-white"></i>
-		            <span class="d-lg-none">Alerts</span>
-					<span th:if="${#lists.size(notifications) != 0}" class="indicator text-warning d-none d-lg-block">
-		              <span class="badge badge-pill" style="background-color:#51C3F1;font-size:9px;" th:text="${#lists.size(notifications)}"></span>
-		            </span>
-		          </a>
-		          <div class="dropdown-menu" aria-labelledby="alertsDropdown">
-		            <h6 th:if="${#lists.size(notifications) == 0}" class="dropdown-header m-1">Everything done!</h6>
-		           	<div th:if="${#lists.size(notifications) != 0}" th:remove="tag">
-						<h6 class="dropdown-header">New Alerts:</h6>
-			            <div class="dropdown-divider"></div>
-			            <span class="dropdown-item" th:each="notif, userStat:${notifications}" th:unless="${userStat.index >= 3}">
-			              <span class="d-block text-primary">
-			                <strong>Confirm</strong>
-			              </span>
-			              <div class="small d-inline" th:text="${notif.sender.email}"></div>
-			              <span class="small text-muted" th:text="${#dates.format(notif.sender.creation, 'dd-MM')}"></span>
-			            </span>
-			      	</div>
-		          </div>
+				<li class="nav-item dropdown">
+		        	<a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			            <i class="fa fa-fw fa-bell text-white"></i>
+			            <span class="d-lg-none">Alerts</span>
+						<span th:if="${user.isAdmin()} and ${#lists.size(notifies) != 0} or ${#lists.size(notifications) != 0}" class="indicator text-warning d-none d-lg-block">
+			            	<span class="badge badge-pill" style="background-color:#51C3F1;font-size:9px;" th:text="${#lists.size(notifications)} + ${#lists.size(notifies)}"></span>
+			       		</span>
+			       		<span th:if="${!user.isAdmin()} and ${#lists.size(notifies) != 0}" class="indicator text-warning d-none d-lg-block">
+			       			<span class="badge badge-pill" style="background-color:#51C3F1;font-size:9px;" th:text="${#lists.size(notifies)}"></span>
+			       		</span>
+		       		</a>
+		          	<div class="dropdown-menu dropdown-menu-right" style="max-width: 275px;" aria-labelledby="alertsDropdown">
+		            	<h6 th:if="${user.isAdmin()} and ${#lists.size(notifications) == 0} and ${#lists.size(notifies) == 0}" class="dropdown-header m-1">Everything done!</h6>
+		           		<h6 th:if="${!user.isAdmin()} and ${#lists.size(notifies) == 0}" class="dropdown-header m-1">Everything done!</h6>
+		           		<div th:remove="tag" th:if="${#lists.size(notifications) != 0} or ${#lists.size(notifies) != 0}">
+							<h6 class="dropdown-header">New Alerts:</h6>
+			            	<div class="dropdown-divider"></div>
+			            	<div th:remove="tag" th:each="notif, userStat:${notifies}" th:unless="${userStat.index >= 3}">
+				            	<div class="dropdown-item">   
+				                	<strong class="text-warning" th:text="${notif.type}"></strong>
+				                	<div class="ml-1 small d-inline" th:text="${notif.sender.name}"></div>
+				             		<span class="ml-1 mr-2 small text-muted" th:text="${#dates.format(notif.creation, 'hh:mm dd-MM-yy')}"></span>
+				            	</div>
+				            	<p class="mb-0 pl-4 pr-4 text-truncate" style="font-size:11px;" th:text="${notif.content}"></p>
+				            	<div class="dropdown-divider"></div>
+				        	</div>
+				        	<div th:remove="tag" th:if="${user.isAdmin()}" th:each="notif, userStat:${notifications}" th:unless="${userStat.index >= 2}">
+				            	<div class="dropdown-item">   
+				                	<strong th:text="${notif.type}" style="color:#51C3F1;"></strong>
+				                	<div class="ml-1 small d-inline" th:text="${notif.sender.email}"></div>
+				             		<span class="ml-1 mr-2 small text-muted" th:text="${#dates.format(notif.sender.creation, 'dd-MM')}"></span>
+				            	</div>
+				            	<p class="mb-0 pl-4 pr-4 text-justify" style="font-size:12px;" th:text="${notif.content}"></p>
+				            	<div class="dropdown-divider"></div>
+				        	</div>
+			      		</div>
+		         	</div>
 		        </li>
-		        <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
 		        
-				<li class="nav-item"><a th:attrappend="href=${user.isAdmin()}?@{/admin/home}" class="nav-link  text-white"> <i
-						class="fa fa-fw fa fa-user"></i> <span th:text="${user.name}"
-						th:remove="tag">Usuario</span>
-				</a></li>
+				<li class="nav-item">
+					<a th:attr="href= ${user.isAdmin()} ? @{/admin/home} : @{/user/profile}" class="nav-link  text-white">
+						<i class="fa fa-fw fa fa-user"></i>
+						<span th:text="${user.name}" th:remove="tag">Usuario</span>
+					</a>
+				</li>
 				<!-- <li class="nav-item"><a class="nav-link" id="toggleNavColor">
 						<i class="fa fa-fw fa fa-adjust"></i>Toggle
 				</a></li> -->

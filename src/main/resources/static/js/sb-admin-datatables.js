@@ -23,9 +23,9 @@ $(document).ready(function() {
 	$("tr#fila").on('click',function(){
 		var rsc = $(this).find('input').val();
 		if($(this).find('input').data('type') === "folder")
-		window.location = '/user/files/'.concat(rsc);
+			window.location = '/user/files/'.concat(rsc);
 		else
-		window.location = '/user/file/'.concat(rsc);
+			window.location = '/user/file/'.concat(rsc);
 	});
 
 	$.contextMenu({
