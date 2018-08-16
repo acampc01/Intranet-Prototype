@@ -11,8 +11,7 @@
 <title>Intranet Register</title>
 
 <!-- Bootstrap core CSS -->
-<link th:href="@{/libs/bootstrap/css/bootstrap.min.css}"
-		rel="stylesheet">
+<th:block th:include="includes/links :: links"></th:block>
 
 <!-- Custom styles for this template -->
 <link type="text/css" th:href="@{/css/login.css}" rel="stylesheet">
@@ -21,11 +20,10 @@
 <body>
 
 	<div class="container">
-		<form th:action="@{/register}" th:object="${user}" method="post" class="form-signin">
-			<div class="text-center mb-4">
-				<h2 class="h3 mb-3 font-weight-normal">Intranet Register</h2>
-			</div>
-
+		<div class="text-center mb-4">
+			<h2 class="h3 mb-3 font-weight-normal">Intranet Register</h2>
+		</div>
+		<form th:action="@{/register}" th:object="${user}" method="post" class="form-signin card">
 			<div class="form-label-group">
 				<input type="text" id="name" name="name" th:field="*{name}" th:placeholder="Name" class="form-control" autocomplete="off" required autofocus/>
 				<label for="name">Name</label>
@@ -51,22 +49,18 @@
 				<label for="confirmPassword">Confirm Password</label>
 			</div>
 
-			<div class="form-label-group">
-				<button type="submit" class="btn btn-lg btn-block text-light" style="background-color:#51C3F1;">Register
-					User</button>
-			</div>
-
+			<button type="submit" class="btn btn-lg btn-block text-white" style="background-color:#51C3F1;">Register User</button>
+			
 			<div class="text-center">
 				<span class="text-center" th:utext="${successMessage}"></span>
 			</div>
-
-			<div class="text-center mt-3 mb-2">
-				<a class="badge badge-secondary text-center" th:href="@{/login}">To Login</a>
-			</div>
-
-			<p class="mt-3 mb-3 text-muted text-center">&copy; Drotium
-				2018-2019</p>
 		</form>
+		
+		<div class="text-center mt-3 mb-2">
+			<a class="badge badge-secondary text-center" th:href="@{/login}">To Login</a>
+		</div>
+
+		<p class="mt-3 mb-3 text-muted text-center">&copy; Drotium 2018-2019</p>
 	</div>
 
 	<!-- Bootstrap core JavaScript-->
