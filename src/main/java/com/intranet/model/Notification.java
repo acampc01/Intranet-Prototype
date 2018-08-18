@@ -32,11 +32,15 @@ public class Notification {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User sender;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "file_id", nullable = true)
+	private File file;
 
 	@Column(name = "creation", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creation;
-
+	
 //	@ManyToMany(mappedBy="notifys")
 //	private Set<User> users;
 
@@ -81,6 +85,18 @@ public class Notification {
 		this.type = type;
 	}
 
+	public Date getCreation() {
+		return creation;
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+	
 //	public Set<User> getUsers() {
 //		return users;
 //	}
@@ -89,8 +105,6 @@ public class Notification {
 //		this.users = users;
 //	}
 
-	public Date getCreation() {
-		return creation;
-	}
+	
 	
 }

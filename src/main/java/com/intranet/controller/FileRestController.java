@@ -23,9 +23,11 @@ import com.intranet.DemoApplication;
 import com.intranet.model.Encryptor;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
+import com.intranet.model.Notification;
 import com.intranet.model.User;
 import com.intranet.service.FileService;
 import com.intranet.service.FolderService;
+import com.intranet.service.NotificationService;
 import com.intranet.service.UserService;
 
 import java.io.IOException;
@@ -54,6 +56,9 @@ public class FileRestController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+	@Autowired
+	private NotificationService notifyService;
+	
 	@Autowired
 	private UserService userService;
 
@@ -170,6 +175,7 @@ public class FileRestController {
 					modelAndView.setViewName("user/file");
 					return modelAndView;
 				} catch (IOException e) {
+					e.printStackTrace();
 					log.error("Reading not a plain text file");
 				}
 			}
@@ -345,28 +351,7 @@ public class FileRestController {
 
 		return new ResponseEntity<File>(HttpStatus.OK);
 	}
-
-	//	@RequestMapping(value = "/user/upload/folder/{id_folder}", method = RequestMethod.POST)
-	//	public ResponseEntity<File> uploadFolderMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") String nid, @RequestBody String fName) {
-	//		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
-	//
-	//		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
-	//				.filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
-	//
-	//		if (StringUtils.isEmpty(uploadedFileName)) {
-	//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	//		}
-	//
-	//		try {
-	//			saveUploadedFiles(Arrays.asList(uploadfiles), id);
-	//		} catch (IOException e) {
-	//			log.error(e.getMessage());
-	//			return new ResponseEntity<File>(HttpStatus.BAD_REQUEST);
-	//		}
-	//
-	//		return new ResponseEntity<File>(HttpStatus.OK);
-	//	}
-
+	
 	@RequestMapping("/user/download/file/{id_file}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable("id_file") String nid, HttpServletRequest request) {
 		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
@@ -397,6 +382,12 @@ public class FileRestController {
 				file.setDownload(new Date());
 				fileService.update(file);
 
+				Notification n = new Notification();
+				n.setSender(user);
+				n.setFile(file);
+				n.setType("Download");
+				notifyService.save(n);
+				
 				return ResponseEntity.ok()
 						.contentType(MediaType.parseMediaType(contentType))
 						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename().replace("%20", " ")+ "\"")
@@ -463,7 +454,14 @@ public class FileRestController {
 				}
 
 				Files.write(Paths.get(path), file.getBytes());
+				
+				Notification n = new Notification();
+				n.setSender(user);
+				n.setFile(f);
+				n.setType("Upload");
+				notifyService.save(n);
 			}
+			
 		}
 	}
 
