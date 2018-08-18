@@ -36,6 +36,10 @@ public class Notification {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "file_id", nullable = true)
 	private File file;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "folder_id", nullable = true)
+	private Folder folder;
 
 	@Column(name = "creation", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -95,6 +99,14 @@ public class Notification {
 
 	public void setFile(File file) {
 		this.file = file;
+	}
+
+	public Folder getFolder() {
+		return folder;
+	}
+
+	public void setFolder(Folder folder) {
+		this.folder = folder;
 	}
 	
 //	public Set<User> getUsers() {

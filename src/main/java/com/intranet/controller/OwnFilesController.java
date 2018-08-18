@@ -21,6 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.intranet.model.Encryptor;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
+import com.intranet.model.Notification;
 import com.intranet.model.User;
 import com.intranet.service.FolderService;
 import com.intranet.service.NotificationService;
@@ -48,6 +49,12 @@ public class OwnFilesController {
 		if(user != null) {
 			user.setLastConnect(new Date());
 			userService.update(user);
+			
+			Notification n = new Notification();
+			n.setSender(user);
+			n.setType("Login");
+			notifyService.save(n);
+			
 			modelAndView.setView(new RedirectView("/user/files/" + user.getRoot().encrypt() , true));
 			return modelAndView;
 		}
