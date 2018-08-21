@@ -21,8 +21,10 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.intranet.model.Encryptor;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
+import com.intranet.model.Notification;
 import com.intranet.model.User;
 import com.intranet.service.FolderService;
+import com.intranet.service.NotificationService;
 import com.intranet.service.UserService;
 
 @Controller
@@ -34,6 +36,9 @@ public class OwnFilesController {
 	private UserService userService;
 
 	@Autowired
+	private NotificationService notifyService;
+	
+	@Autowired
 	private FolderService folderService;
 
 	@RequestMapping(value="/user/files", method = RequestMethod.GET)
@@ -44,6 +49,12 @@ public class OwnFilesController {
 		if(user != null) {
 			user.setLastConnect(new Date());
 			userService.update(user);
+			
+			Notification n = new Notification();
+			n.setSender(user);
+			n.setType("Login");
+			notifyService.save(n);
+			
 			modelAndView.setView(new RedirectView("/user/files/" + user.getRoot().encrypt() , true));
 			return modelAndView;
 		}
@@ -66,6 +77,7 @@ public class OwnFilesController {
 				modelAndView.addObject("user", user);
 				modelAndView.addObject("root", folder);
 				modelAndView.addObject("notifications", userService.findConfirms(user));
+				modelAndView.addObject("notifies", notifyService.findByType("Advice"));
 				
 				List<File> files = new ArrayList<File>(folder.getFiles());
 				Collections.sort(files, new Comparator<File>(){

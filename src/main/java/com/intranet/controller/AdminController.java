@@ -3,9 +3,11 @@ package com.intranet.controller;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -30,9 +32,11 @@ import com.intranet.DemoApplication;
 import com.intranet.model.Encryptor;
 import com.intranet.model.File;
 import com.intranet.model.Folder;
+import com.intranet.model.Notification;
 import com.intranet.model.User;
 import com.intranet.service.FileService;
 import com.intranet.service.FolderService;
+import com.intranet.service.NotificationService;
 import com.intranet.service.UserService;
 
 @RestController
@@ -46,6 +50,9 @@ public class AdminController {
 	private UserService userService;
 
 	@Autowired
+	private NotificationService notifyService;
+	
+	@Autowired
 	private FileService fileService;
 
 	@Autowired
@@ -56,7 +63,7 @@ public class AdminController {
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		List<User> urs = userService.findAll(user);
+		List<User> urs = userService.findAll();
 		List<User> users = new ArrayList<User>();
 		for (User u : urs) {
 			if(!u.isAdmin() && u.getActive() == 1) {
@@ -66,7 +73,90 @@ public class AdminController {
 		modelAndView.addObject("user", user);
 		modelAndView.addObject("users", users);
 		modelAndView.addObject("notifications", userService.findConfirms(user));
+		modelAndView.addObject("notifies", notifyService.findByType("Advice"));
+		
 		modelAndView.setViewName("admin/home");
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/admin/charts", method = RequestMethod.GET)
+	public ModelAndView charts() {
+		ModelAndView modelAndView = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		List<User> urs = userService.findAll();
+		List<User> users = new ArrayList<User>();
+		for (User u : urs) {
+			if(!u.isAdmin() && u.getActive() == 1) {
+				users.add(u);
+			}
+		}
+		modelAndView.addObject("user", user);
+		modelAndView.addObject("users", users);
+		modelAndView.addObject("notifications", userService.findConfirms(user));
+		modelAndView.addObject("notifies", notifyService.findByType("Advice"));
+		
+		List<Date> dDownload = notifyService.findByTypeLastMonth("Download");
+		List<Object[]> download = new ArrayList<Object[]>();
+		for (Date date : dDownload) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "Download").size();
+			download.add(aux);
+		}
+		modelAndView.addObject("download", download);
+		
+		List<Date> dUpload = notifyService.findByTypeLastMonth("Upload");
+		List<Object[]> upload = new ArrayList<Object[]>();
+		for (Date date : dUpload) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "Upload").size();
+			upload.add(aux);
+		}
+		modelAndView.addObject("upload", upload);
+	 
+		List<Date> dLogin = notifyService.findByTypeLastMonth("Login");
+		List<Object[]> login = new ArrayList<Object[]>();
+		for (Date date : dLogin) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "Login").size();
+			login.add(aux);
+		}
+		modelAndView.addObject("logins", login);
+		
+		List<Date> dRegister = notifyService.findByTypeLastMonth("Register");
+		List<Object[]> register = new ArrayList<Object[]>();
+		for (Date date : dRegister) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "Register").size();
+			register.add(aux);
+		}
+		modelAndView.addObject("register", register);
+			
+		List<Date> dfolderDownload = notifyService.findByTypeLastMonth("FolderDownload");
+		List<Object[]> folderDownload = new ArrayList<Object[]>();
+		for (Date date : dfolderDownload) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "FolderDownload").size();
+			folderDownload.add(aux);
+		}
+		modelAndView.addObject("folderDownload", folderDownload);
+		
+		List<Date> dfolderUpload = notifyService.findByTypeLastMonth("FolderUpload");
+		List<Object[]> folderUpload = new ArrayList<Object[]>();
+		for (Date date : dfolderUpload) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "FolderUpload").size();
+			folderUpload.add(aux);
+		}
+		modelAndView.addObject("folderUpload", folderUpload);
+		
+		modelAndView.setViewName("admin/charts");
 		return modelAndView;
 	}
 
@@ -99,7 +189,14 @@ public class AdminController {
 			if(u.getActive() == 0)
 				u.setActive(1);
 			userService.update(u);
-			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+			
+			Set<Notification> notif = notifyService.findByType("Confirm");
+			for (Notification notification : notif) {
+				if(notification.getSender().equals(u)) {
+					notifyService.remove(notification);
+					return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+				}
+			}
 		}
 		log.error("Non admin user trying to accept a user.");
 
@@ -115,11 +212,17 @@ public class AdminController {
 
 		if(user != null && user.isAdmin()) {
 			User u = userService.findOne(id);
-			userService.remove(u);
-			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+			
+			Set<Notification> notif = notifyService.findByType("Confirm");
+			for (Notification notification : notif) {
+				if(notification.getSender().equals(u)) {
+					notifyService.remove(notification);
+					userService.remove(u);
+					return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+				}
+			}			
 		}
 		log.error("Non admin user trying to refuse a user.");
-
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	}
 
@@ -342,6 +445,7 @@ public class AdminController {
 				for (Folder son : folder.getFolders()) {
 					clear(son);
 				}
+
 				for (File son : folder.getFiles()) {
 					clear(son);
 				}

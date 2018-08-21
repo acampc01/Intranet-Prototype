@@ -28,6 +28,7 @@ import com.intranet.model.File;
 import com.intranet.model.Folder;
 import com.intranet.model.User;
 import com.intranet.service.FileService;
+import com.intranet.service.NotificationService;
 import com.intranet.service.UserService;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
@@ -51,6 +52,9 @@ public class SearchController {
 	private UserService userService;
 
 	@Autowired
+	private NotificationService notifyService;
+	
+	@Autowired
 	private FileService fileService;
 
 	@RequestMapping(value="/user/search", method = RequestMethod.GET)
@@ -60,6 +64,7 @@ public class SearchController {
 		User user = userService.findUserByEmail(auth.getName());
 		modelAndView.addObject("user", user);
 		modelAndView.addObject("notifications", userService.findConfirms(user));
+		modelAndView.addObject("notifies", notifyService.findByType("Advice"));
 		modelAndView.setViewName("user/search");
 		return modelAndView;
 	}
@@ -82,7 +87,7 @@ public class SearchController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
-		List<User> users = userService.findAll(user);
+		List<User> users = userService.findAll();
 		if(users == null)
 			return new ResponseEntity<Map<Object, Object>>(HttpStatus.INTERNAL_SERVER_ERROR);
 

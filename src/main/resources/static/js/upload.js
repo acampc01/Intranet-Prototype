@@ -30,7 +30,6 @@ $(document).ready(function () {
 			beforeSend: function(xhr) {
 				$("#downloadModal").modal('show');
 				xhr.setRequestHeader(header, token);
-				//xhr.upload.addEventListener('progress', progress, false);
 			},
 			xhr: function (){
 				var jqXHR = null;
@@ -40,12 +39,10 @@ $(document).ready(function () {
                     jqXHR = new window.XMLHttpRequest();
                 }
                 
-                //Upload progress
                 jqXHR.upload.addEventListener("progress", function ( evt ) {
 					if ( evt.lengthComputable ) {
                     	var percentComplete = Math.round( (evt.loaded * 100) / evt.total );
-                    	
-                    	//Do something with upload progress
+              
                         console.log( 'Uploaded percent', percentComplete );
                         $('#progressBar').css('width', percentComplete+'%');
                     }

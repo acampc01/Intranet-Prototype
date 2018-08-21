@@ -31,8 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.intranet.DemoApplication;
 import com.intranet.model.Encryptor;
 import com.intranet.model.Folder;
+import com.intranet.model.Notification;
 import com.intranet.model.User;
 import com.intranet.service.FolderService;
+import com.intranet.service.NotificationService;
 import com.intranet.service.UserService;
 
 @RestController
@@ -40,6 +42,9 @@ public class FolderRestController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+	@Autowired
+	private NotificationService notifyService;
+	
 	@Autowired
 	private UserService userService;
 
@@ -67,6 +72,13 @@ public class FolderRestController {
 			folderService.save(newFolder);
 			folderService.update(root);
 			userService.update(user);
+			
+			Notification n = new Notification();
+			n.setSender(user);
+			n.setFolder(newFolder);
+			n.setType("FolderUpload");
+			notifyService.save(n);
+			
 			return new ResponseEntity<Folder>(HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<Folder>(HttpStatus.BAD_REQUEST);
@@ -103,6 +115,12 @@ public class FolderRestController {
 				
 				folder.setDownload(new Date());
 				folderService.update(folder);
+				
+				Notification n = new Notification();
+				n.setSender(user);
+				n.setFolder(folder);
+				n.setType("FolderDownload");
+				notifyService.save(n);
 			}
 		} catch (Exception e) {
 			log.info(e.getMessage());

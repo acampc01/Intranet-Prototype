@@ -37,7 +37,7 @@ $(document).ready(function () {
 	$("#uedit").click(function (event) {
        	event.preventDefault();
 		if( $("#userName").val() !== "" && $("#userLastName").val() !== "" && $("#userEmail").val() !== "" ){
-			var datos = [$("#userName").val(),$("#userLastName").val(),$("#userEmail").val()]
+			var datos = [$("#userName").val(),$("#userLastName").val(),$("#userEmail").val()];
 			$.ajax({
 				type: "POST",
 				url: "/user/edit/".concat( $("#uTc").val() ),
@@ -60,6 +60,52 @@ $(document).ready(function () {
 				}
 			});
 		}
+	});
+	
+	$("#nButton").click(function (event) {
+		event.preventDefault();
+		if( $("#nType").val() !== "" && $("#nContent").val() !== "" ){
+			var datos = [$("#nType").val(),$("#nContent").val()];
+			$.ajax({
+				type: "PUT",
+				url: "/admin/notify/",
+				cache: false,
+				data: {
+					datos
+				},
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
+				timeout: 6000,
+				success: function (data) {
+					$("#nContent").val('');
+					alertify.success('Notified!');
+					setTimeout(function(){
+						location.reload();
+				    }, 1000);
+				},
+				error: function (e) {}
+			});
+		}
+	});
+	
+	$("a#nRemove").click(function (event) {
+		$.ajax({
+				type: "DELETE",
+				url: "/admin/notify/delete/".concat($(this).find('input').val()),
+				cache: false,
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(header, token);
+				},
+				timeout: 6000,
+				success: function (data) {
+					alertify.success('Notify Deleted!');
+					setTimeout(function(){
+						location.reload();
+				    }, 1000);
+				},
+				error: function (e) {}
+			});
 	});
 	
 	$("#userEmail").change(function() {
