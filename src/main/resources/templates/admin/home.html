@@ -11,7 +11,7 @@
 <!-- default header name is X-CSRF-TOKEN -->
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-<title>Drotium Intranet</title>
+<title>Drotium Intranet - Admin Zone</title>
 <th:block th:include="includes/links :: links"></th:block>
 <link th:href="@{/css/admin.css}" rel="stylesheet">
 </head>
@@ -23,7 +23,7 @@
 
 	<div class="content-wrapper">
 		<div class="row m-1">
-			<div class="col-8 container-fluid">
+			<div class="col col-lg-8 container-fluid">
 				<div class="text-center" th:if="${#lists.size(users) != 0}">
 					<h5 class="alert mt-2 ml-2 mr-2 font-weight-bold text-white"
 						style="background-color: #51C3F1;">Current Active Users</h5>
@@ -57,7 +57,7 @@
 				</div>
 				<div class="text-center" th:if="${#lists.size(notifications) != 0}">
 					<h5 class="alert mt-2 ml-2 mr-2 font-weight-bold text-white"
-						style="background-color: #51C3F1;">Deactivated Users</h5>
+						style="background-color: #d9534f;">Deactivated Users</h5>
 				</div>
 				<div class="row" th:if="${#lists.size(notifications) != 0}">
 					<div class="col col-sm-6 mb-3" th:each="notif:${notifications}">
@@ -91,7 +91,7 @@
 				</div>
 			</div>
 
-			<div class="container-fluid col-4">
+			<div class="col col-lg-4 container-fluid">
 				<div class="card">
 					<div class="text-center">
 						<h5 class="alert mt-2 ml-2 mr-2 font-weight-bold text-white"
@@ -123,21 +123,6 @@
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-		<div class="row m-5">
-			<div class="col container mb-2 mt-2">
-				<canvas></canvas>
-			</div>
-			<div class="col container mb-2 mt-2">
-				<canvas></canvas>
-			</div>
-			<div class="w-100"></div>
-			<div class="col container mb-2 mt-2">
-				<canvas></canvas>
-			</div>
-			<div class="col container mb-2 mt-2">
-				<canvas></canvas>
 			</div>
 		</div>
 	</div>
@@ -213,60 +198,6 @@
 			cursorcolor : '#51C3F1',
 			cursorborderradius : 0,
 			cursorborder : 'none'
-		});
-	</script>
-	<script type="text/javascript">
-		$("canvas").each(function(){
-			new Chart($(this) ,
-					{
-						type : 'line',
-						data : {
-							labels : [ 1500, 1600, 1700, 1750, 1800, 1850, 1900,
-									1950, 1999, 2050 ],
-							datasets : [
-									{
-										data : [ 86, 114, 106, 106, 107, 111, 133,
-												221, 783, 2478 ],
-										label : "Africa",
-										borderColor : "#3e95cd",
-										fill : false
-									},
-									{
-										data : [ 282, 350, 411, 502, 635, 809, 947,
-												1402, 3700, 5267 ],
-										label : "Asia",
-										borderColor : "#8e5ea2",
-										fill : false
-									},
-									{
-										data : [ 168, 170, 178, 190, 203, 276, 408,
-												547, 675, 734 ],
-										label : "Europe",
-										borderColor : "#3cba9f",
-										fill : false
-									},
-									{
-										data : [ 40, 20, 10, 16, 24, 38, 74, 167,
-												508, 784 ],
-										label : "Latin America",
-										borderColor : "#e8c3b9",
-										fill : false
-									},
-									{
-										data : [ 6, 3, 2, 2, 7, 26, 82, 172, 312,
-												433 ],
-										label : "North America",
-										borderColor : "#c45850",
-										fill : false
-									} ]
-						},
-						options : {
-							title : {
-								display : true,
-								text : 'World population per region (in millions)'
-							}
-						}
-					});
 		});
 	</script>
 </body>

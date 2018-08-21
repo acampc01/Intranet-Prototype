@@ -42,15 +42,19 @@ public class Notification {
 	private Folder folder;
 
 	@Column(name = "creation", nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	private Date creation;
+	
+	@Column(name = "timeCreation", nullable = false)
+	@Temporal(TemporalType.TIME)
+	private Date time;
 	
 //	@ManyToMany(mappedBy="notifys")
 //	private Set<User> users;
 
 	@PrePersist
 	protected void onCreate() {
-		creation = new Date();
+		time = creation = new Date();
 	}
 
 	public String encrypt() {
@@ -91,6 +95,10 @@ public class Notification {
 
 	public Date getCreation() {
 		return creation;
+	}
+	
+	public Date getTime() {
+		return time;
 	}
 
 	public File getFile() {

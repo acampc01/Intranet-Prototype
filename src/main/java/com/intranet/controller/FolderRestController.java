@@ -76,7 +76,7 @@ public class FolderRestController {
 			Notification n = new Notification();
 			n.setSender(user);
 			n.setFolder(newFolder);
-			n.setType("NewFolder");
+			n.setType("FolderUpload");
 			notifyService.save(n);
 			
 			return new ResponseEntity<Folder>(HttpStatus.NO_CONTENT);
@@ -119,7 +119,7 @@ public class FolderRestController {
 				Notification n = new Notification();
 				n.setSender(user);
 				n.setFolder(folder);
-				n.setType("Download");
+				n.setType("FolderDownload");
 				notifyService.save(n);
 			}
 		} catch (Exception e) {

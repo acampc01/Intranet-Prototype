@@ -3,6 +3,7 @@ package com.intranet.controller;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,89 @@ public class AdminController {
 		modelAndView.addObject("users", users);
 		modelAndView.addObject("notifications", userService.findConfirms(user));
 		modelAndView.addObject("notifies", notifyService.findByType("Advice"));
+		
 		modelAndView.setViewName("admin/home");
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "/admin/charts", method = RequestMethod.GET)
+	public ModelAndView charts() {
+		ModelAndView modelAndView = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		List<User> urs = userService.findAll();
+		List<User> users = new ArrayList<User>();
+		for (User u : urs) {
+			if(!u.isAdmin() && u.getActive() == 1) {
+				users.add(u);
+			}
+		}
+		modelAndView.addObject("user", user);
+		modelAndView.addObject("users", users);
+		modelAndView.addObject("notifications", userService.findConfirms(user));
+		modelAndView.addObject("notifies", notifyService.findByType("Advice"));
+		
+		List<Date> dDownload = notifyService.findByTypeLastMonth("Download");
+		List<Object[]> download = new ArrayList<Object[]>();
+		for (Date date : dDownload) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "Download").size();
+			download.add(aux);
+		}
+		modelAndView.addObject("download", download);
+		
+		List<Date> dUpload = notifyService.findByTypeLastMonth("Upload");
+		List<Object[]> upload = new ArrayList<Object[]>();
+		for (Date date : dUpload) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "Upload").size();
+			upload.add(aux);
+		}
+		modelAndView.addObject("upload", upload);
+	 
+		List<Date> dLogin = notifyService.findByTypeLastMonth("Login");
+		List<Object[]> login = new ArrayList<Object[]>();
+		for (Date date : dLogin) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "Login").size();
+			login.add(aux);
+		}
+		modelAndView.addObject("logins", login);
+		
+		List<Date> dRegister = notifyService.findByTypeLastMonth("Register");
+		List<Object[]> register = new ArrayList<Object[]>();
+		for (Date date : dRegister) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "Register").size();
+			register.add(aux);
+		}
+		modelAndView.addObject("register", register);
+			
+		List<Date> dfolderDownload = notifyService.findByTypeLastMonth("FolderDownload");
+		List<Object[]> folderDownload = new ArrayList<Object[]>();
+		for (Date date : dfolderDownload) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "FolderDownload").size();
+			folderDownload.add(aux);
+		}
+		modelAndView.addObject("folderDownload", folderDownload);
+		
+		List<Date> dfolderUpload = notifyService.findByTypeLastMonth("FolderUpload");
+		List<Object[]> folderUpload = new ArrayList<Object[]>();
+		for (Date date : dfolderUpload) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "FolderUpload").size();
+			folderUpload.add(aux);
+		}
+		modelAndView.addObject("folderUpload", folderUpload);
+		
+		modelAndView.setViewName("admin/charts");
 		return modelAndView;
 	}
 

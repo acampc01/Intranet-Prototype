@@ -9,12 +9,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.intranet.model.Notification;
 import com.intranet.model.User;
+import com.intranet.service.NotificationService;
 import com.intranet.service.UserService;
 
 @Controller
 public class LoginController {
 
+	@Autowired
+	private NotificationService notifyService;
+	
 	@Autowired
 	private UserService userService;
 
@@ -59,6 +64,11 @@ public class LoginController {
 			modelAndView.addObject("successMessage", "User has been registered successfully.");
 			modelAndView.addObject("user", new User());
 			modelAndView.setViewName("register");
+			
+			Notification n = new Notification();
+			n.setSender(user);
+			n.setType("Register");
+			notifyService.save(n);
 		}
 		return modelAndView;
 	}

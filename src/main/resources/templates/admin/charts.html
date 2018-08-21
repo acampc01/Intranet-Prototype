@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Intranet Drotium">
+<meta name="author" content="Alejandro Campos - Drotium">
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>Drotium Intranet - Admin Zone</title>
+<th:block th:include="includes/links :: links"></th:block>
+<link th:href="@{/css/admin.css}" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer sidenav-toggled" id="page-top">
+
+	<!-- Navigation-->
+	<th:block th:include="includes/navbar :: navbar"></th:block>
+
+	<div class="content-wrapper">
+		<div class="text-center m-1">
+				<h5 class="alert m-3 font-weight-bold text-white" style="background-color: #51C3F1;">Statistics</h5>
+			</div>
+		<div class="row m-1">
+			<div class="col col-md-6 container mb-2 mt-2">
+				<div class="card p-2">
+					<canvas id="logins"></canvas>
+				</div>
+			</div>
+			<div class="col col-md-6 container mb-2 mt-2">
+				<div class="card p-2">
+					<canvas id="register"></canvas>
+				</div>
+			</div>
+			<div class="col col-md-6 container mb-2 mt-2">
+				<div class="card p-2">
+					<canvas id="folderUpload"></canvas>
+				</div>
+			</div>
+			<div class="col col-md-6 container mb-2 mt-2">
+				<div class="card p-2">
+					<canvas id="folderDownload"></canvas>
+				</div>
+			</div>
+			<div class="col col-md-6 container mb-2 mt-2">
+				<div class="card p-2">
+					<canvas id="upload"></canvas>
+				</div>
+			</div>
+			<div class="col col-md-6 container mb-2 mt-2">
+				<div class="card p-2">
+					<canvas id="download"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Footer -->
+	<th:block th:include="includes/footer :: footer"></th:block>
+	<th:block th:include="includes/scripts :: scripts"></th:block>
+	<script th:src="@{/js/admin/admin.js}"></script>
+	<script type="text/javascript">
+		$("body").niceScroll({
+			fixed : true,
+			zindex : '99999999',
+			cursorcolor : '#51C3F1',
+			cursorborderradius : 0,
+			cursorborder : 'none'
+		});
+	</script>
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		new Chart($("#logins"),
+		{
+			type: 'line',
+			data: {
+				labels: [
+					/*[# th:each="obj : ${logins}"]*/
+						/*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+					/*[/]*/
+				],
+				datasets: [{
+					data: [
+						/*[# th:each="obj : ${logins}"]*/
+						{
+				          	x: /*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+				          	y: /*[[${obj[1]}]]*/
+				        },
+				        /*[/]*/
+				    ],
+				    borderColor: '#51C3F1'
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'User Logins'
+				},
+				legend: {
+					display: false
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'TimeStamp'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Values'
+						},
+						ticks: {
+							beginAtZero: true,
+			                stepSize: 5
+			            },
+			            offset: true
+					}]
+				}
+			}
+		});
+		new Chart($("#register"),
+		{
+			type: 'line',
+			data: {
+				labels: [
+					/*[# th:each="obj : ${register}"]*/
+						/*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+					/*[/]*/
+				],
+				datasets: [{
+					data: [
+						/*[# th:each="obj : ${register}"]*/
+						{
+				          	x: /*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+				          	y: /*[[${obj[1]}]]*/
+				        },
+				        /*[/]*/
+				    ],
+				    borderColor: '#51C3F1'
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'User Registers'
+				},
+				legend: {
+					display: false
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'TimeStamp'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Values'
+						},
+						ticks: {
+							beginAtZero: true,
+			                stepSize: 5
+			            },
+			            offset: true
+					}]
+				}
+			}
+		});
+		new Chart($("#folderUpload"),
+		{
+			type: 'line',
+			data: {
+				labels: [
+					/*[# th:each="obj : ${folderUpload}"]*/
+						/*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+					/*[/]*/
+				],
+				datasets: [{
+					data: [
+						/*[# th:each="obj : ${folderUpload}"]*/
+						{
+				          	x: /*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+				          	y: /*[[${obj[1]}]]*/
+				        },
+				        /*[/]*/
+				    ],
+				    borderColor: '#51C3F1'
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Folder Uploads'
+				},
+				legend: {
+					display: false
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'TimeStamp'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Values'
+						},
+						ticks: {
+							beginAtZero: true,
+			                stepSize: 5
+			            },
+			            offset: true
+					}]
+				}
+			}
+		});
+		new Chart($("#folderDownload"),
+		{
+			type: 'line',
+			data: {
+				labels: [
+					/*[# th:each="obj : ${folderDownload}"]*/
+						/*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+					/*[/]*/
+				],
+				datasets: [{
+					data: [
+						/*[# th:each="obj : ${folderDownload}"]*/
+						{
+				          	x: /*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+				          	y: /*[[${obj[1]}]]*/
+				        },
+				        /*[/]*/
+				    ],
+				    borderColor: '#51C3F1'
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Folder Downloads'
+				},
+				legend: {
+					display: false
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'TimeStamp'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Values'
+						},
+						ticks: {
+							beginAtZero: true,
+			                stepSize: 5
+			            },
+			            offset: true
+					}]
+				}
+			}
+		});
+		new Chart($("#download"),
+		{
+			type: 'line',
+			data: {
+				labels: [
+					/*[# th:each="obj : ${download}"]*/
+						/*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+					/*[/]*/
+				],
+				datasets: [{
+					data: [
+						/*[# th:each="obj : ${download}"]*/
+						{
+				          	x: /*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+				          	y: /*[[${obj[1]}]]*/
+				        },
+				        /*[/]*/
+				    ],
+				    borderColor: '#51C3F1'
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'File Downloads'
+				},
+				legend: {
+					display: false
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'TimeStamp'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Values'
+						},
+						ticks: {
+							beginAtZero: true,
+			                stepSize: 5
+			            },
+			            offset: true
+					}]
+				}
+			}
+		});
+		new Chart($("#upload"),
+		{
+			type: 'line',
+			data: {
+				labels: [
+					/*[# th:each="obj : ${upload}"]*/
+						/*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+					/*[/]*/
+				],
+				datasets: [{
+					data: [
+						/*[# th:each="obj : ${upload}"]*/
+						{
+				          	x: /*[[${#dates.format(obj[0], 'dd-MM-yyyy')}]]*/,
+				          	y: /*[[${obj[1]}]]*/
+				        },
+				        /*[/]*/
+				    ],
+				    borderColor: '#51C3F1'
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'File Uploads'
+				},
+				legend: {
+					display: false
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'TimeStamp'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Values'
+						},
+						ticks: {
+							beginAtZero: true,
+			                stepSize: 5
+			            },
+			            offset: true
+					}]
+				}
+			}
+		});
+		/*]]>*/
+	</script>
+</body>
+
+</html>

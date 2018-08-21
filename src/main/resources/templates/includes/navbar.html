@@ -11,17 +11,20 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarResponsive">
 			<ul class="navbar-nav navbar-sidenav" id="exampleAccordion" style="background-color:#225366;">
-				<li class="nav-item" data-toggle="tooltip" data-placement="right"
-					><a class="nav-link text-white"
-					th:href="@{/user/files/} + ${user.root.encrypt()}"><i
-						class="fa fa-fw fa-folder"></i><span class="d-lg-none">My Files</span><span class="nav-link-text">My
-							Files</span>
-				</a></li>
-				<li class="nav-item" data-toggle="tooltip" data-placement="right"
-					><a class="nav-link text-white"
-					th:href="@{/user/shared}"> <i class="fa fa-fw fa-share-alt"></i>
-						<span class="d-lg-none">Shared With Me</span><span class="nav-link-text">Shared With Me</span>
-				</a></li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right">
+					<a class="nav-link text-white" th:href="@{/user/files/} + ${user.root.encrypt()}">
+						<i class="fa fa-fw fa-folder"></i>
+						<span class="d-lg-none">My Files</span>
+						<span class="nav-link-text">My Files</span>
+					</a>
+				</li>
+				<li class="nav-item" data-toggle="tooltip" data-placement="right">
+					<a class="nav-link text-white" th:href="@{/user/shared}">
+						<i class="fa fa-fw fa-share-alt"></i>
+						<span class="d-lg-none">Shared With Me</span>
+						<span class="nav-link-text">Shared With Me</span>
+					</a>
+				</li>
 				<li class="nav-item" data-toggle="tooltip" data-placement="right"><a class="nav-link text-white"
 					th:href="@{/user/search}"><i class="fa fa-fw fa-search" aria-hidden="true"></i>
 						<span class="d-lg-none">Search</span><span class="nav-link-text">Search</span>
@@ -79,6 +82,11 @@
 					<a th:attr="href= ${user.isAdmin()} ? @{/admin/home}" class="nav-link  text-white">
 						<i class="fa fa-fw fa fa-user"></i>
 						<span th:text="${user.name}" th:remove="tag">Usuario</span>
+					</a>
+				</li>
+				<li th:if="${user.isAdmin()}" class="nav-item">
+					<a th:attr="href= ${user.isAdmin()} ? @{/admin/charts}" class="nav-link  text-white">
+						<i class="fa fa-fw fa fa-line-chart"></i>
 					</a>
 				</li>
 				<!-- <li class="nav-item"><a class="nav-link" id="toggleNavColor">
