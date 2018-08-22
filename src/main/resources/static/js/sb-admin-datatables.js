@@ -25,7 +25,10 @@ $(document).ready(function() {
 		if($(this).find('input').data('type') === "folder")
 			window.location = '/user/files/'.concat(rsc);
 		else
-			window.location = '/user/file/'.concat(rsc);
+			window.open(
+			  '/user/file/'.concat(rsc),
+			  '_blank'
+			);
 	});
 
 	$.contextMenu({

@@ -271,6 +271,13 @@ public class FileRestController {
 					try {
 						File file = fileService.findById(id);
 						shareFile(file, u, user);
+						
+						Notification n = new Notification();
+						n.setContent("File " + file.getId() + " shared with " + user.getId());
+						n.setSender(user);
+						n.setFile(file);
+						n.setType("Share");
+						notifyService.save(n);
 					} catch (EntityNotFoundException e) {
 						log.error(e.getMessage());
 					}
@@ -278,6 +285,13 @@ public class FileRestController {
 					try {
 						Folder folder = folderService.findById(id);
 						shareFolder(folder, u, user);
+						
+						Notification n = new Notification();
+						n.setContent("Folder " + folder.getId() + " shared with " + user.getId());
+						n.setSender(user);
+						n.setFolder(folder);
+						n.setType("FolderShare");
+						notifyService.save(n);
 					} catch (EntityNotFoundException e) {
 						log.error(e.getMessage());
 					}
@@ -400,6 +414,49 @@ public class FileRestController {
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
+	@RequestMapping("/user/get/file/{id_file}")
+	public ResponseEntity<Resource> getFile(@PathVariable("id_file") String nid, HttpServletRequest request) {
+		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		File file = fileService.findById(id);
+
+		try {
+			if(user.getSharedFiles().contains(file) || file.getOwner().equals(user)) {
+				Path pathFile = Paths.get(getPath(file));
+				Resource resource = null;
+				try {
+					resource = new UrlResource(pathFile.toUri());
+				} catch (MalformedURLException e) {}
+
+				String contentType = null;
+				try {
+					contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+				} catch (IOException ex) {
+					log.info("Could not determine file type");
+				}
+
+				if(contentType == null) {
+					contentType = "application/octet-stream";
+				}
+
+				file.setDownload(new Date());
+				fileService.update(file);
+
+				return ResponseEntity.ok()
+						.contentType(MediaType.parseMediaType(contentType))
+						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename().replace("%20", " ")+ "\"")
+						.body(resource);
+			}
+		}catch(EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
+
+	
 	@Async
 	private void shareFolder(Folder folder, User owner, User user) {
 		if( (folder != null && !folder.getSharedUsers().contains(user) && !folder.getOwner().equals(user)) && (folder.getOwner().equals(owner) || folder.getSharedUsers().contains(owner))) {

@@ -1,5 +1,10 @@
 package com.intranet.configuration;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +15,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.intranet.model.Notification;
+import com.intranet.model.User;
+import com.intranet.service.NotificationService;
+import com.intranet.service.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -20,6 +34,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private NotificationService notifyService;
+	
 	@Autowired
 	private DataSource dataSource;
 
@@ -50,8 +70,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/user/**").hasAuthority("USER").anyRequest().authenticated()
 				.antMatchers("/includes/**").hasAnyAuthority("USER").anyRequest().authenticated()
 				.and().formLogin()
-				.loginPage("/login").failureUrl("/login?error=true")
-				.defaultSuccessUrl("/user/files/")
+				.loginPage("/login").successHandler(new AuthenticationSuccessHandler() {
+				    @Override
+				    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+				    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+						User user = userService.findUserByEmail(auth.getName());
+						
+						Notification n = new Notification();
+						n.setSender(user);
+						n.setType("Login");
+						notifyService.save(n);
+				    	
+						new DefaultRedirectStrategy().sendRedirect(request, response, "/user/files");
+				    }
+				})
+				.failureUrl("/login?error=true")
 				.usernameParameter("email")
 				.passwordParameter("password")
 				.and().logout()

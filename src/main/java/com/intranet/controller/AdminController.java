@@ -156,6 +156,26 @@ public class AdminController {
 		}
 		modelAndView.addObject("folderUpload", folderUpload);
 		
+		List<Date> dShare = notifyService.findByTypeLastMonth("Share");
+		List<Object[]> share = new ArrayList<Object[]>();
+		for (Date date : dShare) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "Share").size();
+			share.add(aux);
+		}
+		modelAndView.addObject("sharedFiles", share);
+		
+		List<Date> dShareFolder = notifyService.findByTypeLastMonth("FolderShare");
+		List<Object[]> shareFolder = new ArrayList<Object[]>();
+		for (Date date : dShareFolder) {
+			Object[] aux = new Object[2];
+			aux[0] = date;
+			aux[1] = notifyService.findByCreationAndType(date, "FolderShare").size();
+			shareFolder.add(aux);
+		}
+		modelAndView.addObject("sharedFolders", shareFolder);
+		
 		modelAndView.setViewName("admin/charts");
 		return modelAndView;
 	}
