@@ -2,51 +2,61 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport"
-		content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description" content="Intranet Drotium">
-	<meta name="author" content="Alejandro Campos - Drotium">
-	<meta name="_csrf" th:content="${_csrf.token}"/>
-	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-	
-	<title>Drotium Intranet</title>
-	<link th:href="@{/libs/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-	<link th:href="@{/libs/mdb/css/mdb.min.css}" rel="stylesheet">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Intranet Drotium">
+<meta name="author" content="Alejandro Campos - Drotium">
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+<title>Drotium Intranet</title>
+<link th:href="@{/libs/bootstrap/css/bootstrap.min.css}"
+	rel="stylesheet">
+<link th:href="@{/libs/mdb/css/mdb.min.css}" rel="stylesheet">
 </head>
 <body>
 	<th:block th:switch="${file.format}">
 		<div th:remove="tag" th:case="'pdf'">
-			<iframe style="width:100%; height:100%; position:absolute;" th:src="@{'/js/pdf/web/viewer.html?file=/user/get/file/' + ${file.encrypt()}}"></iframe>
+			<iframe style="width: 100%; height: 100%; position: absolute;" th:src="@{'/js/pdf/web/viewer.html?file=/user/get/file/' + ${file.encrypt()}}"></iframe>
+		</div>
+		<div th:remove="tag" th:case="'docx'">
+			<iframe id="docx" style="width: 100%; height: 100%; position: absolute;"></iframe>
 		</div>
 		<div th:remove="tag" th:case="'jpg'">
 			<div class="text-center">
-			  	<img th:src="@{'/user/download/file/' + ${file.encrypt()}}" class="img-thumbnail rounded" alt="Responsive image">
+				<img th:src="@{'/user/download/file/' + ${file.encrypt()}}"
+					class="img-thumbnail rounded" alt="Responsive image">
 			</div>
 		</div>
 		<div th:remove="tag" th:case="'ico'">
 			<div class="text-center">
-				<img th:src="@{'/user/download/file/' + ${file.encrypt()}}" class="img-thumbnail rounded" alt="Responsive image">
+				<img th:src="@{'/user/download/file/' + ${file.encrypt()}}"
+					class="img-thumbnail rounded" alt="Responsive image">
 			</div>
 		</div>
 		<div th:remove="tag" th:case="'jpeg'">
 			<div class="text-center">
-			  	<img th:src="@{'/user/download/file/' + ${file.encrypt()}}" class="img-thumbnail rounded" alt="Responsive image">
+				<img th:src="@{'/user/download/file/' + ${file.encrypt()}}"
+					class="img-thumbnail rounded" alt="Responsive image">
 			</div>
-		</div>								
+		</div>
 		<div th:remove="tag" th:case="'png'">
 			<div class="text-center">
-			  	<img th:src="@{'/user/download/file/' + ${file.encrypt()}}" class="img-thumbnail rounded" alt="Responsive image">
+				<img th:src="@{'/user/download/file/' + ${file.encrypt()}}"
+					class="img-thumbnail rounded" alt="Responsive image">
 			</div>
 		</div>
 		<div th:remove="tag" th:case="'svg'">
 			<div class="text-center">
-				<img th:src="@{'/user/download/file/' + ${file.encrypt()}}" class="img-thumbnail rounded" alt="Responsive image">
+				<img th:src="@{'/user/download/file/' + ${file.encrypt()}}"
+					class="img-thumbnail rounded" alt="Responsive image">
 			</div>
 		</div>
 		<div th:remove="tag" th:case="*">
-			<div th:if="${not #lists.isEmpty(content)} and ${content} != null" class="container m-0">
+			<div th:if="${not #lists.isEmpty(content)} and ${content} != null"
+				class="container m-0">
 				<th:block th:each="line, i: ${content}">
 					<div>
 						<small class="mr-4"><strong th:text="${i.index} + ':'"></strong></small>
@@ -54,7 +64,8 @@
 					</div>
 				</th:block>
 			</div>
-			<div th:if="${#lists.isEmpty(content)} and ${content} != null" class="container">
+			<div th:if="${#lists.isEmpty(content)} and ${content} != null"
+				class="container">
 				<div class="alert alert-danger m-3 text-center">
 					<span>Its an empty file</span>
 				</div>
@@ -71,5 +82,33 @@
 	<script th:src="@{/libs/jquery/jquery.min.js}"></script>
 	<script th:src="@{/libs/bootstrap/js/bootstrap.bundle.min.js}"></script>
 	<script th:src="@{/libs/mdb/js/mdb.min.js}"></script>
+	<script th:src="@{/libs/mammoth/mammoth.browser.min.js}"></script>
+	<script type="text/javascript" th:inline="javascript">
+		/*<![CDATA[*/
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', "/user/get/file/".concat(/*[[${file.encrypt()}]]*/), true); 
+		xhr.responseType = 'arraybuffer';
+		
+		xhr.onload = function(e) {
+			if (this.status == 200) {
+				mammoth.convertToHtml({arrayBuffer: this.response})
+					.then(function(result){
+						var html = result.value;
+				    	var messages = result.messages;
+				    	
+				    	var doc = document.getElementById('docx').contentWindow.document;
+				    	doc.open();
+				    	doc.write(html);
+				    	doc.close();
+				    	
+				    	console.log(messages);
+					}).done();
+		    }
+		};
+		
+		xhr.send();
+		
+	    /*]]>*/
+	</script>
 </body>
 </html>
