@@ -147,14 +147,14 @@ public class FileRestController {
 			if(user.getSharedFiles().contains(file) || file.getOwner().equals(user)) {
 				modelAndView.addObject("file", file);
 
-				if(file.getFormat().equals("odt") || file.getFormat().equals("doc") || file.getFormat().equals("docx") || file.getFormat().equals("docm")) {
+				if(file.getFormat().equals("odt") || file.getFormat().equals("doc") || file.getFormat().equals("docm")) {
 					modelAndView.addObject("content", null);
 					
 					modelAndView.setViewName("user/file");
 					return modelAndView;
 				}
 				
-				if(file.getFormat().equals("pdf")) {
+				if(file.getFormat().equals("pdf") || file.getFormat().equals("docx")) {
 					modelAndView.setViewName("user/file");
 					return modelAndView;
 				}

@@ -122,13 +122,13 @@
 		</div>
 	</nav>
 
-	<div th:if="${!user.isAdmin()}" class="modal fade" id="adviceModal" tabindex="-1" role="dialog">
+	<div class="modal fade" id="adviceModal" tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-body">
 					<div class="row">
 						<div th:remove="tag" th:each="notif, userStat : ${notifies}">
-							<div class="col-md-6 col-lg-4 mt-2 mb-2">
+							<div class="mt-2 mb-2" th:classappend="${#lists.size(notifies) >= 3} ? 'col-md-6 col-lg-4' : 'col'">
 						    	<div class="card h-100">
 							      	<div class="card-body">
 							        	<h5 class="card-title text-warning" th:text="${notif.type}"></h5>
