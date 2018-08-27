@@ -3,6 +3,7 @@ package com.intranet.controller;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -96,9 +97,15 @@ public class AdminController {
 		modelAndView.addObject("notifications", userService.findConfirms(user));
 		modelAndView.addObject("notifies", notifyService.findByType("Advice"));
 		
-		List<Date> dDownload = notifyService.findByTypeLastMonth("Download");
+		List<Date> dates = new ArrayList<Date>();
+		for (int i = -5; i <= 0; i++) {
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, i);
+			dates.add(cal.getTime());
+		}
+		
 		List<Object[]> download = new ArrayList<Object[]>();
-		for (Date date : dDownload) {
+		for (Date date : dates) {
 			Object[] aux = new Object[2];
 			aux[0] = date;
 			aux[1] = notifyService.findByCreationAndType(date, "Download").size();
@@ -106,9 +113,8 @@ public class AdminController {
 		}
 		modelAndView.addObject("download", download);
 		
-		List<Date> dUpload = notifyService.findByTypeLastMonth("Upload");
 		List<Object[]> upload = new ArrayList<Object[]>();
-		for (Date date : dUpload) {
+		for (Date date : dates) {
 			Object[] aux = new Object[2];
 			aux[0] = date;
 			aux[1] = notifyService.findByCreationAndType(date, "Upload").size();
@@ -116,9 +122,8 @@ public class AdminController {
 		}
 		modelAndView.addObject("upload", upload);
 	 
-		List<Date> dLogin = notifyService.findByTypeLastMonth("Login");
 		List<Object[]> login = new ArrayList<Object[]>();
-		for (Date date : dLogin) {
+		for (Date date : dates) {
 			Object[] aux = new Object[2];
 			aux[0] = date;
 			aux[1] = notifyService.findByCreationAndType(date, "Login").size();
@@ -126,19 +131,17 @@ public class AdminController {
 		}
 		modelAndView.addObject("logins", login);
 		
-		List<Date> dRegister = notifyService.findByTypeLastMonth("Register");
 		List<Object[]> register = new ArrayList<Object[]>();
-		for (Date date : dRegister) {
+		for (Date date : dates) {
 			Object[] aux = new Object[2];
 			aux[0] = date;
 			aux[1] = notifyService.findByCreationAndType(date, "Register").size();
 			register.add(aux);
 		}
 		modelAndView.addObject("register", register);
-			
-		List<Date> dfolderDownload = notifyService.findByTypeLastMonth("FolderDownload");
+	
 		List<Object[]> folderDownload = new ArrayList<Object[]>();
-		for (Date date : dfolderDownload) {
+		for (Date date : dates) {
 			Object[] aux = new Object[2];
 			aux[0] = date;
 			aux[1] = notifyService.findByCreationAndType(date, "FolderDownload").size();
@@ -146,9 +149,8 @@ public class AdminController {
 		}
 		modelAndView.addObject("folderDownload", folderDownload);
 		
-		List<Date> dfolderUpload = notifyService.findByTypeLastMonth("FolderUpload");
 		List<Object[]> folderUpload = new ArrayList<Object[]>();
-		for (Date date : dfolderUpload) {
+		for (Date date : dates) {
 			Object[] aux = new Object[2];
 			aux[0] = date;
 			aux[1] = notifyService.findByCreationAndType(date, "FolderUpload").size();
@@ -156,9 +158,8 @@ public class AdminController {
 		}
 		modelAndView.addObject("folderUpload", folderUpload);
 		
-		List<Date> dShare = notifyService.findByTypeLastMonth("Share");
 		List<Object[]> share = new ArrayList<Object[]>();
-		for (Date date : dShare) {
+		for (Date date : dates) {
 			Object[] aux = new Object[2];
 			aux[0] = date;
 			aux[1] = notifyService.findByCreationAndType(date, "Share").size();
@@ -166,9 +167,8 @@ public class AdminController {
 		}
 		modelAndView.addObject("sharedFiles", share);
 		
-		List<Date> dShareFolder = notifyService.findByTypeLastMonth("FolderShare");
 		List<Object[]> shareFolder = new ArrayList<Object[]>();
-		for (Date date : dShareFolder) {
+		for (Date date : dates) {
 			Object[] aux = new Object[2];
 			aux[0] = date;
 			aux[1] = notifyService.findByCreationAndType(date, "FolderShare").size();

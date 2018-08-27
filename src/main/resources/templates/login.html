@@ -28,20 +28,20 @@
 		<form th:action="@{/login}" method="POST" class="form-signin card">
 			<div class="form-label-group">
 				<input type="text" id="email" name="email" th:placeholder="Email"
-					class="form-control" autocomplete="off" required autofocus>
+					class="form-control" required autofocus>
 				<label for="email">Email address</label>
 			</div>
 
 			<div class="form-label-group">
 				<input type="password" th:placeholder="Password" id="password"
-					name="password" class="form-control" autocomplete="off" required>
+					name="password" class="form-control" required>
 				<label for="password">Password</label>
 			</div>
 			
 			<button class="btn btn-lg btn-block text-white" style="background-color:#51C3F1;" value="Login" type="Submit" th:text="Login">Log in</button>
 		</form>
 		<div class="text-center mt-3 mb-2" style="position:absolute;left:0;right:0;">
-			<a class="text-center badge badge-secondary" th:href="@{/register}">To Register</a>
+			<a class="text-center badge badge-secondary" th:href="@{/register}">Register</a>
 		</div>
 		<p class="mt-5 text-muted text-center" >&copy; Drotium 2018-2019</p>
 	</div>

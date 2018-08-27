@@ -14,5 +14,5 @@ public interface NotificationService {
 	public void save(Notification notify);
 	public Notification findOne(Integer id);
 	public Set<Notification> findByCreationAndType(Date date, String type);
-	public List<Date> findByTypeLastMonth(String type);
+	public List<Date> findByTypeLastWeek(String type);
 }

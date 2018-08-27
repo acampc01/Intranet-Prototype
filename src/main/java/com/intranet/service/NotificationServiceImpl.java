@@ -59,9 +59,9 @@ public class NotificationServiceImpl implements NotificationService{
 	}
 	
 	@Override
-	public List<Date> findByTypeLastMonth(String type) {
+	public List<Date> findByTypeLastWeek(String type) {
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -7);
+		cal.add(Calendar.DATE, -5);
 		List<Notification> ns = new ArrayList<Notification>(notifyRepository.findByTypeAndCreationAfter(type, cal.getTime()));
 		Set<Date> set = new HashSet<Date>();
 		for (Notification notification : ns) {
