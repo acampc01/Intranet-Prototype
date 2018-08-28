@@ -34,7 +34,7 @@ public class FileServiceImpl implements FileService{
 	}
 
 	@Override
-	public File findById(Integer id) {
+	public File findById(Long id) {
 		return fileRepository.getOne(id); 
 	}
 

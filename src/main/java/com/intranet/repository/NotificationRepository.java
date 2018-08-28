@@ -10,7 +10,7 @@ import com.intranet.model.Notification;
 import com.intranet.model.User;
 
 @Repository("notifyRepository")
-public interface NotificationRepository extends JpaRepository<Notification, Integer>{
+public interface NotificationRepository extends JpaRepository<Notification, Long>{
 	Notification findBySender(User sender);
 	Set<Notification> findAllByType(String type);
 	Set<Notification> findByTypeAndCreation(String type, Date date);

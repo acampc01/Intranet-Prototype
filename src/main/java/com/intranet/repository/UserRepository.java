@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.intranet.model.User;
 
 @Repository("userRepository")
-public interface UserRepository extends JpaRepository<User, Integer> {
-	User getOne(Integer id);
+public interface UserRepository extends JpaRepository<User, Long> {
+	User getOne(Long id);
 	User findByEmail(String email);
 	List<User> findAllByActive(int i);
 }
