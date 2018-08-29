@@ -202,7 +202,7 @@ public class AdminController {
 	 */
 	@RequestMapping(value = "/admin/accept/{id_user}", method = RequestMethod.PUT)
 	public ResponseEntity<User> acceptUser(@PathVariable("id_user") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -253,7 +253,7 @@ public class AdminController {
 	 */
 	@RequestMapping(value = "/admin/refuse/{id_user}", method = RequestMethod.DELETE)
 	public ResponseEntity<User> refuseUser(@PathVariable("id_user") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -284,7 +284,7 @@ public class AdminController {
 	 */
 	@RequestMapping(value = "/admin/delete/{id_user}", method = RequestMethod.DELETE)
 	public ResponseEntity<User> deleteUser(@PathVariable("id_user") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -365,7 +365,7 @@ public class AdminController {
 
 	@RequestMapping(value = "/file/clear/{id_file}", method = RequestMethod.DELETE)
 	public ResponseEntity<File> deleteFile(@PathVariable("id_file") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
@@ -412,7 +412,7 @@ public class AdminController {
 
 	@RequestMapping(path = "/user/data/{id_user}", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> autocompleteNames(@PathVariable("id_user") String nid){
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -463,7 +463,7 @@ public class AdminController {
 
 	@PostMapping(path = "/user/edit/{id_user}")
 	public ResponseEntity<File> createFolder(@PathVariable("id_user") String nid, @RequestParam("datos[]") String[] data) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());

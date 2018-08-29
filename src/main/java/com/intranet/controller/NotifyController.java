@@ -52,7 +52,7 @@ public class NotifyController {
 	
 	@RequestMapping(value = "/admin/notify/delete/{notif_id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Notification> notify(@PathVariable("notif_id") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());

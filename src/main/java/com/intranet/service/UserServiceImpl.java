@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public User findOne(Integer id) {
+	public User findOne(Long id) {
 		return userRepository.getOne(id);
 	}
 

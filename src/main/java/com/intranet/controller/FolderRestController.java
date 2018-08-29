@@ -53,7 +53,7 @@ public class FolderRestController {
 
 	@PostMapping(path = "/user/create/folder/{id_folder}", consumes = "text/plain")
 	public ResponseEntity<Folder> createFolder(@PathVariable("id_folder") String nid, @RequestBody String name) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -86,7 +86,7 @@ public class FolderRestController {
 
 	@RequestMapping("/user/download/folder/{id_folder}")
 	public ResponseEntity<Resource> downloadFolder(@PathVariable("id_folder") String nid, HttpServletResponse response) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());

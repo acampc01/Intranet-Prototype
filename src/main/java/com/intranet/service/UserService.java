@@ -11,7 +11,7 @@ public interface UserService {
 	public void save(User user);
 	public void update(User user);
 	public void remove(User user);
-	public User findOne(Integer id);
+	public User findOne(Long id);
 	public List<User> findAll();
 	public Set<Notification> findConfirms(User user);
 }

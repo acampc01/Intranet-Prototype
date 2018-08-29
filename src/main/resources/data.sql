@@ -1,0 +1,4 @@
+INSERT INTO `role` (`role_id`, `role`) VALUES ('0', 'ADMIN'), ('1', 'USER');
+INSERT INTO `user` (`user_id`, `active`, `creation`, `email`, `last_connect`, `last_name`, `name`, `password`, `folder_id`) VALUES ('2', '1', '2018-08-29', 'alejandro.campos@drotium.com', '2018-08-29', 'Campos', 'Alejandro', '$2a$10$TaoWgaLfyyk6Tr.0afPfieT28P1ohGOZqPEPoPWKP5coDqhLrX8Hq', '3');
+INSERT INTO `user_role` (`user_id`, `role_id`) VALUES ('2', '0');
+INSERT INTO `folder` (`folder_id`, `creation`, `download`, `last_update`, `name`, `user_id`, `parent_id`) VALUES ('3', '2018-08-29', NULL, '2018-08-29', 'alejandro.campos', '2', NULL);

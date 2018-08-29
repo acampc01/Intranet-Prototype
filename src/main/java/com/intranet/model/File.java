@@ -25,7 +25,7 @@ public class File {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "file_id")
-	private int id;
+	private long id;
 
 	@Column(name = "name")
 	private String name;
@@ -67,14 +67,14 @@ public class File {
 	}
 	
 	public String encrypt() {
-		return Encryptor.encrypt(new Integer(id).toString());
+		return Encryptor.encrypt(new Long(id).toString());
 	}
 	
 	public boolean isShared() {
 		return sharedUsers.size() != 0;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 

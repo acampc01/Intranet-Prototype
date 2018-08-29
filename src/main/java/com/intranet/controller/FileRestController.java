@@ -70,7 +70,7 @@ public class FileRestController {
 
 	@RequestMapping(path = "/user/file/data/{id_file}", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> autocompleteNames(@PathVariable("id_file") String nid){
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -136,7 +136,7 @@ public class FileRestController {
 	
 	@RequestMapping(value="/user/file/{id_file}", method = RequestMethod.GET)
 	public ModelAndView embed(@PathVariable("id_file") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -183,18 +183,17 @@ public class FileRestController {
 			log.error(e.getMessage());
 		}
 
+		modelAndView.addObject("file", null);
 		modelAndView.addObject("content", null);
 		
 		modelAndView.setViewName("user/file");
 		return modelAndView;
 	}
-	//		modelAndView.setView(new RedirectView("/user/files/" + user.getRoot().encrypt() , true));
-	//		return modelAndView;
 	
 
 	@PostMapping(path = "/user/edit/file/{id_file}", consumes = "text/plain")
 	public ResponseEntity<File> createFolder(@PathVariable("id_file") String nid, @RequestBody String name) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -258,7 +257,7 @@ public class FileRestController {
 
 	@RequestMapping(value = "/user/share/files/{id_resource}", method = RequestMethod.PUT)
 	public ResponseEntity<String> shareFiles(@RequestParam("emails[]") String[] emails, @PathVariable("id_resource") String nid){
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User u = userService.findUserByEmail(auth.getName());
@@ -305,7 +304,7 @@ public class FileRestController {
 
 	@RequestMapping(value = "/user/file/shared/users/{id_resource}", method = RequestMethod.GET)
 	public HashMap<String, Object> sharedWith(@PathVariable("id_resource") String nid){
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -347,7 +346,7 @@ public class FileRestController {
 
 	@RequestMapping(value = "/user/upload/files/{id_folder}", method = RequestMethod.POST)
 	public ResponseEntity<File> uploadFileMulti(@RequestParam("files") MultipartFile[] uploadfiles, @PathVariable("id_folder") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		String uploadedFileName = Arrays.stream(uploadfiles).map(x -> x.getOriginalFilename())
 				.filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
@@ -368,7 +367,7 @@ public class FileRestController {
 	
 	@RequestMapping("/user/download/file/{id_file}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable("id_file") String nid, HttpServletRequest request) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -416,7 +415,7 @@ public class FileRestController {
 
 	@RequestMapping("/user/get/file/{id_file}")
 	public ResponseEntity<Resource> getFile(@PathVariable("id_file") String nid, HttpServletRequest request) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -486,7 +485,7 @@ public class FileRestController {
 	}
 
 	@Async
-	private void saveUploadedFiles(List<MultipartFile> files, int id) throws IOException {
+	private void saveUploadedFiles(List<MultipartFile> files, long id) throws IOException {
 		Folder folder = folderService.findById(id);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
