@@ -59,130 +59,150 @@ public class AdminController {
 	@Autowired
 	private FolderService folderService;
 
+	/**
+	 * @return admin/home.html template
+	 */
 	@RequestMapping(value = "/admin/home", method = RequestMethod.GET)
 	public ModelAndView home() {
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		List<User> urs = userService.findAll();
-		List<User> users = new ArrayList<User>();
-		for (User u : urs) {
-			if(!u.isAdmin() && u.getActive() == 1) {
-				users.add(u);
+		
+		if(user != null && user.isAdmin()) {
+			List<User> urs = userService.findAll();
+			List<User> users = new ArrayList<User>();
+			for (User u : urs) {
+				if(!u.isAdmin() && u.getActive() == 1) {
+					users.add(u);
+				}
 			}
+			modelAndView.addObject("user", user);
+			modelAndView.addObject("users", users);
+			modelAndView.addObject("notifications", userService.findConfirms(user));
+			modelAndView.addObject("notifies", notifyService.findByType("Advice"));
 		}
-		modelAndView.addObject("user", user);
-		modelAndView.addObject("users", users);
-		modelAndView.addObject("notifications", userService.findConfirms(user));
-		modelAndView.addObject("notifies", notifyService.findByType("Advice"));
 		
 		modelAndView.setViewName("admin/home");
 		return modelAndView;
 	}
 	
+	/**
+	 * @return admin/charts.html template
+	 */
 	@RequestMapping(value = "/admin/charts", method = RequestMethod.GET)
 	public ModelAndView charts() {
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		List<User> urs = userService.findAll();
-		List<User> users = new ArrayList<User>();
-		for (User u : urs) {
-			if(!u.isAdmin() && u.getActive() == 1) {
-				users.add(u);
+		
+		if(user != null && user.isAdmin()) {
+			List<User> urs = userService.findAll();
+			List<User> users = new ArrayList<User>();
+			for (User u : urs) {
+				if(!u.isAdmin() && u.getActive() == 1) {
+					users.add(u);
+				}
 			}
-		}
-		modelAndView.addObject("user", user);
-		modelAndView.addObject("users", users);
-		modelAndView.addObject("notifications", userService.findConfirms(user));
-		modelAndView.addObject("notifies", notifyService.findByType("Advice"));
+			modelAndView.addObject("user", user);
+			modelAndView.addObject("users", users);
+			modelAndView.addObject("notifications", userService.findConfirms(user));
+			modelAndView.addObject("notifies", notifyService.findByType("Advice"));
+			
+			List<Date> dates = new ArrayList<Date>();
+			for (int i = -5; i <= 0; i++) {
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.DATE, i);
+				dates.add(cal.getTime());
+			}
+			
+			List<Object[]> download = new ArrayList<Object[]>();
+			for (Date date : dates) {
+				Object[] aux = new Object[2];
+				aux[0] = date;
+				aux[1] = notifyService.findByCreationAndType(date, "Download").size();
+				download.add(aux);
+			}
+			modelAndView.addObject("download", download);
+			
+			List<Object[]> upload = new ArrayList<Object[]>();
+			for (Date date : dates) {
+				Object[] aux = new Object[2];
+				aux[0] = date;
+				aux[1] = notifyService.findByCreationAndType(date, "Upload").size();
+				upload.add(aux);
+			}
+			modelAndView.addObject("upload", upload);
+		 
+			List<Object[]> login = new ArrayList<Object[]>();
+			for (Date date : dates) {
+				Object[] aux = new Object[2];
+				aux[0] = date;
+				aux[1] = notifyService.findByCreationAndType(date, "Login").size();
+				login.add(aux);
+			}
+			modelAndView.addObject("logins", login);
+			
+			List<Object[]> register = new ArrayList<Object[]>();
+			for (Date date : dates) {
+				Object[] aux = new Object[2];
+				aux[0] = date;
+				aux[1] = notifyService.findByCreationAndType(date, "Register").size();
+				register.add(aux);
+			}
+			modelAndView.addObject("register", register);
 		
-		List<Date> dates = new ArrayList<Date>();
-		for (int i = -5; i <= 0; i++) {
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, i);
-			dates.add(cal.getTime());
+			List<Object[]> folderDownload = new ArrayList<Object[]>();
+			for (Date date : dates) {
+				Object[] aux = new Object[2];
+				aux[0] = date;
+				aux[1] = notifyService.findByCreationAndType(date, "FolderDownload").size();
+				folderDownload.add(aux);
+			}
+			modelAndView.addObject("folderDownload", folderDownload);
+			
+			List<Object[]> folderUpload = new ArrayList<Object[]>();
+			for (Date date : dates) {
+				Object[] aux = new Object[2];
+				aux[0] = date;
+				aux[1] = notifyService.findByCreationAndType(date, "FolderUpload").size();
+				folderUpload.add(aux);
+			}
+			modelAndView.addObject("folderUpload", folderUpload);
+			
+			List<Object[]> share = new ArrayList<Object[]>();
+			for (Date date : dates) {
+				Object[] aux = new Object[2];
+				aux[0] = date;
+				aux[1] = notifyService.findByCreationAndType(date, "Share").size();
+				share.add(aux);
+			}
+			modelAndView.addObject("sharedFiles", share);
+			
+			List<Object[]> shareFolder = new ArrayList<Object[]>();
+			for (Date date : dates) {
+				Object[] aux = new Object[2];
+				aux[0] = date;
+				aux[1] = notifyService.findByCreationAndType(date, "FolderShare").size();
+				shareFolder.add(aux);
+			}
+			modelAndView.addObject("sharedFolders", shareFolder);
 		}
-		
-		List<Object[]> download = new ArrayList<Object[]>();
-		for (Date date : dates) {
-			Object[] aux = new Object[2];
-			aux[0] = date;
-			aux[1] = notifyService.findByCreationAndType(date, "Download").size();
-			download.add(aux);
-		}
-		modelAndView.addObject("download", download);
-		
-		List<Object[]> upload = new ArrayList<Object[]>();
-		for (Date date : dates) {
-			Object[] aux = new Object[2];
-			aux[0] = date;
-			aux[1] = notifyService.findByCreationAndType(date, "Upload").size();
-			upload.add(aux);
-		}
-		modelAndView.addObject("upload", upload);
-	 
-		List<Object[]> login = new ArrayList<Object[]>();
-		for (Date date : dates) {
-			Object[] aux = new Object[2];
-			aux[0] = date;
-			aux[1] = notifyService.findByCreationAndType(date, "Login").size();
-			login.add(aux);
-		}
-		modelAndView.addObject("logins", login);
-		
-		List<Object[]> register = new ArrayList<Object[]>();
-		for (Date date : dates) {
-			Object[] aux = new Object[2];
-			aux[0] = date;
-			aux[1] = notifyService.findByCreationAndType(date, "Register").size();
-			register.add(aux);
-		}
-		modelAndView.addObject("register", register);
-	
-		List<Object[]> folderDownload = new ArrayList<Object[]>();
-		for (Date date : dates) {
-			Object[] aux = new Object[2];
-			aux[0] = date;
-			aux[1] = notifyService.findByCreationAndType(date, "FolderDownload").size();
-			folderDownload.add(aux);
-		}
-		modelAndView.addObject("folderDownload", folderDownload);
-		
-		List<Object[]> folderUpload = new ArrayList<Object[]>();
-		for (Date date : dates) {
-			Object[] aux = new Object[2];
-			aux[0] = date;
-			aux[1] = notifyService.findByCreationAndType(date, "FolderUpload").size();
-			folderUpload.add(aux);
-		}
-		modelAndView.addObject("folderUpload", folderUpload);
-		
-		List<Object[]> share = new ArrayList<Object[]>();
-		for (Date date : dates) {
-			Object[] aux = new Object[2];
-			aux[0] = date;
-			aux[1] = notifyService.findByCreationAndType(date, "Share").size();
-			share.add(aux);
-		}
-		modelAndView.addObject("sharedFiles", share);
-		
-		List<Object[]> shareFolder = new ArrayList<Object[]>();
-		for (Date date : dates) {
-			Object[] aux = new Object[2];
-			aux[0] = date;
-			aux[1] = notifyService.findByCreationAndType(date, "FolderShare").size();
-			shareFolder.add(aux);
-		}
-		modelAndView.addObject("sharedFolders", shareFolder);
 		
 		modelAndView.setViewName("admin/charts");
 		return modelAndView;
 	}
 
+	/**
+	 * Añade a un usuario registrado al sistema de archivos, activando su usuario para futuros accesos y creando su carpeta raiz
+	 * 
+	 * @param nid
+	 * @return 
+	 * 	ResponseEntity<User>(HttpStatus.NO_CONTENT)
+	 * 	ResponseEntity<>(HttpStatus.NOT_FOUND)
+	 */
 	@RequestMapping(value = "/admin/accept/{id_user}", method = RequestMethod.PUT)
 	public ResponseEntity<User> acceptUser(@PathVariable("id_user") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -223,9 +243,17 @@ public class AdminController {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * Rechaza a un usuario registrado.
+	 * 
+	 * @param nid
+	 * @return 
+	 * 	ResponseEntity<User>(HttpStatus.NO_CONTENT)
+	 * 	ResponseEntity<>(HttpStatus.NOT_FOUND)
+	 */
 	@RequestMapping(value = "/admin/refuse/{id_user}", method = RequestMethod.DELETE)
 	public ResponseEntity<User> refuseUser(@PathVariable("id_user") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -245,10 +273,18 @@ public class AdminController {
 		log.error("Non admin user trying to refuse a user.");
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	}
-
+	
+	/**
+	 * Elimina un usuario del sistema, eliminando recursivamente todo su arbol de carpetas cediendo a los usuarios compartidos los archivos o carpetas pertenecientes a tal usuario.
+	 * 
+	 * @param nid
+	 * @return
+	 * 	ResponseEntity<User>(HttpStatus.NO_CONTENT)
+	 * 	ResponseEntity<>(HttpStatus.NOT_FOUND)
+	 */
 	@RequestMapping(value = "/admin/delete/{id_user}", method = RequestMethod.DELETE)
 	public ResponseEntity<User> deleteUser(@PathVariable("id_user") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -266,9 +302,19 @@ public class AdminController {
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * Elimina un archivo si pertenece al usuario que realiza la peticion
+	 * Elimina una carpeta y todo su contenido si pertenece al usuario que realiza la peticion
+	 * En ambos casos se cedera la propiedad en caso de que el archivo esté compartido
+	 * 
+	 * @param nid
+	 * @return
+	 * 	ResponseEntity<User>(HttpStatus.NO_CONTENT)
+	 * 	ResponseEntity<>(HttpStatus.NOT_FOUND)
+	 */
 	@RequestMapping(value = "/file/delete/{id_file}", method = RequestMethod.DELETE)
 	public ResponseEntity<File> clearFile(@PathVariable("id_file") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
@@ -319,7 +365,7 @@ public class AdminController {
 
 	@RequestMapping(value = "/file/clear/{id_file}", method = RequestMethod.DELETE)
 	public ResponseEntity<File> deleteFile(@PathVariable("id_file") String nid) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
@@ -366,7 +412,7 @@ public class AdminController {
 
 	@RequestMapping(path = "/user/data/{id_user}", method = RequestMethod.GET)
 	public ResponseEntity<Map<String, Object>> autocompleteNames(@PathVariable("id_user") String nid){
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
@@ -417,7 +463,7 @@ public class AdminController {
 
 	@PostMapping(path = "/user/edit/{id_user}")
 	public ResponseEntity<File> createFolder(@PathVariable("id_user") String nid, @RequestParam("datos[]") String[] data) {
-		Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+		Long id = Long.parseLong(Encryptor.decrypt(nid));
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());

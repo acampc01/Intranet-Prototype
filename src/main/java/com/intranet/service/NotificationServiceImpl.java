@@ -49,7 +49,7 @@ public class NotificationServiceImpl implements NotificationService{
 	}
 
 	@Override
-	public Notification findOne(Integer id) {
+	public Notification findOne(Long id) {
 		return notifyRepository.getOne(id);
 	}
 

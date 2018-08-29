@@ -10,8 +10,8 @@ import com.intranet.model.Folder;
 import com.intranet.model.User;
 
 @Repository("fileRepository")
-public interface FileRepository extends JpaRepository<File, Integer>{
-	File getOne(Integer id);
+public interface FileRepository extends JpaRepository<File, Long>{
+	File getOne(Long id);
 	File findByParentAndName(Folder parent, String name);
 	Set<File> findByOwner(User owner);
 }

@@ -31,7 +31,6 @@ public class Encryptor {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
         return null;
     }
 

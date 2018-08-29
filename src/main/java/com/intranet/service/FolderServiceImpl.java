@@ -26,7 +26,7 @@ public class FolderServiceImpl implements FolderService{
 	}
 
 	@Override
-	public Folder findById(Integer id) {
+	public Folder findById(Long id) {
 		return folderRepository.getOne(id);
 	}
 

@@ -29,7 +29,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "user_id")
-	private int id;
+	private long id;
 	
 	@Column(name = "email")
 	private String email;
@@ -75,10 +75,10 @@ public class User {
 //	private Set<Notification> notifys;
 
 	public String encrypt() {
-		return Encryptor.encrypt(new Integer(id).toString());
+		return Encryptor.encrypt(new Long(id).toString());
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 

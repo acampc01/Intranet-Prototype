@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.intranet.model.Folder;
 
 @Repository("folderRepository")
-public interface FolderRepository extends JpaRepository<Folder, Integer>{
-	Folder getOne(Integer id);
+public interface FolderRepository extends JpaRepository<Folder, Long>{
+	Folder getOne(Long id);
 }

@@ -21,7 +21,7 @@ public class Notification {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "notif_id")
-	private int id;
+	private long id;
 	
 	@Column(name = "type")
 	private String type;
@@ -58,10 +58,10 @@ public class Notification {
 	}
 
 	public String encrypt() {
-		return Encryptor.encrypt(new Integer(id).toString());
+		return Encryptor.encrypt(new Long(id).toString());
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 

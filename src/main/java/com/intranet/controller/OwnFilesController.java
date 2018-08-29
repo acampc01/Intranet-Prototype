@@ -61,7 +61,7 @@ public class OwnFilesController {
 	public ModelAndView getFolderFiles(@PathVariable("id_folder") String nid) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			Integer id = Integer.parseInt(Encryptor.decrypt(nid));
+			Long id = Long.parseLong(Encryptor.decrypt(nid));
 			
 			Folder folder = folderService.findById(id);
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -121,6 +121,7 @@ public class OwnFilesController {
 			return modelAndView;
 		}catch(Exception e) {
 			log.error(e.getMessage());
+			e.printStackTrace();
 			modelAndView.setView(new RedirectView("/user/files"));
 			return modelAndView;
 		}
