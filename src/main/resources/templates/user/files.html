@@ -26,10 +26,11 @@
 				<div class="card-header">
 					<i class="fa fa-folder"></i>
 					<div th:switch="${root.name}" th:remove="tag">
-						<span th:case="${user.root.name}">My Files</span><span
-						th:case="*" th:text="${root.name}"></span>
+						<span th:case="${user.root.name}">My Files</span>
+						<span th:case="*" th:text="${root.name}"></span>
 					</div>
-					<a class="" style="color: black" th:href="@{'/user/download/folder/' + ${root.encrypt()}}"><i class="fa fa-download pull-right" style="font-size: 24px;"></i></a>
+					<a style="color: black" th:href="@{'/user/download/folder/' + ${root.encrypt()}}"><i class="fa fa-download pull-right" style="font-size: 24px;"></i></a>
+					<a th:if="${root.parent != null}" style="color: black" th:href="@{'/user/files/' + ${root.parent.encrypt()}}"><i class="fa fa-arrow-left pull-right mr-2" style="font-size: 22px;"></i></a>
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
@@ -132,6 +133,9 @@
 											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
 										</div>
 										<div th:remove="tag" th:case="'html'">
+											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
+										</div>
+										<div th:remove="tag" th:case="'m'">
 											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
 										</div>
 										<div th:remove="tag" th:case="'js'">
@@ -288,7 +292,7 @@
 					<input type="hidden" value=""/>
 					<div class="row">
 						<div class="col-4 mt-2">
-							<button id="clar" class="btn btn-danger btn-sm w-100" type="button">Clear</button>
+							<button id="clar" class="btn btn-danger btn-sm w-100" type="button">Clean</button>
 						</div>
 						<div class="col-8 mt-2">
 							<span>Lose the permissions</span>

@@ -72,7 +72,7 @@ public class AdminController {
 			List<User> urs = userService.findAll();
 			List<User> users = new ArrayList<User>();
 			for (User u : urs) {
-				if(!u.isAdmin() && u.getActive() == 1) {
+				if(u.getActive() == 1) {
 					users.add(u);
 				}
 			}
@@ -508,12 +508,16 @@ public class AdminController {
 					log.error("Error with shared folder: " + e.getMessage());
 				}
 			}else {
-				for (Folder son : folder.getFolders()) {
-					clear(son);
+				int fSize = folder.getFolders().size();
+				List<Folder> fs = new ArrayList<Folder>(folder.getFolders());
+				for (int i = 0; i < fSize; i++) {
+					clear(fs.get(i));
 				}
 
-				for (File son : folder.getFiles()) {
-					clear(son);
+				int flSize = folder.getFiles().size();
+				List<File> fls = new ArrayList<File>(folder.getFiles());
+				for (int i = 0; i < flSize; i++) {
+					clear(fls.get(i));
 				}
 
 				try {
@@ -532,6 +536,7 @@ public class AdminController {
 	private void clear(File file) {
 		if(file != null)
 			if(file.isShared()) {
+				System.out.println("Shared");
 				try {
 					User no = file.getSharedUsers().iterator().next();
 					givesFile(no, file);
@@ -559,12 +564,8 @@ public class AdminController {
 		no.getSharedFiles().remove(file);
 		file.getSharedUsers().remove(no);
 		file.setOwner(no);
-		if(file.getParent().getParent() == null) {
-			file.getParent().getFiles().remove(file);
-			file.setParent(no.getRoot());
-			no.getRoot().getFiles().add(file);
-		}
-
+		file.setParent(no.getRoot());
+		no.getRoot().getFiles().add(file);
 		fileService.update(file);
 		userService.update(no);
 	}

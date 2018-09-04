@@ -16,6 +16,8 @@ $(document).ready(function () {
 					timeout: 6000,
 					success: function (data) {
 						$("#search-list").empty();
+						$("#search-list").css('align-items','');
+       					$("#search-list").css('justify-content','');
 						if(Object.keys(data).length != 0){
 							$.each(data, function(index, item) {
 								var append = "<div class='col-sm-6 p-1'><div class='card w-100 h-100'><div class='card-body'><h5 class='card-title'>" + item[0] + "<a href='/user/files/" + item[1] + "' class='text-dark pull-right ml-3'><i class='fa fa-folder-o' aria-hidden='true'></i></a><a href='/user/file/" + index + "' class='text-dark pull-right'><i class='fa fa-eye' aria-hidden='true'></i></a></h5><small class='card-text mr-3'>Owner: " + item[4] + "</small><small class='card-text mr-3'>Parent Folder: " + item[3] + "</small>";
@@ -28,8 +30,10 @@ $(document).ready(function () {
 	       						$("#search-list").append(append);
 	       					});
 	       					$("body").getNiceScroll().resize();
-       					}else{
-       						$("#search-list").append("<div class='alert alert-danger text-center'><strong>Oops, couldnt find any file.</strong></div>");
+       					}else{ 
+       						$("#search-list").append("<div class='alert alert-danger text-center m-0'><strong>Oops, couldnt find any file.</strong></div>");
+       						$("#search-list").css('align-items','center');
+       						$("#search-list").css('justify-content','center');
        					}
 					},
 					error: function (e) {
@@ -44,6 +48,8 @@ $(document).ready(function () {
 			event.preventDefault();
 			$("#search-list").empty();
 			$("#searchFiles").val('');
+			$("#search-list").css('align-items','');
+       		$("#search-list").css('justify-content','');
 		});
 		
 		$("#searchUser").autocomplete({

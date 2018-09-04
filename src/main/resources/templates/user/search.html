@@ -23,19 +23,29 @@
 	<th:block th:include="includes/navbar :: navbar"></th:block>
 
 	<div class="content-wrapper">
-		<form class="ml-3 mr-3" role="search">
-			<div class="input-group">
-				<input id="searchFiles" class="form-control" type="text" placeholder="Search">
-				<div class="input-group-btn">
-					<button id="clear" class="btn text-white ml-1" type="submit" style="background-color:#51C3F1;">Clear</button>
+		<div class="container-fluid">
+			<div class="card mb-3">
+				<div class="card-header">
+					<form class="ml-3 mr-3" role="search">
+						 <div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="basic-addon1"><i class="fa fa-search"></i></span>
+							</div>
+							<input id="searchFiles" class="form-control form-control-sm" type="text" placeholder="Search" aria-describedby="basic-addon1">
+							<div class="input-group-btn">
+								<button id="clear" class="btn btn-sm text-white ml-1" type="submit" style="background-color:#51C3F1;">Clear</button>
+							</div>
+						</div>
+						<small>*Search engine works automatically but could work slow depending on files number. Be patient.</small>
+					</form>
+				</div>
+				<div class="card-body">
+					<div id="search-list" class="row p-1">
+				
+					</div>
 				</div>
 			</div>
-		</form>
-	    <div class="container-fluid">
-		    <div id="search-list" class="row m-2">
-				
-			</div>
-	    </div>
+		</div>
 	</div>
 
 	<!-- Footer -->

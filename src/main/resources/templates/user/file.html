@@ -85,8 +85,8 @@
 
 	<!-- Bootstrap core JavaScript-->
 	<script th:src="@{/libs/jquery/jquery.min.js}"></script>
-	<script th:src="@{/libs/mammoth/mammoth.browser.min.js}"></script>
-	<script type="text/javascript" th:inline="javascript">
+	<script th:if="${file.format == 'docx'}" th:src="@{/libs/mammoth/mammoth.browser.min.js}"></script>
+	<script th:if="${file.format == 'docx'}" type="text/javascript" th:inline="javascript">
 		/*<![CDATA[*/
 		$.ajax({
 	  		type: "GET",

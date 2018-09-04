@@ -60,7 +60,8 @@
 				            	<div class="dropdown-item" data-toggle="modal" data-target="#adviceModal">   
 				                	<strong class="text-warning" th:text="${notif.type}"></strong>
 				                	<div class="ml-1 small d-inline" th:text="${notif.sender.name}"></div>
-				             		<span class="ml-1 mr-2 small text-muted" th:text="${#dates.format(notif.creation, 'hh:mm dd-MM-yy')}"></span>
+				                	<span class="ml-1 mr-1 small text-muted" th:text="${#dates.format(notif.time, 'hh:mm')}"></span>
+				             		<span class="mr-2 small text-muted" th:text="${#dates.format(notif.creation, 'dd-MM-yy')}"></span>
 				            	</div>
 				            	<p class="mb-0 pl-4 pr-4 text-truncate" style="font-size:11px;" th:text="${notif.content}"></p>
 				            	<div class="dropdown-divider"></div>

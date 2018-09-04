@@ -32,6 +32,7 @@ import com.intranet.service.UserService;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -161,7 +162,7 @@ public class FileRestController {
 
 				List<String> content = null;
 				try {
-					content = Files.readAllLines(Paths.get(getPath(file)));
+					content = Files.readAllLines(Paths.get(getPath(file)), StandardCharsets.ISO_8859_1);
 					List<String> lines = new ArrayList<String>();
 					for (String line : content) {
 						line = line.replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");

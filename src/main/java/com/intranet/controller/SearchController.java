@@ -2,6 +2,7 @@ package com.intranet.controller;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -240,7 +241,8 @@ public class SearchController {
 		try {
 			List<Integer> coincidences = new ArrayList<Integer>();
 			int l = 1;
-			for (String line : Files.readAllLines(Paths.get(getPath(file)))) {
+			List<String> lines = Files.readAllLines(Paths.get(getPath(file)), StandardCharsets.ISO_8859_1);
+			for (String line : lines) {
 				if(line.toLowerCase().contains(search.toLowerCase()))
 					coincidences.add(l);
 				l++;

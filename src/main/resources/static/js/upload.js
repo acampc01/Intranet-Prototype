@@ -85,7 +85,6 @@ $(document).ready(function () {
 					setTimeout(function(){
 						location.reload();
 				    }, 1000);
-					
 				},
 				error: function (e) {
 					$('#folderModal').modal('toggle');
