@@ -14,10 +14,16 @@ $(document).ready(function() {
 			{ "width": "45%", "targets": 0 }
 		],
 		"pageLength": 25,
-		"lengthMenu": [5, 25, 50, 100],
-		"render": function ( data, type, row, meta ) {
-			return '<a href="'+data+'">Download</a>';
-		}
+		"lengthMenu": [5, 25, 50, 100]
+	});
+	
+	$('table#uTable').DataTable({
+		"language": {
+			"emptyTable": "Oops, there are no users registered."
+		},
+		"order": [],
+		"pageLength": 25,
+		"lengthMenu": [5, 25, 50, 100]
 	});
 
 	$("tr#fila").on('click',function(){
