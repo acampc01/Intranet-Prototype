@@ -62,27 +62,32 @@
 				                	<div class="ml-1 small d-inline" th:text="${notif.sender.name}"></div>
 				                	<span class="ml-1 mr-1 small text-muted" th:text="${#dates.format(notif.time, 'hh:mm')}"></span>
 				             		<span class="mr-2 small text-muted" th:text="${#dates.format(notif.creation, 'dd-MM-yy')}"></span>
+				             		<p class="mb-0 text-truncate" style="font-size:11px;" th:text="${notif.content}"></p>
 				            	</div>
-				            	<p class="mb-0 pl-4 pr-4 text-truncate" style="font-size:11px;" th:text="${notif.content}"></p>
 				            	<div class="dropdown-divider"></div>
 				        	</div>
-				        	<div th:remove="tag" th:if="${user.isAdmin()}" th:each="notif, userStat:${notifications}" th:unless="${userStat.index >= 2}">
-				            	<div class="dropdown-item">   
-				                	<strong class="d-inline" th:text="${notif.type}" style="color:#51C3F1;"></strong>
+				        	<div th:remove="tag" th:if="${user.isAdmin()}" th:each="notif, iterStat:${notifications}" th:unless="${iterStat.index >= 2}">
+				            	<a class="dropdown-item px-4 py-1" th:href="@{/admin/home}">
+				                	<strong class="d-inline font-weight-bold" th:text="${notif.type}" style="color:#51C3F1;"></strong>
 				                	<span class="ml-1 small text-muted" th:text="${#dates.format(notif.sender.creation, 'hh:mm dd-MM-yy')}"></span>
 				                	<span class="d-block small text-truncate" th:text="${notif.sender.email}"></span>
-				            	</div>
-				            	<p class="mb-0 pl-4 pr-4 text-justify" style="font-size:12px;" th:text="${notif.content}"></p>
-				            	<div class="dropdown-divider"></div>
+				                	<p class="mb-0 pl-4 pr-4 text-justify" style="font-size:12px;" th:text="${notif.content}"></p>
+				            	</a>
+				            	<div th:if="${iterStat.index <= iterStat.size-2}" class="dropdown-divider"></div>
 				        	</div>
 				        </div>
 		         	</div>
 		        </li>
 		        
 				<li class="nav-item">
-					<a th:attr="href= ${user.isAdmin()} ? @{/admin/home}" class="nav-link  text-white">
+					<div class="nav-link text-white">
 						<i class="fa fa-fw fa fa-user"></i>
-						<span th:text="${user.name}" th:remove="tag">Usuario</span>
+						<span th:text="${user.name}">Usuario</span>
+					</div>
+				</li>
+				<li th:if="${user.isAdmin()}" class="nav-item">
+					<a th:attr="href= ${user.isAdmin()} ? @{/admin/home}" class="nav-link  text-white">
+						<i class="fa fa-cog" aria-hidden="true"></i>
 					</a>
 				</li>
 				<li th:if="${user.isAdmin()}" class="nav-item">
