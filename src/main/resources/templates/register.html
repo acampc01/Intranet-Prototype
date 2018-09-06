@@ -22,7 +22,7 @@
 	
 	<div class="container">
 		<div class="text-center mb-4">
-			<h2 class="h3 mb-3 font-weight-normal">Intranet Register</h2>
+			<h2 class="h3 mb-3 font-weight-normal">Register</h2>
 		</div>
 		<form th:action="@{/register}" th:object="${user}" method="post" class="form-signin card">
 			<div class="form-label-group">
@@ -52,16 +52,17 @@
 
 			<button type="submit" class="btn btn-lg btn-block text-white" style="background-color:#51C3F1;">Register User</button>
 			
-			<div class="text-center mt-2 mb-1">
+			<div class="text-center">
 				<span class="text-center" th:utext="${successMessage}"></span>
 			</div>
 		</form>
 		
 		<div class="text-center mt-3 mb-2" style="position:absolute;left:0;right:0;">
-			<a class="badge badge-secondary text-center" th:href="@{/login}">Login</a>
+			<span class="text-muted mr-2">Already have an account?</span>
+			<a th:href="@{/login}">Log in</a>
 		</div>
 
-		<p class="mt-5 text-muted text-center">&copy; Drotium 2018-2019</p>
+		<!-- <p class="mt-5 text-muted text-center">&copy; Drotium 2018-2019</p> -->
 	</div>
 
 	<!-- Bootstrap core JavaScript-->
