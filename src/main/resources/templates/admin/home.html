@@ -24,6 +24,53 @@
 	<div class="content-wrapper">
 		<div class="row m-1">
 			<div class="col col-lg-8 container-fluid">
+				<div class="card mb-3">
+					<div class="card-header">
+						<span>Current Active Users</span>
+					</div>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table class="table table-hover" width="100%" cellspacing="0">
+								<thead class="text-white" style="background-color: #51C3F1;">
+									<tr>
+										<th>#</th>
+										<th>Email</th>
+										<th>Name</th>
+										<th>Lastname</th>
+										<th>Last Connection</th>
+										<th>Options</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="user, cont:${users}">
+										<th th:text="${cont.count}"></th>
+										<td th:text="${user.email}">Mark</td>
+										<td th:text="${user.name}">Otto</td>
+										<td th:text="${user.lastName}">@mdo</td>
+										<td>
+											<div th:remove="tag" th:if="${user.lastConnect != null}">
+												<th:block
+													th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}"
+													th:switch="${days.convert(#dates.createNow().getTime() - user.lastConnect.getTime(), millis)}">
+													<div th:remove="tag" th:case="0">
+														<span>Today</span>
+													</div>
+													<div th:remove="tag" th:case="*">
+														<span
+															th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}"
+															th:text="${days.convert(#dates.createNow().getTime() - user.lastConnect.getTime(), millis)} + ' days ago'"></span>
+													</div>
+												</th:block>
+											</div> <span th:if="${user.lastConnect == null}"><i
+												class="fa fa-minus" aria-hidden="true"></i></span>
+										</td>
+										<td>Options</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 				<div class="text-center" th:if="${#lists.size(users) != 0}">
 					<h5 class="alert mt-2 ml-2 mr-2 font-weight-bold text-white"
 						style="background-color: #51C3F1;">Current Active Users</h5>
@@ -37,32 +84,39 @@
 									<h5 class="card-title"
 										th:text="${user.name} + ' ' + ${user.lastName}"></h5>
 									<div th:remove="tag" th:if="${user.lastConnect != null}">
-										
-										<th:block th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:switch="${days.convert(#dates.createNow().getTime() - user.lastConnect.getTime(), millis)}">
-										    <div th:remove="tag" th:case="0">
-										        <small>Last connection: Today</small>
-										    </div>
-										    <div th:remove="tag" th:case="*">
-										       <small th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" th:text="'Last connection: ' + ${days.convert(#dates.createNow().getTime() - user.lastConnect.getTime(), millis)} + ' days ago'"></small>
-										    </div>
+										<th:block
+											th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}"
+											th:switch="${days.convert(#dates.createNow().getTime() - user.lastConnect.getTime(), millis)}">
+											<div th:remove="tag" th:case="0">
+												<small>Last connection: Today</small>
+											</div>
+											<div th:remove="tag" th:case="*">
+												<small
+													th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}"
+													th:text="'Last connection: ' + ${days.convert(#dates.createNow().getTime() - user.lastConnect.getTime(), millis)} + ' days ago'"></small>
+											</div>
 										</th:block>
-									
 									</div>
-									<small th:if="${user.lastConnect == null}">Last connection: Never</small>
+									<small th:if="${user.lastConnect == null}">Last
+										connection: Never</small>
 								</div>
 								<p class="card-text" th:text="${user.email}"></p>
-								
-								<a id="editU" class="btn btn-sm pull-right m-0 text-white" style="background-color: #51C3F1; border-color: #51C3F1;">
-									<i class="fa fa-edit" aria-hidden="true"></i><input type="hidden" th:value="${user.encrypt()}">
+
+								<a id="editU" class="btn btn-sm pull-right m-0 text-white"
+									style="background-color: #51C3F1; border-color: #51C3F1;">
+									<i class="fa fa-edit" aria-hidden="true"></i><input
+									type="hidden" th:value="${user.encrypt()}">
 								</a>
-								<div th:if="${!user.isAdmin()}" class="btn-group pull-right mr-2">
-								    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Delete User</button>
-								    <div class="dropdown-menu">
-								        <a id="delete" class="text-center">
-											Delete
-											<input type="hidden" th:value="${user.encrypt()}">
+								<div th:if="${!user.isAdmin()}"
+									class="btn-group pull-right mr-2">
+									<button class="btn btn-primary btn-sm dropdown-toggle"
+										type="button" data-toggle="dropdown" aria-haspopup="true"
+										aria-expanded="false">Delete User</button>
+									<div class="dropdown-menu">
+										<a id="delete" class="text-center"> Delete <input
+											type="hidden" th:value="${user.encrypt()}">
 										</a>
-								    </div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -79,7 +133,8 @@
 								<div class="d-flex w-100 justify-content-between">
 									<h5 class="card-title"
 										th:text="${notif.sender.name} + ' ' + ${notif.sender.lastName}"></h5>
-									<div th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}"
+									<div
+										th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}"
 										th:switch="${days.convert(#dates.createNow().getTime() - notif.sender.creation.getTime(), millis)}">
 										<small th:case="0">Today</small> <small th:case="*"
 											th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}"
@@ -107,8 +162,9 @@
 				<div class="card">
 					<div class="text-center">
 						<h5 class="alert mt-2 ml-2 mr-2 font-weight-bold text-white"
-							style="background-color: #51C3F1;"><i class="fa fa-bell color-white"></i>
-							Create New Notification</h5>
+							style="background-color: #51C3F1;">
+							<i class="fa fa-bell color-white"></i> Create New Notification
+						</h5>
 					</div>
 					<div class="form-group dro-border ml-3 mr-3">
 						<select class="form-control mb-2" id="nType">
@@ -117,11 +173,10 @@
 						<textarea class="form-control" id="nContent" maxlength="250"
 							rows="10" placeholder="Write something here..."></textarea>
 						<div>
-							<small>
-								<span id="nLetters">0</span>
-								<span>/250</span>
+							<small> <span id="nLetters">0</span> <span>/250</span>
 							</small>
-							<button class="btn btn-sm pull-right" id="nButton" style="background-color: #51C3F1; border-color: #51C3F1;">Send</button>
+							<button class="btn btn-sm pull-right" id="nButton"
+								style="background-color: #51C3F1; border-color: #51C3F1;">Send</button>
 						</div>
 					</div>
 				</div>
@@ -133,7 +188,11 @@
 								<small th:text="${#dates.format(notify.creation, 'dd-MM-yyyy')}"></small>
 							</div>
 							<p class="card-text text-justify" th:text="${notify.content}"></p>
-							<a id="nRemove" class="btn btn-danger btn-sm pull-right mr-2 text-white"> <i class="fa fa-times" aria-hidden="true"></i> <input type="hidden" th:value="${notify.encrypt()}">Remove</a>
+							<a id="nRemove"
+								class="btn btn-danger btn-sm pull-right mr-2 text-white"> <i
+								class="fa fa-times" aria-hidden="true"></i> <input type="hidden"
+								th:value="${notify.encrypt()}">Remove
+							</a>
 						</div>
 					</div>
 				</div>

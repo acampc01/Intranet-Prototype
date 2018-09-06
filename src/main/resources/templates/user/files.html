@@ -2,17 +2,17 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport"
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description" content="Intranet Drotium">
-	<meta name="author" content="Alejandro Campos - Drotium">
-	<meta name="_csrf" th:content="${_csrf.token}" />
-	<!-- default header name is X-CSRF-TOKEN -->
-	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
-	<title>Drotium Intranet</title>
-	<th:block th:include="includes/links :: links"></th:block>
+<meta name="description" content="Intranet Drotium">
+<meta name="author" content="Alejandro Campos - Drotium">
+<meta name="_csrf" th:content="${_csrf.token}" />
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>Drotium Intranet</title>
+<th:block th:include="includes/links :: links"></th:block>
 </head>
 
 <body class="fixed-nav sticky-footer sidenav-toggled" id="page-top">
@@ -26,287 +26,360 @@
 				<div class="card-header">
 					<i class="fa fa-folder"></i>
 					<div th:switch="${root.name}" th:remove="tag">
-						<span th:case="${user.root.name}">My Files</span>
-						<span th:case="*" th:text="${root.name}"></span>
+						<span th:case="${user.root.name}">My Files</span> <span
+							th:case="*" th:text="${root.name}"></span>
 					</div>
-					<a style="color: black" th:href="@{'/user/download/folder/' + ${root.encrypt()}}"><i class="fa fa-download pull-right" style="font-size: 24px;"></i></a>
-					<a th:if="${root.parent != null}" style="color: black" th:href="@{'/user/files/' + ${root.parent.encrypt()}}"><i class="fa fa-arrow-left pull-right mr-2" style="font-size: 22px;"></i></a>
+					<a style="color: black"
+						th:href="@{'/user/download/folder/' + ${root.encrypt()}}"><i
+						class="fa fa-download pull-right" style="font-size: 24px;"></i></a> <a
+						th:if="${root.parent != null}" style="color: black"
+						th:href="@{'/user/files/' + ${root.parent.encrypt()}}"><i
+						class="fa fa-arrow-left pull-right mr-2" style="font-size: 22px;"></i></a>
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
 						<table class="table table-hover" id="dataTable" width="100%"
-						cellspacing="0">
-						<thead class="text-white" style="background-color:#51C3F1;">
-							<tr>
-								<th>File Name</th>
-								<th>Owner</th>
-								<th>Download</th>
-								<th>Creation</th>
-								<th>Last Update</th>
-								<!-- <th>Options</th> -->
-							</tr>
-						</thead>
-						<tbody>
-							<tr id="fila" th:each="folder:${folders}" style="cursor: pointer">
-								<input type="hidden" data-type="folder" th:value="${folder.encrypt()}">
-								<td><i class="fa fa-folder"
-									style="font-size: 24px; color: #7E8C95;"></i><span class="ml-2"
-									th:text="${folder.name}"
-									style="text-decoration: none;"></span></td>
-									<td th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
-									<td th:if="${folder.download} == null"><i class="fa fa-minus" aria-hidden="true"></i></td>
-									<td th:if="${folder.download} != null" th:text="${#dates.format(folder.download, 'dd-MM-yyyy')}">Download Date</td>
-									<td th:text="${#dates.format(folder.creation, 'dd-MM-yyyy')}">Creation Date</td>
-									<td th:text="${#dates.format(folder.lastUpdate, 'dd-MM-yyyy')}">Update Date</td>
+							cellspacing="0">
+							<thead class="text-white" style="background-color: #51C3F1;">
+								<tr>
+									<th>File Name</th>
+									<th>Owner</th>
+									<th>Download</th>
+									<th>Creation</th>
+									<th>Last Update</th>
+									<!-- <th>Options</th> -->
+								</tr>
+							</thead>
+							<tbody>
+								<tr id="fila" th:each="folder:${folders}"
+									style="cursor: pointer">
+									<input type="hidden" data-type="folder"
+										th:value="${folder.encrypt()}">
+									<td><i class="fa fa-folder"
+										style="font-size: 24px; color: #7E8C95;"></i><span
+										class="ml-2" th:text="${folder.name}"
+										style="text-decoration: none;"></span></td>
+									<td
+										th:text="${folder.owner.name == user.name ? 'Yo' : folder.owner.name}">Owner</td>
+									<td th:if="${folder.download} == null"><i
+										class="fa fa-minus" aria-hidden="true"></i></td>
+									<td th:if="${folder.download} != null"
+										th:text="${#dates.format(folder.download, 'dd-MM-yyyy')}">Download
+										Date</td>
+									<td th:text="${#dates.format(folder.creation, 'dd-MM-yyyy')}">Creation
+										Date</td>
+									<td th:text="${#dates.format(folder.lastUpdate, 'dd-MM-yyyy')}">Update
+										Date</td>
 								</tr>
 								<tr id="fila" th:each="file:${files}" style="cursor: pointer">
-									<input type="hidden" data-type="file" th:value="${file.encrypt()}">
-									<td>
-										<th:block th:switch="${file.format}">
-										<div th:remove="tag" th:case="'txt'">
-											<i class="fa fa-file-text-o" aria-hidden="true" style="font-size: 24px; color: #0079CA;"></i>
-										</div>
-										<div th:remove="tag" th:case="'log'">
-											<i class="fa fa-file-text-o" aria-hidden="true" style="font-size: 24px; color: #0079CA;"></i>
-										</div>
-										<div th:remove="tag" th:case="'pdf'">
-											<i class="fa fa-file-pdf-o" aria-hidden="true" style="font-size: 24px; color: #EE2E31;"></i>
-										</div>
-										<div th:remove="tag" th:case="'odt'">
-											<i class="fa fa-file-word-o" aria-hidden="true" style="font-size: 24px; color: #0079CA;"></i>
-										</div>
-										<div th:remove="tag" th:case="'doc'">
-											<i class="fa fa-file-word-o" aria-hidden="true" style="font-size: 24px; color: #0079CA;"></i>
-										</div>
-										<div th:remove="tag" th:case="'docx'">
-											<i class="fa fa-file-word-o" aria-hidden="true" style="font-size: 24px; color: #0079CA;"></i>
-										</div>
-										<div th:remove="tag" th:case="'docm'">
-											<i class="fa fa-file-word-o" aria-hidden="true" style="font-size: 24px; color: #0079CA;"></i>
-										</div>
-										<div th:remove="tag" th:case="'xlsx'">
-											<i class="fa fa-file-excel-o" aria-hidden="true" style="font-size: 24px; color: #058E3F;"></i>
-										</div>
-										<div th:remove="tag" th:case="'xlsm'">
-											<i class="fa fa-file-excel-o" aria-hidden="true" style="font-size: 24px; color: #058E3F;"></i>
-										</div>
-										<div th:remove="tag" th:case="'xltx'">
-											<i class="fa fa-file-excel-o" aria-hidden="true" style="font-size: 24px; color: #058E3F;"></i>
-										</div>
-										<div th:remove="tag" th:case="'xltm'">
-											<i class="fa fa-file-excel-o" aria-hidden="true" style="font-size: 24px; color: #058E3F;"></i>
-										</div>
-										<div th:remove="tag" th:case="'xlam'">
-											<i class="fa fa-file-excel-o" aria-hidden="true" style="font-size: 24px; color: #058E3F;"></i>
-										</div>
-										<div th:remove="tag" th:case="'pptx'">
-											<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
-										</div>
-										<div th:remove="tag" th:case="'ppt'">
-											<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
-										</div>
-										<div th:remove="tag" th:case="'pptm'">
-											<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
-										</div>
-										<div th:remove="tag" th:case="'potm'">
-											<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
-										</div>
-										<div th:remove="tag" th:case="'ppam'">
-											<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
-										</div>
-										<div th:remove="tag" th:case="'ppsx'">
-											<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
-										</div>
-										<div th:remove="tag" th:case="'ppsm'">
-											<i class="fa fa-file-powerpoint-o" aria-hidden="true" style="font-size: 24px; color: #E6952C;"></i>
-										</div>
-										<div th:remove="tag" th:case="'c'">
-											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
-										</div>
-										<div th:remove="tag" th:case="'cpp'">
-											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
-										</div>
-										<div th:remove="tag" th:case="'h'">
-											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
-										</div>
-										<div th:remove="tag" th:case="'java'">
-											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
-										</div>
-										<div th:remove="tag" th:case="'html'">
-											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
-										</div>
-										<div th:remove="tag" th:case="'m'">
-											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
-										</div>
-										<div th:remove="tag" th:case="'js'">
-											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
-										</div>
-										<div th:remove="tag" th:case="'ino'">
-											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
-										</div>
-										<div th:remove="tag" th:case="'css'">
-											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
-										</div>
-										<div th:remove="tag" th:case="'json'">
-											<i class="fa fa-file-code-o" aria-hidden="true" style="font-size: 24px; color: #51C3F1;"></i>
-										</div>
-										<div th:remove="tag" th:case="'avi'">
-											<i class="fa fa-film" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
-										</div>
-										<div th:remove="tag" th:case="'mp4'">
-											<i class="fa fa-film" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
-										</div>
-										<div th:remove="tag" th:case="'mov'">
-											<i class="fa fa-film" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
-										</div>
-										<div th:remove="tag" th:case="'mp3'">
-											<i class="fa fa-file-audio-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
-										</div>
-										<div th:remove="tag" th:case="'wmv'">
-											<i class="fa fa-file-audio-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
-										</div>
-										<div th:remove="tag" th:case="'jpg'">
-											<i class="fa fa-file-image-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
-										</div>
-										<div th:remove="tag" th:case="'ico'">
-											<i class="fa fa-file-image-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
-										</div>
-										<div th:remove="tag" th:case="'jpeg'">
-											<i class="fa fa-file-image-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
-										</div>
-										<div th:remove="tag" th:case="'png'">
-											<i class="fa fa-file-image-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
-										</div>
-										<div th:remove="tag" th:case="'svg'">
-											<i class="fa fa-file-image-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
-										</div>
-										<div th:remove="tag" th:case="'zip'">
-											<i class="fa fa-file-archive-o" aria-hidden="true" style="font-size: 24px; color: #F7B801;"></i>
-										</div>
-										<div th:remove="tag" th:case="'rar'">
-											<i class="fa fa-file-archive-o" aria-hidden="true" style="font-size: 24px; color: #F7B801;"></i>
-										</div>
-										<div th:remove="tag" th:case="*">
-											<i class="fa fa-file-o" aria-hidden="true" style="font-size: 24px; color: #363636;"></i>
-										</div>
-									</th:block>
-									<a class="ml-2" th:text="${file.name}" ></a>
-								</td>
-								<td th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
-								<td th:if="${file.download} == null"><i class="fa fa-minus" aria-hidden="true"></i></td>
-								<td th:if="${file.download} != null" th:text="${#dates.format(file.download, 'dd-MM-yyyy')}">Download Date</td>
-								<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation Date</td>
-								<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update Date</td>
-							</tr>
-						</tbody>
-					</table>
+									<input type="hidden" data-type="file"
+										th:value="${file.encrypt()}">
+									<td><th:block th:switch="${file.format}">
+											<div th:remove="tag" th:case="'txt'">
+												<i class="fa fa-file-text-o" aria-hidden="true"
+													style="font-size: 24px; color: #0079CA;"></i>
+											</div>
+											<div th:remove="tag" th:case="'log'">
+												<i class="fa fa-file-text-o" aria-hidden="true"
+													style="font-size: 24px; color: #0079CA;"></i>
+											</div>
+											<div th:remove="tag" th:case="'pdf'">
+												<i class="fa fa-file-pdf-o" aria-hidden="true"
+													style="font-size: 24px; color: #EE2E31;"></i>
+											</div>
+											<div th:remove="tag" th:case="'odt'">
+												<i class="fa fa-file-word-o" aria-hidden="true"
+													style="font-size: 24px; color: #0079CA;"></i>
+											</div>
+											<div th:remove="tag" th:case="'doc'">
+												<i class="fa fa-file-word-o" aria-hidden="true"
+													style="font-size: 24px; color: #0079CA;"></i>
+											</div>
+											<div th:remove="tag" th:case="'docx'">
+												<i class="fa fa-file-word-o" aria-hidden="true"
+													style="font-size: 24px; color: #0079CA;"></i>
+											</div>
+											<div th:remove="tag" th:case="'docm'">
+												<i class="fa fa-file-word-o" aria-hidden="true"
+													style="font-size: 24px; color: #0079CA;"></i>
+											</div>
+											<div th:remove="tag" th:case="'xlsx'">
+												<i class="fa fa-file-excel-o" aria-hidden="true"
+													style="font-size: 24px; color: #058E3F;"></i>
+											</div>
+											<div th:remove="tag" th:case="'xlsm'">
+												<i class="fa fa-file-excel-o" aria-hidden="true"
+													style="font-size: 24px; color: #058E3F;"></i>
+											</div>
+											<div th:remove="tag" th:case="'xltx'">
+												<i class="fa fa-file-excel-o" aria-hidden="true"
+													style="font-size: 24px; color: #058E3F;"></i>
+											</div>
+											<div th:remove="tag" th:case="'xltm'">
+												<i class="fa fa-file-excel-o" aria-hidden="true"
+													style="font-size: 24px; color: #058E3F;"></i>
+											</div>
+											<div th:remove="tag" th:case="'xlam'">
+												<i class="fa fa-file-excel-o" aria-hidden="true"
+													style="font-size: 24px; color: #058E3F;"></i>
+											</div>
+											<div th:remove="tag" th:case="'pptx'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true"
+													style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'ppt'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true"
+													style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'pptm'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true"
+													style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'potm'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true"
+													style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'ppam'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true"
+													style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'ppsx'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true"
+													style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'ppsm'">
+												<i class="fa fa-file-powerpoint-o" aria-hidden="true"
+													style="font-size: 24px; color: #E6952C;"></i>
+											</div>
+											<div th:remove="tag" th:case="'c'">
+												<i class="fa fa-file-code-o" aria-hidden="true"
+													style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'cpp'">
+												<i class="fa fa-file-code-o" aria-hidden="true"
+													style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'h'">
+												<i class="fa fa-file-code-o" aria-hidden="true"
+													style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'java'">
+												<i class="fa fa-file-code-o" aria-hidden="true"
+													style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'html'">
+												<i class="fa fa-file-code-o" aria-hidden="true"
+													style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'m'">
+												<i class="fa fa-file-code-o" aria-hidden="true"
+													style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'js'">
+												<i class="fa fa-file-code-o" aria-hidden="true"
+													style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'ino'">
+												<i class="fa fa-file-code-o" aria-hidden="true"
+													style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'css'">
+												<i class="fa fa-file-code-o" aria-hidden="true"
+													style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'json'">
+												<i class="fa fa-file-code-o" aria-hidden="true"
+													style="font-size: 24px; color: #51C3F1;"></i>
+											</div>
+											<div th:remove="tag" th:case="'avi'">
+												<i class="fa fa-film" aria-hidden="true"
+													style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'mp4'">
+												<i class="fa fa-film" aria-hidden="true"
+													style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'mov'">
+												<i class="fa fa-film" aria-hidden="true"
+													style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'mp3'">
+												<i class="fa fa-file-audio-o" aria-hidden="true"
+													style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'wmv'">
+												<i class="fa fa-file-audio-o" aria-hidden="true"
+													style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'jpg'">
+												<i class="fa fa-file-image-o" aria-hidden="true"
+													style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'ico'">
+												<i class="fa fa-file-image-o" aria-hidden="true"
+													style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'jpeg'">
+												<i class="fa fa-file-image-o" aria-hidden="true"
+													style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'png'">
+												<i class="fa fa-file-image-o" aria-hidden="true"
+													style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'svg'">
+												<i class="fa fa-file-image-o" aria-hidden="true"
+													style="font-size: 24px; color: #363636;"></i>
+											</div>
+											<div th:remove="tag" th:case="'zip'">
+												<i class="fa fa-file-archive-o" aria-hidden="true"
+													style="font-size: 24px; color: #F7B801;"></i>
+											</div>
+											<div th:remove="tag" th:case="'rar'">
+												<i class="fa fa-file-archive-o" aria-hidden="true"
+													style="font-size: 24px; color: #F7B801;"></i>
+											</div>
+											<div th:remove="tag" th:case="*">
+												<i class="fa fa-file-o" aria-hidden="true"
+													style="font-size: 24px; color: #363636;"></i>
+											</div>
+										</th:block> <a class="ml-2" th:text="${file.name}"></a></td>
+									<td
+										th:text="${file.owner.name == user.name ? 'Yo' : file.owner.name}">Owner</td>
+									<td th:if="${file.download} == null"><i
+										class="fa fa-minus" aria-hidden="true"></i></td>
+									<td th:if="${file.download} != null"
+										th:text="${#dates.format(file.download, 'dd-MM-yyyy')}">Download
+										Date</td>
+									<td th:text="${#dates.format(file.creation, 'dd-MM-yyyy')}">Creation
+										Date</td>
+									<td th:text="${#dates.format(file.lastUpdate, 'dd-MM-yyyy')}">Update
+										Date</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
+				<div class="card-footer small text-muted"
+					th:text="'Updated ' + ${#dates.format(lastDate, 'dd-MM-yyyy')}">Last
+					Update</div>
 			</div>
-			<div class="card-footer small text-muted"
-			th:text="'Updated ' + ${#dates.format(lastDate, 'dd-MM-yyyy')}">Last
-			Update</div>
 		</div>
 	</div>
-</div>
 
-<!-- SHARE MODAL -->
-<div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
-			<div class="modal-body">
-				<div id="shareWrapper" class="rounded mx-auto" style="background-color:#51C3F1;"> <!-- border border-dark -->
-					<form id="sUf">
-						<input id="dTs" type="hidden" value="">
-						<input id="searchUser" class="m-2 w-50 form-control d-inline-flex" type="text" placeholder="Name or Email..">
-						<a th:if="${user.isAdmin()}" href='#' id='addAll' class='btn btn-sm text-white' style="background-color:#225366;">Everyone</a>
-						<a href='#' id='removeAll' class='btn btn-danger btn-sm'>Clear</a>
-					</form>
+	<!-- SHARE MODAL -->
+	<div class="modal fade" id="shareModal" tabindex="-1" role="dialog"
+		aria-labelledby="shareModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div id="shareWrapper" class="rounded mx-auto"
+						style="background-color: #51C3F1;">
+						<!-- border border-dark -->
+						<form id="sUf">
+							<input id="dTs" type="hidden" value=""> <input
+								id="searchUser" class="m-2 w-50 form-control d-inline-flex"
+								type="text" placeholder="Name or Email.."> <a
+								th:if="${user.isAdmin()}" href='#' id='addAll'
+								class='btn btn-sm text-white' style="background-color: #225366;">Everyone</a>
+							<a href='#' id='removeAll' class='btn btn-danger btn-sm'>Clear</a>
+						</form>
+					</div>
+					<div id="sharedWith"></div>
+					<div id="shareContent" class="bg-white mt-2"></div>
 				</div>
-				<div id="sharedWith"></div>
-				<div id="shareContent" class="bg-white mt-2"></div>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn-elegant btn-sm" type="button"
-				data-dismiss="modal">Cancel</button>
-				<a id="letsShare" class="btn btn-sm" style="background-color:#51C3F1;border-color:#51C3F1;" href>Share</a>
+				<div class="modal-footer">
+					<button class="btn btn-elegant btn-sm" type="button"
+						data-dismiss="modal">Cancel</button>
+					<a id="letsShare" class="btn btn-sm"
+						style="background-color: #51C3F1; border-color: #51C3F1;" href>Share</a>
+				</div>
 			</div>
 		</div>
 	</div>
-	</div>
-	
+
 	<!-- EDIT MODAL -->
-	<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+		aria-labelledby="editModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<form method="POST">
 				<div class="modal-content">
 					<div class="modal-body">
 						<div class="row border border-dark rounded m-3 p-3">
 							<div class="col col-md-4 form-group mb-2">
-								<small for="fileName">Name:</small>
-								<input type="hidden" id="fTc" value=''>
-								<input type="text" pattern="[a-zA-Z0-9\s]+" id="fileName" class="form-control form-control-sm" value="" placeholder="File Name" required>
+								<small for="fileName">Name:</small> <input type="hidden"
+									id="fTc" value=''> <input type="text"
+									pattern="[a-zA-Z0-9\s]+" id="fileName"
+									class="form-control form-control-sm" value=""
+									placeholder="File Name" required>
 							</div>
 							<div class="col col-md-4 form-group mb-2">
-								<small for="fileFormat" class="d-block">File Format:</small>
-								<span id="fileFormat" class="font-weight-bold d-block"></span>
+								<small for="fileFormat" class="d-block">File Format:</small> <span
+									id="fileFormat" class="font-weight-bold d-block"></span>
 							</div>
 							<div class="col col-md-4 form-group mb-2">
-								<small for="fileOwner" class="d-block">Owner:</small>
-								<span id="fileOwner" class="font-weight-bold d-block"></span>
+								<small for="fileOwner" class="d-block">Owner:</small> <span
+									id="fileOwner" class="font-weight-bold d-block"></span>
 							</div>
 							<div class="col col-md-4 form-group mb-2">
-								<small for="parFolder" class="d-block">Parent Folder:</small>
-								<span id="parFolder" class="font-weight-bold d-block"></span>
+								<small for="parFolder" class="d-block">Parent Folder:</small> <span
+									id="parFolder" class="font-weight-bold d-block"></span>
 							</div>
 							<div class="col col-md-4 form-group mb-2">
-								<small for="numShares" class="d-block">Users With Access:</small>
-								<span id="numShares" class="font-weight-bold d-block"></span>
+								<small for="numShares" class="d-block">Users With
+									Access:</small> <span id="numShares" class="font-weight-bold d-block"></span>
 							</div>
 							<div class="col col-md-4 form-group mb-2">
-								<small for="fileCreation" class="d-block">Creation:</small>
-								<span id="fileCreation" class="font-weight-bold d-block"></span>
+								<small for="fileCreation" class="d-block">Creation:</small> <span
+									id="fileCreation" class="font-weight-bold d-block"></span>
 							</div>
 							<div class="col col-md-4 form-group mb-2">
-								<small for="fileUpdate" class="d-block">Last Update:</small>
-								<span id="fileUpdate" class="font-weight-bold d-block"></span>
+								<small for="fileUpdate" class="d-block">Last Update:</small> <span
+									id="fileUpdate" class="font-weight-bold d-block"></span>
 							</div>
 							<div class="col col-md-4 form-group mb-2">
 								<small for="fileDownload" class="d-block">Last Download:</small>
 								<span id="fileDownload" class="font-weight-bold d-block"></span>
 							</div>
 						</div>
-						<button id="fedit" class="btn btn-sm pull-right mr-3 mb-3" style="background-color:#51C3F1;border-color:#51C3F1;">Confirm</button>
-						<button class="btn btn-elegant btn-sm pull-right mr-1" type="button" data-dismiss="modal">Cancel</button>
+						<button id="fedit" class="btn btn-sm pull-right mr-3 mb-3"
+							style="background-color: #51C3F1; border-color: #51C3F1;">Confirm</button>
+						<button class="btn btn-elegant btn-sm pull-right mr-1"
+							type="button" data-dismiss="modal">Cancel</button>
 					</div>
 				</div>
-			</div>
+		</div>
 		</form>
 	</div>
-	
+
 	<!-- Delete Modal-->
-	<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="delModal" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-body">
 					<h5>Choose delete type</h5>
-					<input type="hidden" value=""/>
+					<input type="hidden" value="" />
 					<div class="row">
 						<div class="col-4 mt-2">
-							<button id="clar" class="btn btn-danger btn-sm w-100" type="button">Clean</button>
+							<button id="clar" class="btn btn-danger btn-sm w-100"
+								type="button">Clean</button>
 						</div>
 						<div class="col-8 mt-2">
-							<span>Lose the permissions</span>
-							<span class="d-block">Does not delete the resource completely</span>
+							<span>Lose the permissions</span> <span class="d-block">Does
+								not delete the resource completely</span>
 						</div>
 						<div class="col-4 mt-2">
-							<button id="delt" class="btn btn-danger btn-sm w-100" type="button">Delete</button>
+							<button id="delt" class="btn btn-danger btn-sm w-100"
+								type="button">Delete</button>
 						</div>
 						<div class="col-8 mt-3">
 							<span>Delete the resource completely</span>
 						</div>
 					</div>
 					<div class="d-block">
-						<button class="btn btn-elegant btn-sm pull-right" type="button" data-dismiss="modal">Cancel</button>
+						<button class="btn btn-elegant btn-sm pull-right" type="button"
+							data-dismiss="modal">Cancel</button>
 					</div>
 				</div>
 			</div>
@@ -314,18 +387,22 @@
 	</div>
 
 	<!-- UPLOAD MODAL -->
-	<div class="modal" data-backdrop="static" data-keyboard="false" id="downloadModal" tabindex="-1" role="dialog" aria-labelledby="downModalLabel" aria-hidden="true">
+	<div class="modal" data-backdrop="static" data-keyboard="false"
+		id="downloadModal" tabindex="-1" role="dialog"
+		aria-labelledby="downModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-body">
 					<div id="progress" class="progress" style="height: 5px;">
-						<div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 1%"></div>
+						<div id="progressBar"
+							class="progress-bar progress-bar-striped progress-bar-animated"
+							style="width: 1%"></div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
+	</div>
 
 	<!-- Footer -->
 	<th:block th:include="includes/footer :: footer"></th:block>
