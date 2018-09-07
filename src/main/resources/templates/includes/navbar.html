@@ -91,6 +91,11 @@
 					</a>
 				</li>
 				<li th:if="${user.isAdmin()}" class="nav-item">
+					<a th:attr="href= ${user.isAdmin()} ? @{/admin/tree}" class="nav-link  text-white">
+						<i class="fa fa-pagelines" aria-hidden="true"></i>
+					</a>
+				</li>
+				<li th:if="${user.isAdmin()}" class="nav-item">
 					<a th:attr="href= ${user.isAdmin()} ? @{/admin/charts}" class="nav-link  text-white">
 						<i class="fa fa-fw fa fa-line-chart"></i>
 					</a>

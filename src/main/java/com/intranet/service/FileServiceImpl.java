@@ -1,6 +1,7 @@
 package com.intranet.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,14 @@ public class FileServiceImpl implements FileService{
 		if(file.getParent() != null)
 			file.getParent().getFiles().remove(file);
 		fileRepository.delete(file);
+	}
+
+	@Override
+	public List<File> findAll(User user) {
+		if(user.isAdmin())
+			return fileRepository.findAll();
+		else
+			return null;
 	}
 	
 }

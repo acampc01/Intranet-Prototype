@@ -13,6 +13,7 @@ import java.util.Set;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.io.FileUtils;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,80 @@ public class AdminController {
 		
 		modelAndView.setViewName("admin/home");
 		return modelAndView;
+	}
+
+	/**
+	 * @return admin/tree.html template
+	 */
+	@RequestMapping(value = "/admin/tree", method = RequestMethod.GET)
+	public ModelAndView tree() {
+		ModelAndView modelAndView = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		
+		if(user != null && user.isAdmin()) {
+			modelAndView.addObject("user", user);
+			modelAndView.addObject("notifications", userService.findConfirms(user));
+			modelAndView.addObject("notifies", notifyService.findByType("Advice"));
+		}
+		
+		JSONArray json = createJSONMap(user);
+		modelAndView.addObject("map","");
+		
+		modelAndView.setViewName("admin/tree");
+		return modelAndView;
+	}
+	
+	@Async
+	public JSONArray createJSONMap(User user){
+		JSONArray json = new JSONArray();
+		HashMap<String,Object> map;
+		
+		List<User> users = new ArrayList<User>(userService.findAll());
+		List<Folder> folders = new ArrayList<Folder>(folderService.findAll(user));
+		List<File> files = new ArrayList<File>(fileService.findAll(user));
+		
+		for (User u : users) {
+			map = new HashMap<String,Object>();
+			map.put("name", u.getEmail());
+			
+			JSONArray subJson = new JSONArray();
+			subJson.put(u.getRoot().getName());
+			map.put("imports", subJson);
+			
+			json.put(map);
+		}
+		
+		for (Folder folder : folders) {
+			map = new HashMap<String,Object>();
+			map.put("name", folder.getName());
+			
+			JSONArray subJson = new JSONArray();
+			
+			if(!folder.getFolders().isEmpty()) {
+				String fds = folder.getFolders().toString();
+				subJson.put(fds.substring(1,fds.length()-1));
+			}
+			
+			if(!folder.getFiles().isEmpty()) {
+				String fls = folder.getFiles().toString();
+				subJson.put(fls.substring(1,fls.length()-1));
+			}
+			
+			map.put("imports", subJson);
+			
+			json.put(map);
+		}
+		
+		for (File file : files) {
+			map = new HashMap<String,Object>();
+			map.put("name", file.toString());
+			map.put("imports", new JSONArray());
+			json.put(map);
+		}
+		
+		System.out.println(json.toString());
+		return json;
 	}
 	
 	/**

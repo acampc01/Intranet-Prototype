@@ -1,11 +1,13 @@
 package com.intranet.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.intranet.model.Folder;
+import com.intranet.model.User;
 import com.intranet.repository.FolderRepository;
 
 @Service("folderService")
@@ -37,5 +39,13 @@ public class FolderServiceImpl implements FolderService{
 		if(folder.getParent() != null)
 			folder.getParent().getFolders().remove(folder);
 		folderRepository.delete(folder);
+	}
+
+	@Override
+	public List<Folder> findAll(User user) {
+		if(user.isAdmin())
+			return folderRepository.findAll();
+		else
+			return null;
 	}
 }
