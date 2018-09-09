@@ -5,7 +5,7 @@
 
 	<groupId>com.intranet</groupId>
 	<artifactId>Intranet</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>SNAPSHOT-0.0.3</version>
 	<name>Intranet</name>
 
 	<parent>
