@@ -53,7 +53,7 @@ public class AdminController {
 
 	@Autowired
 	private NotificationService notifyService;
-	
+
 	@Autowired
 	private FileService fileService;
 
@@ -68,7 +68,7 @@ public class AdminController {
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		
+
 		if(user != null && user.isAdmin()) {
 			List<User> urs = userService.findAll();
 			List<User> users = new ArrayList<User>();
@@ -82,7 +82,7 @@ public class AdminController {
 			modelAndView.addObject("notifications", userService.findConfirms(user));
 			modelAndView.addObject("notifies", notifyService.findByType("Advice"));
 		}
-		
+
 		modelAndView.setViewName("admin/home");
 		return modelAndView;
 	}
@@ -95,72 +95,74 @@ public class AdminController {
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		
+
 		if(user != null && user.isAdmin()) {
 			modelAndView.addObject("user", user);
 			modelAndView.addObject("notifications", userService.findConfirms(user));
 			modelAndView.addObject("notifies", notifyService.findByType("Advice"));
 		}
-		
+
 		JSONArray json = createJSONMap(user);
-		modelAndView.addObject("map","");
-		
+		modelAndView.addObject("map", json.toString());
+
 		modelAndView.setViewName("admin/tree");
 		return modelAndView;
 	}
-	
+
 	@Async
 	public JSONArray createJSONMap(User user){
 		JSONArray json = new JSONArray();
 		HashMap<String,Object> map;
-		
+
 		List<User> users = new ArrayList<User>(userService.findAll());
 		List<Folder> folders = new ArrayList<Folder>(folderService.findAll(user));
 		List<File> files = new ArrayList<File>(fileService.findAll(user));
-		
+
 		for (User u : users) {
 			map = new HashMap<String,Object>();
-			map.put("name", u.getEmail());
+			map.put("name", "user."+u.getName());
 			
 			JSONArray subJson = new JSONArray();
-			subJson.put(u.getRoot().getName());
-			map.put("imports", subJson);
+			for (Folder folder : u.getRoot().getFolders()) {
+				subJson.put("folder."+folder.getName().replace(".", "_"));
+			}
 			
+			for (File file : u.getRoot().getFiles()) {
+				subJson.put("file."+file.toString());
+			}
+			map.put("imports", subJson);
+
 			json.put(map);
 		}
-		
+
 		for (Folder folder : folders) {
-			map = new HashMap<String,Object>();
-			map.put("name", folder.getName());
-			
-			JSONArray subJson = new JSONArray();
-			
-			if(!folder.getFolders().isEmpty()) {
-				String fds = folder.getFolders().toString();
-				subJson.put(fds.substring(1,fds.length()-1));
+			if(folder.getParent() != null) {
+				map = new HashMap<String,Object>();
+				map.put("name", "folder."+folder.getName().replace(".", "_"));
+
+				JSONArray subJson = new JSONArray();
+				for (Folder folderSon : folder.getFolders()) {
+					subJson.put("folder."+folderSon.getName().replace(".", "_"));
+				}
+				
+				for (File file : folder.getFiles()) {
+					subJson.put("file."+file.toString());
+				}
+
+				map.put("imports", subJson);
+				json.put(map);
 			}
-			
-			if(!folder.getFiles().isEmpty()) {
-				String fls = folder.getFiles().toString();
-				subJson.put(fls.substring(1,fls.length()-1));
-			}
-			
-			map.put("imports", subJson);
-			
-			json.put(map);
 		}
-		
+
 		for (File file : files) {
 			map = new HashMap<String,Object>();
-			map.put("name", file.toString());
+			map.put("name", "file."+file.toString());
 			map.put("imports", new JSONArray());
 			json.put(map);
 		}
-		
-		System.out.println(json.toString());
 		return json;
 	}
-	
+
 	/**
 	 * @return admin/charts.html template
 	 */
@@ -169,7 +171,7 @@ public class AdminController {
 		ModelAndView modelAndView = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
-		
+
 		if(user != null && user.isAdmin()) {
 			List<User> urs = userService.findAll();
 			List<User> users = new ArrayList<User>();
@@ -182,14 +184,14 @@ public class AdminController {
 			modelAndView.addObject("users", users);
 			modelAndView.addObject("notifications", userService.findConfirms(user));
 			modelAndView.addObject("notifies", notifyService.findByType("Advice"));
-			
+
 			List<Date> dates = new ArrayList<Date>();
 			for (int i = -5; i <= 0; i++) {
 				Calendar cal = Calendar.getInstance();
 				cal.add(Calendar.DATE, i);
 				dates.add(cal.getTime());
 			}
-			
+
 			List<Object[]> download = new ArrayList<Object[]>();
 			for (Date date : dates) {
 				Object[] aux = new Object[2];
@@ -198,7 +200,7 @@ public class AdminController {
 				download.add(aux);
 			}
 			modelAndView.addObject("download", download);
-			
+
 			List<Object[]> upload = new ArrayList<Object[]>();
 			for (Date date : dates) {
 				Object[] aux = new Object[2];
@@ -207,7 +209,7 @@ public class AdminController {
 				upload.add(aux);
 			}
 			modelAndView.addObject("upload", upload);
-		 
+
 			List<Object[]> login = new ArrayList<Object[]>();
 			for (Date date : dates) {
 				Object[] aux = new Object[2];
@@ -216,7 +218,7 @@ public class AdminController {
 				login.add(aux);
 			}
 			modelAndView.addObject("logins", login);
-			
+
 			List<Object[]> register = new ArrayList<Object[]>();
 			for (Date date : dates) {
 				Object[] aux = new Object[2];
@@ -225,7 +227,7 @@ public class AdminController {
 				register.add(aux);
 			}
 			modelAndView.addObject("register", register);
-		
+
 			List<Object[]> folderDownload = new ArrayList<Object[]>();
 			for (Date date : dates) {
 				Object[] aux = new Object[2];
@@ -234,7 +236,7 @@ public class AdminController {
 				folderDownload.add(aux);
 			}
 			modelAndView.addObject("folderDownload", folderDownload);
-			
+
 			List<Object[]> folderUpload = new ArrayList<Object[]>();
 			for (Date date : dates) {
 				Object[] aux = new Object[2];
@@ -243,7 +245,7 @@ public class AdminController {
 				folderUpload.add(aux);
 			}
 			modelAndView.addObject("folderUpload", folderUpload);
-			
+
 			List<Object[]> share = new ArrayList<Object[]>();
 			for (Date date : dates) {
 				Object[] aux = new Object[2];
@@ -252,7 +254,7 @@ public class AdminController {
 				share.add(aux);
 			}
 			modelAndView.addObject("sharedFiles", share);
-			
+
 			List<Object[]> shareFolder = new ArrayList<Object[]>();
 			for (Date date : dates) {
 				Object[] aux = new Object[2];
@@ -262,7 +264,7 @@ public class AdminController {
 			}
 			modelAndView.addObject("sharedFolders", shareFolder);
 		}
-		
+
 		modelAndView.setViewName("admin/charts");
 		return modelAndView;
 	}
@@ -304,7 +306,7 @@ public class AdminController {
 			if(u.getActive() == 0)
 				u.setActive(1);
 			userService.update(u);
-			
+
 			Set<Notification> notif = notifyService.findByType("Confirm");
 			for (Notification notification : notif) {
 				if(notification.getSender().equals(u)) {
@@ -335,7 +337,7 @@ public class AdminController {
 
 		if(user != null && user.isAdmin()) {
 			User u = userService.findOne(id);
-			
+
 			Set<Notification> notif = notifyService.findByType("Confirm");
 			for (Notification notification : notif) {
 				if(notification.getSender().equals(u)) {
@@ -348,7 +350,7 @@ public class AdminController {
 		log.error("Non admin user trying to refuse a user.");
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	/**
 	 * Elimina un usuario del sistema, eliminando recursivamente todo su arbol de carpetas cediendo a los usuarios compartidos los archivos o carpetas pertenecientes a tal usuario.
 	 * 

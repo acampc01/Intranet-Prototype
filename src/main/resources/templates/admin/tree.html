@@ -2,59 +2,26 @@
 <meta charset="utf-8">
 <title>Drotium Intranet - Admin Zone</title>
 <th:block th:include="includes/links :: links"></th:block>
-<style>
-.node {
-  font: 300 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
-  fill: #bbb;
-}
-
-.node:hover {
-  fill: #000;
-}
-
-.link {
-  stroke: #51C3F1;
-  stroke-opacity: 0.4;
-  fill: none;
-  pointer-events: none;
-}
-
-.node:hover,
-.node--source,
-.node--target {
-  font-weight: 700;
-}
-
-.node--source {
-  fill: #2ca02c;
-}
-
-.node--target {
-  fill: #d62728;
-}
-
-.link--source,
-.link--target {
-  stroke-opacity: 1;
-  stroke-width: 2px;
-}
-
-.link--source {
-  stroke: #d62728;
-}
-
-.link--target {
-  stroke: #2ca02c;
-}
-
-</style>
+<link th:href="@{/css/tree.css}" rel="stylesheet">
 <body class="fixed-nav sticky-footer sidenav-toggled" id="page-top">
 
 	<!-- Navigation-->
 	<th:block th:include="includes/navbar :: navbar"></th:block>
 
 	<div class="content-wrapper">
-		<div class="container-fluid text-center" id="chart"></div>
+		<div class="container mb-3">
+			<div class="card">
+				<div class="card-header" style="background-color: #51C3F1;">
+					<div class="text-center">
+						<h5 class="font-weight-bold text-white m-0">
+							<i class="fa fa-pagelines" aria-hidden="true"></i>
+							<span>Dependency Tree</span>
+						</h5>
+					</div>
+				</div>
+				<div class="card-body" id="chart"></div>
+			</div>
+		</div>
 	</div>
 
 	<th:block th:include="includes/footer :: footer"></th:block>
@@ -71,7 +38,7 @@
 	
 	<script th:src="@{/js/d3/d3.v4.min.js}"></script>
 	<script th:inline="javascript">
-	var diameter = 800,
+	var diameter = 900,
 	    radius = diameter / 2,
 	    innerRadius = radius - 120;
 	
@@ -84,34 +51,17 @@
 	    .angle(function(d) { return d.x / 180 * Math.PI; });
 	
 	var svg = d3.select("#chart").append("svg")
-	 	.attr("width", diameter)
+		.attr("class","mx-auto d-block")
+		.attr("width", diameter)
 	    .attr("height", diameter)
 	  .append("g")
-	    .attr("transform", "translate(" + radius + "," + radius + ")");
+	  .attr("transform", "translate(" + radius + "," + (radius-50) + ")");
 	
 	var link = svg.append("g").selectAll(".link"),
 	    node = svg.append("g").selectAll(".node");
+
+	var classes = JSON.parse(/*[[${map}]]*/);
 	
-	//var classes = /*<![CDATA[*/ [# th:text="${map}"/] ;/*]]>*/
-		//d3.json([[@{/js/d3/file.json}]], function(error, classes) {
-		//if (error) throw error;
-	
-	    var pers = new Object();
-		pers.name = "Nombre";
-		pers.imports = ["alejandrocampos"];    
-	    
-		var pers2 = new Object();
-		pers2.name = "alejandrocampos";
-		pers2.imports = ["otro",]; 
-		
-		var pers3 = new Object();
-		pers3.name = "otro";
-		pers3.imports = ["Nombre"]; 
-		
-		var classes= [pers,pers2,pers3];
-	       
-		console.log(classes);
-	       
 	  var root = packageHierarchy(classes)
 	      .sum(function(d) { return d.size; });
 	
@@ -204,7 +154,6 @@
 	
 	  return imports;
 	}
-	
 	</script>
 </body>
 </html>
