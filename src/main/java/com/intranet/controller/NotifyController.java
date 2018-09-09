@@ -1,5 +1,7 @@
 package com.intranet.controller;
 
+import java.util.Date;
+
 import javax.persistence.EntityNotFoundException;
 
 import org.slf4j.Logger;
@@ -25,13 +27,13 @@ import com.intranet.service.UserService;
 public class NotifyController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private NotificationService notifyService;
-	
+
 	@RequestMapping(value = "/admin/notify", method = RequestMethod.PUT)
 	public ResponseEntity<Notification> notify(@RequestParam("datos[]") String[] data) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -45,15 +47,15 @@ public class NotifyController {
 			notifyService.save(notify);
 			return new ResponseEntity<Notification>(HttpStatus.NO_CONTENT);
 		}
-		
+
 		log.debug("non admin user trying to create a notify");
 		return new ResponseEntity<Notification>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@RequestMapping(value = "/admin/notify/delete/{notif_id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Notification> notify(@PathVariable("notif_id") String nid) {
 		Long id = Long.parseLong(Encryptor.decrypt(nid));
-		
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUserByEmail(auth.getName());
 
@@ -67,10 +69,22 @@ public class NotifyController {
 			log.debug("Entity not found");
 			return new ResponseEntity<Notification>(HttpStatus.NOT_FOUND);
 		}
-		
+
 		log.debug("non admin user trying to create a notify");
 		return new ResponseEntity<Notification>(HttpStatus.NOT_FOUND);
 	}
-	
+
+	@RequestMapping(value = "/admin/notify/{date}", method = RequestMethod.POST)
+	public ResponseEntity<Notification> getNotify(@PathVariable("date") Date date) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+
+		if(user != null && user.isAdmin()) {
+
+		}
+
+		log.debug("non admin user trying to create a notify");
+		return new ResponseEntity<Notification>(HttpStatus.NOT_FOUND);
+	}
 
 }

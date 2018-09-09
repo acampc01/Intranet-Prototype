@@ -100,10 +100,9 @@ public class AdminController {
 			modelAndView.addObject("user", user);
 			modelAndView.addObject("notifications", userService.findConfirms(user));
 			modelAndView.addObject("notifies", notifyService.findByType("Advice"));
+			JSONArray json = createJSONMap(user);
+			modelAndView.addObject("map", json.toString());
 		}
-
-		JSONArray json = createJSONMap(user);
-		modelAndView.addObject("map", json.toString());
 
 		modelAndView.setViewName("admin/tree");
 		return modelAndView;
@@ -112,53 +111,54 @@ public class AdminController {
 	@Async
 	public JSONArray createJSONMap(User user){
 		JSONArray json = new JSONArray();
-		HashMap<String,Object> map;
-
-		List<User> users = new ArrayList<User>(userService.findAll());
-		List<Folder> folders = new ArrayList<Folder>(folderService.findAll(user));
-		List<File> files = new ArrayList<File>(fileService.findAll(user));
-
-		for (User u : users) {
-			map = new HashMap<String,Object>();
-			map.put("name", "user."+u.getName());
-			
-			JSONArray subJson = new JSONArray();
-			for (Folder folder : u.getRoot().getFolders()) {
-				subJson.put("folder."+folder.getName().replace(".", "_"));
-			}
-			
-			for (File file : u.getRoot().getFiles()) {
-				subJson.put("file."+file.toString());
-			}
-			map.put("imports", subJson);
-
-			json.put(map);
-		}
-
-		for (Folder folder : folders) {
-			if(folder.getParent() != null) {
+		if(user != null && user.isAdmin()) {
+			HashMap<String,Object> map;
+			List<User> users = new ArrayList<User>(userService.findAll());
+			List<Folder> folders = new ArrayList<Folder>(folderService.findAll(user));
+			List<File> files = new ArrayList<File>(fileService.findAll(user));
+	
+			for (User u : users) {
 				map = new HashMap<String,Object>();
-				map.put("name", "folder."+folder.getName().replace(".", "_"));
-
+				map.put("name", "user."+u.getName());
+				
 				JSONArray subJson = new JSONArray();
-				for (Folder folderSon : folder.getFolders()) {
-					subJson.put("folder."+folderSon.getName().replace(".", "_"));
+				for (Folder folder : u.getRoot().getFolders()) {
+					subJson.put("folder."+folder.getName().replace(".", "_"));
 				}
 				
-				for (File file : folder.getFiles()) {
+				for (File file : u.getRoot().getFiles()) {
 					subJson.put("file."+file.toString());
 				}
-
 				map.put("imports", subJson);
+	
 				json.put(map);
 			}
-		}
-
-		for (File file : files) {
-			map = new HashMap<String,Object>();
-			map.put("name", "file."+file.toString());
-			map.put("imports", new JSONArray());
-			json.put(map);
+	
+			for (Folder folder : folders) {
+				if(folder.getParent() != null) {
+					map = new HashMap<String,Object>();
+					map.put("name", "folder."+folder.getName().replace(".", "_"));
+	
+					JSONArray subJson = new JSONArray();
+					for (Folder folderSon : folder.getFolders()) {
+						subJson.put("folder."+folderSon.getName().replace(".", "_"));
+					}
+					
+					for (File file : folder.getFiles()) {
+						subJson.put("file."+file.toString());
+					}
+	
+					map.put("imports", subJson);
+					json.put(map);
+				}
+			}
+	
+			for (File file : files) {
+				map = new HashMap<String,Object>();
+				map.put("name", "file."+file.toString());
+				map.put("imports", new JSONArray());
+				json.put(map);
+			}
 		}
 		return json;
 	}
