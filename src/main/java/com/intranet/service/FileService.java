@@ -1,5 +1,6 @@
 package com.intranet.service;
 
+import java.util.List;
 import java.util.Set;
 
 import com.intranet.model.File;
@@ -10,7 +11,8 @@ public interface FileService {
 	public void save(File file);
 	public void update(File file);
 	public File findById(Long id);
-	Set<File> findByOwner(User owner);
-	File findByParentAndName(Folder parent, String name);
+	public Set<File> findByOwner(User owner);
+	public List<File> findAll(User user);
+	public File findByParentAndName(Folder parent, String name);
 	public void remove(File file);
 }

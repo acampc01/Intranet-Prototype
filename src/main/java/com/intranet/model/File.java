@@ -137,4 +137,8 @@ public class File {
 	public void setSharedUsers(Set<User> sharedUsers) {
 		this.sharedUsers = sharedUsers;
 	}
+	
+	public String toString() {
+		return this.getName().split("\\.")[0];
+	}
 }
